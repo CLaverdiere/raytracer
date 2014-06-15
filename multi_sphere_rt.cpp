@@ -44,7 +44,6 @@ int main(int argc, const char *argv[])
   int focal_length = (WIDTH+HEIGHT) / 2;
 
   vec e(0, 0, 0); // camera
-  vec li(WIDTH/2, HEIGHT/2, -focal_length/2); // light source
   float l = e.x() - WIDTH/2;
   float r = e.x() + WIDTH/2;
   float b = e.y() - HEIGHT/2;
@@ -63,8 +62,7 @@ int main(int argc, const char *argv[])
   // Using a Perspective View.
   for(int i=0; i<HEIGHT; i++) {
     for(int j=0; j<WIDTH; j++) {
-      float u, v, t, disc;
-      vec n, ip, ld;
+      float u, v, t;
       bool intersection = false;
 
       // Compute viewing ray.
@@ -80,33 +78,24 @@ int main(int argc, const char *argv[])
       for(int s=0; s<5; s++) {
         vec c = spheres[s].center;
         float rad = spheres[s].radius;
-
-        // float vd = 1; // unit vector pointing towards camera.
-
         // If Discriminant negative, no intersection.
-        disc = pow(d*(e-c), 2) - (d*d)*((e-c)*(e-c) - rad*rad);
+        float disc = pow(d*(e-c), 2) - (d*d)*((e-c)*(e-c) - rad*rad);
         if(disc > 0) {
           // printf("Hit: %f %f\n", disc, t);
-          t = min((-d*(e-c) + sqrt(disc)) / (d*d), (-d*(e-c) - sqrt(disc)) / (d*d)); // solution for parametric t.
-          ip = d * t; // intersection point vector.
-          n = (c-ip).unitlength();  // unit vector perpendicular to surface of sphere.
-          ld = (ip-li).unitlength(); // unit vector pointing towards light source.
+          t = min((-d*(e-c) + sqrt(disc)) / (d*d), (-d*(e-c) - sqrt(disc)) / (d*d));
           intersection = true; // discriminant negative ⇒ no intersection.
         } 
       }
 
       // Evaluate Shading model.
-      // Lambertian shading method.
+      // Simple method.
       if(intersection) {
-        float diffuse_coef = SCALE;
-        float light_intensity = 1;
-        float lambert_shade = diffuse_coef * light_intensity * max(0.0, n*ld);
+        float diffuse_coef = SCALE / t;
         for(int k=0; k<3; k++)
-          pixels[j][i][k] = (int) lambert_shade;
+          pixels[j][i][k] = (int) SCALE * diffuse_coef;
           // printf("  u, v: %f %f\n", u, v);
           // printf("  d. x, y, z: %f %f %f\n", d.x(), d.y(), d.z());
-          // printf("  n. %f %f %f  l. %f %f %f\n", n.x(), n.y(), n.z(), ld.x(), ld.y(), ld.z());
-          printf("  lambert: %f %f\n", n*ld, lambert_shade);
+          // printf("  diffuse: %f %f\n", t, diffuse_coef);
       } else {
         for(int k=0; k<3; k++) {
           pixels[j][i][k] = 0;
