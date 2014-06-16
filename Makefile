@@ -1,2 +1,2 @@
-raytracer: raytracer.cpp vec.cpp
-	g++ raytracer.cpp vec.cpp -o raytracer -std=c++11
+raytracer: raytracer.cpp vec.cpp surfaces.cpp
+	g++ raytracer.cpp vec.cpp surfaces.cpp -o raytracer -std=c++11
