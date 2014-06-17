@@ -11,9 +11,7 @@
 //    set pixel color to background color.
 
 #include <algorithm>
-#include <stdio.h>
-#include "surfaces.h"
-#include <vector>
+#include "scene.h"
 
 #define HEIGHT 500
 #define WIDTH 500
@@ -35,27 +33,8 @@ int main(int argc, const char *argv[])
   float nx = WIDTH;
   float ny = HEIGHT;
 
-  // Sphere centers.
-  vec c1(0   , 0   , -focal_length*5   );
-  vec c2(250 , -100, -focal_length*3.75);
-  vec c3(100 , 75  , -focal_length*1.25);
-  vec c4(-150, 25  , -focal_length*.9  );
-  vec c5(-75 , 125 , -focal_length*.75 );
-
-  // Sphere creation.
-  Sphere* s1 = new Sphere(c1, (WIDTH+HEIGHT) / 8);
-  Sphere* s2 = new Sphere(c2, (WIDTH+HEIGHT) / 13);
-  Sphere* s3 = new Sphere(c3, (WIDTH+HEIGHT) / 21);
-  Sphere* s4 = new Sphere(c4, (WIDTH+HEIGHT) / 34);
-  Sphere* s5 = new Sphere(c5, (WIDTH+HEIGHT) / 55);
-
   // All objects in the scene.
-  std::vector<Surface*> scene;
-  scene.push_back(s1);
-  scene.push_back(s2);
-  scene.push_back(s3);
-  scene.push_back(s4);
-  scene.push_back(s5);
+  std::vector<Surface*> scene_objects = Scene::gen_sample_scene_objects(focal_length, WIDTH, HEIGHT);
 
   // Using a Perspective View.
   for(int i=0; i<HEIGHT; i++) {
@@ -75,7 +54,7 @@ int main(int argc, const char *argv[])
 
       // For each object in our scene, check ray intersection.
       for(int k=0; k<5; k++) {
-        Surface *s = scene[k];
+        Surface *s = scene_objects[k];
         disc = s->get_discriminant(e, d);
 
         if(disc > 0) {
@@ -84,7 +63,7 @@ int main(int argc, const char *argv[])
           n = s->get_surface_normal(ip);
           ld = (ip-li).unitlength(); // unit vector pointing towards light source.
           intersection = true; // discriminant negative ⇒ no intersection.
-        } 
+        }
       }
 
       // Evaluate Shading model.
@@ -107,10 +86,6 @@ int main(int argc, const char *argv[])
     }
   }
 
-  FILE *f = fopen("pics/sphere.ppm", "wb");
-  fprintf(f, "P6\n%d %d\n%d\n", WIDTH, HEIGHT, SCALE);
-  fwrite(pixels, 1, HEIGHT*WIDTH*3, f);
-  fclose(f);
 
   return 0;
 }
