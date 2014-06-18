@@ -1,18 +1,47 @@
 #include "scene.h"
 #include <stdio.h>
 
-void Scene::export_scene(std::string filename) {
-  FILE *f = fopen("filename", "wb");
+Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, vec light, Raytracer* raytracer) :
+  pixels_width(pixels_width),
+  pixels_height(pixels_height),
+  focal_length(focal_length),
+  camera(camera),
+  light(light),
+  raytracer(raytracer)
+{
+  // Some real shit right here.
+  pixels = new unsigned char** [pixels_height];
+  for(int i=0; i<pixels_height; i++) {
+    pixels[i] = new unsigned char* [pixels_width];
+    for(int j=0; j<3; j++) {
+      pixels[i][j] = new unsigned char[3];
+    }
+  }
+};
+
+Scene::~Scene() {
+  for(int i=0; i<pixels_height; i++) {
+    for(int j=0; j<3; j++) {
+      delete pixels[i][j];
+    }
+    delete pixels[i];
+  }
+  delete pixels;
+};
+
+void Scene::export_scene(char* filename) {
+  FILE *f = fopen(filename, "wb");
   fprintf(f, "P6\n%d %d\n%d\n", pixels_width, pixels_height, 255);
-  // fwrite(pixels, 1, pixels_height*pixels_width*3, f);
+  fwrite(pixels, 1, pixels_height*pixels_width*3, f);
   fclose(f);
 };
 
 Scene* Scene::import_scene(std::string filename) {
-
+  // TODO: Read in nff file.
 };
 
-std::vector<Surface*> Scene::gen_sample_scene_objects(int focal_length, int width, int height) {
+Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
+  Scene* scene;
   std::vector<Surface*> scene_objects;
 
   // Sphere centers.
@@ -35,5 +64,29 @@ std::vector<Surface*> Scene::gen_sample_scene_objects(int focal_length, int widt
   scene_objects.push_back(s4);
   scene_objects.push_back(s5);
 
-  return scene_objects;
+  vec camera(0, 0, 0);
+  vec light(height*2, width*2, focal_length);
+  Raytracer* raytracer = new Raytracer();
+
+  scene = new Scene(500, 500, 250, camera, light, raytracer);
+  scene->scene_objects = scene_objects;
+
+  return scene;
+};
+
+void Scene::trace_scene() {
+  for(int i=0; i<pixels_height; i++) {
+    for(int j=0; j<pixels_width; j++) {
+      float u = i - pixels_width/2;
+      float v = j - pixels_height/2;
+
+      vec e_to_ip(u, v, -focal_length);
+      vec d = e_to_ip.unitlength();
+
+      int color = raytracer->compute_pixel_value(d, light, scene_objects);
+      pixels[i][j][0] = color;
+      pixels[i][j][1] = color;
+      pixels[i][j][2] = color;
+    }
+  }
 };

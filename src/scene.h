@@ -1,18 +1,20 @@
 #include "raytracer.h"
 #include <string>
-#include "surfaces.h"
 #include <vector>
 
 class Scene {
   public:
-    int pixels_width, pixels_height;
-    unsigned char pixels[pixels_height][pixels_width][3];
+    unsigned char*** pixels;
+    int pixels_width, pixels_height, focal_length;
     std::vector<Surface*> scene_objects;
-    Raytracer raytracer;
+    Raytracer* raytracer;
     vec camera;
     vec light;  // TODO Should really be a container of vectors.
 
-    void export_scene(std::string filename);
+    Scene(int pixels_width, int pixels_height, int focal_length, vec camera, vec light, Raytracer* raytracer);
+    ~Scene();
+    void export_scene(char* filename);
     Scene* import_scene(std::string filename);
-    static std::vector<Surface*> gen_sample_scene_objects(int focal_length, int width, int height);
+    static Scene* gen_sample_scene(int focal_length, int width, int height);
+    void trace_scene();
 };
