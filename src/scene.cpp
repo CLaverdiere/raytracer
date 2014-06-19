@@ -9,27 +9,14 @@ Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, 
   light(light),
   raytracer(raytracer)
 {
-  // Some real shit right here.
-  pixels = new unsigned char** [pixels_height];
-  for(int i=0; i<pixels_height; i++) {
-    pixels[i] = new unsigned char* [pixels_width];
-    for(int j=0; j<3; j++) {
-      pixels[i][j] = new unsigned char[3];
-    }
-  }
+  pixels = new unsigned char [pixels_height*pixels_width*3];
 };
 
 Scene::~Scene() {
-  for(int i=0; i<pixels_height; i++) {
-    for(int j=0; j<3; j++) {
-      delete pixels[i][j];
-    }
-    delete pixels[i];
-  }
-  delete pixels;
+  delete[] pixels;
 };
 
-void Scene::export_scene(char* filename) {
+void Scene::export_scene(const char* filename) {
   FILE *f = fopen(filename, "wb");
   fprintf(f, "P6\n%d %d\n%d\n", pixels_width, pixels_height, 255);
   fwrite(pixels, 1, pixels_height*pixels_width*3, f);
@@ -77,16 +64,16 @@ Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
 void Scene::trace_scene() {
   for(int i=0; i<pixels_height; i++) {
     for(int j=0; j<pixels_width; j++) {
-      float u = i - pixels_width/2;
-      float v = j - pixels_height/2;
+      float u = j - pixels_height/2;
+      float v = i - pixels_width/2;
 
       vec e_to_ip(u, v, -focal_length);
       vec d = e_to_ip.unitlength();
 
-      int color = raytracer->compute_pixel_value(d, light, scene_objects);
-      pixels[i][j][0] = color;
-      pixels[i][j][1] = color;
-      pixels[i][j][2] = color;
+      Color color = raytracer->compute_pixel_value(d, camera, light, scene_objects);
+      pixels[(i*pixels_height+j)*3] = color.r;
+      pixels[(i*pixels_height+j)*3+1] = color.g;
+      pixels[(i*pixels_height+j)*3+2] = color.b;
     }
   }
 };
