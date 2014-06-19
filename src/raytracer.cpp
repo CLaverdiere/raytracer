@@ -21,19 +21,17 @@ using namespace std;
 
 Color Raytracer::compute_pixel_value(vec ray, vec camera, vec light, std::vector<Surface*> surfaces) {
   Color color = {32, 67, 150};
-  float disc;
-  vec ip, n, ld;
+  vec *ip, *n, ld;
   bool intersection = false;
 
   // Perspective view calculation.
   for(vector<Surface*>::iterator it=surfaces.begin(); it != surfaces.end(); ++it) {
     Surface* s = *it;
-    disc = s->get_discriminant(camera, ray);
+    ip = s->get_intersection(camera, ray);
 
-    if(disc > 0) {
-      ip = s->get_intersection(camera, ray);
-      n = s->get_surface_normal(ip);
-      ld = (ip-light).unitlength(); // unit vector pointing towards light source.
+    if(ip != NULL) {
+      n = s->get_surface_normal(*ip);
+      ld = (*ip-light).unitlength(); // unit vector pointing towards light source.
       intersection = true; // discriminant negative ⇒ no intersection.
     }
   }
@@ -43,7 +41,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec camera, vec light, std::vector
   if(intersection) {
     float diffuse_coef = SCALE;
     float light_intensity = 1;
-    float lambert_shade = diffuse_coef * light_intensity * max(0.0, n*ld);
+    float lambert_shade = diffuse_coef * light_intensity * max(0.0, (*n)*ld);
     color.r = (unsigned int) lambert_shade;
     color.g = (unsigned int) lambert_shade;
     color.b = (unsigned int) lambert_shade;
@@ -52,6 +50,8 @@ Color Raytracer::compute_pixel_value(vec ray, vec camera, vec light, std::vector
     color.g = 0;
     color.b = 0;
   }
+
+  delete ip, n;
 
   return color;
 }

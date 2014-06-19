@@ -1,5 +1,6 @@
 #include <iostream>
 #include "scene.h"
+#include "util.h"
 
 using namespace std;
 
@@ -10,6 +11,6 @@ int main(int argc, const char *argv[])
   scene->trace_scene();
   scene->export_scene(filename);
   delete scene;
-  
+
   return 0;
 }

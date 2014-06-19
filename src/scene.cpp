@@ -1,5 +1,6 @@
 #include "scene.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, vec light, Raytracer* raytracer) :
   pixels_width(pixels_width),
@@ -14,6 +15,10 @@ Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, 
 
 Scene::~Scene() {
   delete[] pixels;
+  delete raytracer;
+  for(std::vector<Surface*>::iterator it = scene_objects.begin(); it != scene_objects.end(); ++it) {
+    delete *it;
+  }
 };
 
 void Scene::export_scene(const char* filename) {
@@ -45,11 +50,21 @@ Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
   Sphere* s4 = new Sphere(c4, (width+height) / 34);
   Sphere* s5 = new Sphere(c5, (width+height) / 55);
 
+  // Triangle cration.
+  vec v1(0, -150, -focal_length);
+  vec v2(-100, 100, -focal_length);
+  vec v3(100, 100, -focal_length);
+  Triangle* t1 = new Triangle(v1, v2, v3);
+
+  // Add spheres to scene
   scene_objects.push_back(s1);
   scene_objects.push_back(s2);
   scene_objects.push_back(s3);
   scene_objects.push_back(s4);
   scene_objects.push_back(s5);
+
+  // Add triangles to scene
+  scene_objects.push_back(t1);
 
   vec camera(0, 0, 0);
   vec light(height*2, width*2, focal_length);
