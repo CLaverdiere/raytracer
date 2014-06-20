@@ -3,7 +3,7 @@
 //   [ 1 2 ]
 //   [ 3 4 ] 
 //   => determinant3(1, 2, 3, 4)
-float det2(float* a);
+double det2(double* a);
 
 // Determinant of 3x3 matrix.
-float det3(float* a);
+double det3(double* a);

@@ -10,14 +10,14 @@ class Surface {
 class Sphere: public Surface {
   public:
     vec c; // center
-    float r; // radius
+    double r; // radius
 
     bool hit(vec e, vec d);
-    float get_discriminant(vec e, vec d);
+    double get_discriminant(vec e, vec d);
     vec* get_intersection(vec e, vec d);
     vec* get_surface_normal(vec ip);
 
-    Sphere(vec c, float r) : c(c), r(r) { };
+    Sphere(vec c, double r) : c(c), r(r) { };
 };
 
 class Triangle: public Surface {

@@ -8,5 +8,5 @@ typedef struct Color {
 
 class Raytracer {
   public:
-    Color compute_pixel_value(vec ray, vec camera, vec light, std::vector<Surface*> surfaces);
+    Color compute_pixel_value(vec ray, vec camera, std::vector<vec> lights, std::vector<Surface*> surfaces);
 };
