@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, std::vector<vec> lights, Raytracer* raytracer) :
+Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, std::vector<Light> lights, Raytracer* raytracer) :
   pixels_width(pixels_width),
   pixels_height(pixels_height),
   focal_length(focal_length),
@@ -38,19 +38,10 @@ Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
 
   // Sphere centers.
   vec c1(0   , 0   , -focal_length*4   );
-  // vec c1(0   , 0   , -focal_length*5   );
-  vec c2(250 , -100, -focal_length*3.75);
-  vec c3(100 , 75  , -focal_length*1.25);
-  vec c4(-150, 25  , -focal_length*.9  );
-  vec c5(-75 , 125 , -focal_length*.75 );
 
   // Sphere creation.
-  Sphere* s1 = new Sphere(c1, (width+height) / 2);
-  // Sphere* s1 = new Sphere(c1, (width+height) / 8);
-  Sphere* s2 = new Sphere(c2, (width+height) / 13);
-  Sphere* s3 = new Sphere(c3, (width+height) / 21);
-  Sphere* s4 = new Sphere(c4, (width+height) / 34);
-  Sphere* s5 = new Sphere(c5, (width+height) / 55);
+  Color col1 = {35, 125, 200};
+  Sphere* s1 = new Sphere(col1, c1, (width+height) / 2);
 
   // Triangle creation.
   // vec v1(0, -150, -focal_length);
@@ -60,21 +51,15 @@ Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
 
   // Add spheres to scene
   scene_objects.push_back(s1);
-  // scene_objects.push_back(s2);
-  // scene_objects.push_back(s3);
-  // scene_objects.push_back(s4);
-  // scene_objects.push_back(s5);
 
   // Add triangles to scene
   // scene_objects.push_back(t1);
 
   vec camera(0, 0, 0);
 
-  vec l1(-width, -height, 0);
-  vec l2(width, -height, 0);
-  std::vector<vec> lights;
+  Light l1(.9, vec(-width, -height, 0));
+  std::vector<Light> lights;
   lights.push_back(l1);
-  lights.push_back(l2);
 
   Raytracer* raytracer = new Raytracer();
 

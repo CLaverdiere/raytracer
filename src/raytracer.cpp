@@ -20,11 +20,9 @@
 
 using namespace std;
 
-Color Raytracer::compute_pixel_value(vec ray, vec camera, vector<vec> lights, std::vector<Surface*> surfaces) {
-  Color color = {32, 67, 150};
+Color Raytracer::compute_pixel_value(vec ray, vec camera, vector<Light> lights, std::vector<Surface*> surfaces) {
   vec *ip, *n, ld;
-  double lambert_shade;
-  double diffuse_coef = SCALE;
+  Color lambert_shade = {0, 0, 0};
   double light_intensity = 1;
   bool intersection = false;
 
@@ -34,13 +32,17 @@ Color Raytracer::compute_pixel_value(vec ray, vec camera, vector<vec> lights, st
     ip = s->get_intersection(camera, ray);
 
     if(ip != NULL) {
-      lambert_shade = 0;
-      for(vector<vec>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
-        vec light = *lit;
+      lambert_shade.r = 0;
+      lambert_shade.g = 0;
+      lambert_shade.b = 0;
+      for(vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
+        Light light = *lit;
         n = s->get_surface_normal(*ip);
-        ld = (*ip-light).unitlength(); // unit vector pointing towards light source.
+        ld = (*ip - light.pos).unitlength(); // unit vector pointing towards light source.
         intersection = true; // discriminant negative ⇒ no intersection.
-        lambert_shade += diffuse_coef * light_intensity * max(0.0, (*n)*ld);
+        lambert_shade.r += s->dc.r * light.intensity * max(0.0, (*n)*ld);
+        lambert_shade.g += s->dc.g * light.intensity * max(0.0, (*n)*ld);
+        lambert_shade.b += s->dc.b * light.intensity * max(0.0, (*n)*ld);
       }
     }
   }
@@ -49,16 +51,12 @@ Color Raytracer::compute_pixel_value(vec ray, vec camera, vector<vec> lights, st
   // Evaluate Shading model.
   // Lambertian shading method.
   if(intersection) {
-    color.r = min((unsigned int) lambert_shade, (unsigned int) SCALE);
-    color.g = min((unsigned int) lambert_shade, (unsigned int) SCALE);
-    color.b = min((unsigned int) lambert_shade, (unsigned int) SCALE);
-  } else {
-    color.r = 0;
-    color.g = 0;
-    color.b = 0;
-  }
+    lambert_shade.r = min((unsigned int) lambert_shade.r, (unsigned int) SCALE);
+    lambert_shade.g = min((unsigned int) lambert_shade.g, (unsigned int) SCALE);
+    lambert_shade.b = min((unsigned int) lambert_shade.b, (unsigned int) SCALE);
+  } 
 
   delete ip, n;
 
-  return color;
+  return lambert_shade;
 }

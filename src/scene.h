@@ -9,9 +9,9 @@ class Scene {
     std::vector<Surface*> scene_objects;
     Raytracer* raytracer;
     vec camera;
-    std::vector<vec> lights;
+    std::vector<Light> lights;
 
-    Scene(int pixels_width, int pixels_height, int focal_length, vec camera, std::vector<vec> light, Raytracer* raytracer);
+    Scene(int pixels_width, int pixels_height, int focal_length, vec camera, std::vector<Light> lights, Raytracer* raytracer);
     ~Scene();
     void export_scene(const char* filename);
     Scene* import_scene(std::string filename);
