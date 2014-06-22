@@ -51,9 +51,9 @@ Color Raytracer::compute_pixel_value(vec ray, vec camera, vector<Light> lights, 
   // Evaluate Shading model.
   // Lambertian shading method.
   if(intersection) {
-    lambert_shade.r = min((unsigned int) lambert_shade.r, (unsigned int) SCALE);
-    lambert_shade.g = min((unsigned int) lambert_shade.g, (unsigned int) SCALE);
-    lambert_shade.b = min((unsigned int) lambert_shade.b, (unsigned int) SCALE);
+    lambert_shade.r = min((int) (lambert_shade.r * SCALE), SCALE);
+    lambert_shade.g = min((int) (lambert_shade.g * SCALE), SCALE);
+    lambert_shade.b = min((int) (lambert_shade.b * SCALE), SCALE);
   } 
 
   delete ip, n;

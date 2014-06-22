@@ -18,6 +18,7 @@ class Sphere: public Surface {
     double get_discriminant(vec e, vec d);
     vec* get_intersection(vec e, vec d);
     vec* get_surface_normal(vec ip);
+    friend std::ostream& operator<<(std::ostream& os, const Sphere& s);
 
     Sphere(Color dc, vec c, double r) : c(c), r(r) { 
       this->dc = dc;

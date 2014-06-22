@@ -40,7 +40,7 @@ Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
   vec c1(0   , 0   , -focal_length*4   );
 
   // Sphere creation.
-  Color col1 = {35, 125, 200};
+  Color col1 = {.1, .3, .8};
   Sphere* s1 = new Sphere(col1, c1, (width+height) / 2);
 
   // Triangle creation.
@@ -79,9 +79,9 @@ void Scene::trace_scene() {
       vec d = e_to_ip.unitlength();
 
       Color color = raytracer->compute_pixel_value(d, camera, lights, scene_objects);
-      pixels[(i*pixels_height+j)*3] = color.r;
-      pixels[(i*pixels_height+j)*3+1] = color.g;
-      pixels[(i*pixels_height+j)*3+2] = color.b;
+      pixels[(i*pixels_height+j)*3] = (unsigned int) color.r;
+      pixels[(i*pixels_height+j)*3+1] = (unsigned int) color.g;
+      pixels[(i*pixels_height+j)*3+2] = (unsigned int) color.b;
     }
   }
 };

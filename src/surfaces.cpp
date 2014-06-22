@@ -43,6 +43,11 @@ bool Sphere::hit(vec e, vec d) {
   return disc > 0;
 };
 
+std::ostream& operator<<(std::ostream& os, const Sphere& s) {
+  os << "x=" << s.c.x() << " y=" << s.c.y() << " z=" << s.c.z() << " r=" << s.r;
+  return os;
+}
+
 // Using Cramer's rule to solve linear system.
 vec* Triangle::get_intersection(vec e, vec d) {
   vec* ip = NULL;
