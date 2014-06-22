@@ -1,5 +1,7 @@
 #include "parser.h"
 
+// TODO implement most view attributes.
+
 Scene* parse_nff_spheres(const char* filename) {
   std::ifstream fi;
   fi.open(filename);
@@ -14,8 +16,7 @@ Scene* parse_nff_spheres(const char* filename) {
   fi >> bgg;
   fi >> bgb;
 
-  Color c = {bgr, bgg, bgb};
-  std::cout << c.r << " " << c.g << " " << c.b << std::endl;
+  std::cout << bgr << " " << bgg << " " << bgb << std::endl;
 
   // Parse View attributes.
   double fromx, fromy, fromz;
@@ -82,6 +83,7 @@ Scene* parse_nff_spheres(const char* filename) {
 
   // Parse Spheres
   double cx, cy, cz, rad;
+  std::vector<Surface*> scene_objects;
 
   while(!fi.eof()) {
     fi >> in; // s
@@ -90,9 +92,20 @@ Scene* parse_nff_spheres(const char* filename) {
     fi >> cz; // centerz
     fi >> rad; // radius
 
-    if(fi.eof()) exit(1);
+    if(fi.eof()) break;
+    Color col = {.1, .4, .8}; // TODO find a way around hardcoding color value.
+    scene_objects.push_back(new Sphere(col, vec(cx, cy, cz), rad));
     std::cout << cx << " " << cy << " " << cz << " " << rad << std::endl;
   }
 
   fi.close();
+
+  // Read parsed attributes into Scene object.
+  Color bg_col = {bgr, bgg, bgb};
+  vec camera(fromx, fromy, fromz);
+  std::vector<Light> lights;
+  Raytracer* raytracer = new Raytracer();
+  Scene* parsed_scene = new Scene(resx, resy, (resx+resy)/2, camera, lights, scene_objects, raytracer);
+
+  return parsed_scene;
 }

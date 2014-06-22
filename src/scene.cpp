@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, std::vector<Light> lights, Raytracer* raytracer) :
+Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, std::vector<Light> lights, std::vector<Surface*> scene_objects, Raytracer* raytracer) :
   pixels_width(pixels_width),
   pixels_height(pixels_height),
   focal_length(focal_length),
   camera(camera),
   lights(lights),
+  scene_objects(scene_objects),
   raytracer(raytracer)
 {
   pixels = new unsigned char [pixels_height*pixels_width*3];
@@ -63,8 +64,7 @@ Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
 
   Raytracer* raytracer = new Raytracer();
 
-  scene = new Scene(500, 500, 250, camera, lights, raytracer);
-  scene->scene_objects = scene_objects;
+  scene = new Scene(500, 500, 250, camera, lights, scene_objects, raytracer);
 
   return scene;
 };

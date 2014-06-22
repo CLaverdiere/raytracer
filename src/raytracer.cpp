@@ -21,7 +21,7 @@
 using namespace std;
 
 Color Raytracer::compute_pixel_value(vec ray, vec camera, vector<Light> lights, std::vector<Surface*> surfaces) {
-  vec *ip, *n, ld;
+  vec *ip = NULL, *n = NULL, ld;
   Color lambert_shade = {0, 0, 0};
   double light_intensity = 1;
   bool intersection = false;
@@ -46,7 +46,6 @@ Color Raytracer::compute_pixel_value(vec ray, vec camera, vector<Light> lights, 
       }
     }
   }
-
 
   // Evaluate Shading model.
   // Lambertian shading method.
