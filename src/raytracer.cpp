@@ -14,35 +14,29 @@
 #include <iostream>
 #include "raytracer.h"
 
-#define HEIGHT 500
-#define WIDTH 500
 #define SCALE 255
 
-using namespace std;
-
-Color Raytracer::compute_pixel_value(vec ray, vec camera, vector<Light> lights, std::vector<Surface*> surfaces) {
+Color Raytracer::compute_pixel_value(vec ray, Camera* camera, std::vector<Light> lights, std::vector<Surface*> surfaces) {
   vec *ip = NULL, *n = NULL, ld;
   Color lambert_shade = {0, 0, 0};
   double light_intensity = 1;
   bool intersection = false;
 
   // Perspective view calculation.
-  for(vector<Surface*>::iterator sit=surfaces.begin(); sit != surfaces.end(); ++sit) {
+  for(std::vector<Surface*>::iterator sit=surfaces.begin(); sit != surfaces.end(); ++sit) {
     Surface* s = *sit;
-    ip = s->get_intersection(camera, ray);
+    ip = s->get_intersection(camera->pos, ray);
 
     if(ip != NULL) {
-      lambert_shade.r = 0;
-      lambert_shade.g = 0;
-      lambert_shade.b = 0;
-      for(vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
+      lambert_shade.r = lambert_shade.g = lambert_shade.b = 0;
+      for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
         Light light = *lit;
         n = s->get_surface_normal(*ip);
         ld = (*ip - light.pos).unitlength(); // unit vector pointing towards light source.
         intersection = true; // discriminant negative ⇒ no intersection.
-        lambert_shade.r += s->dc.r * light.intensity * max(0.0, (*n)*ld);
-        lambert_shade.g += s->dc.g * light.intensity * max(0.0, (*n)*ld);
-        lambert_shade.b += s->dc.b * light.intensity * max(0.0, (*n)*ld);
+        lambert_shade.r += s->dc.r * light.intensity * std::max(0.0, (*n)*ld);
+        lambert_shade.g += s->dc.g * light.intensity * std::max(0.0, (*n)*ld);
+        lambert_shade.b += s->dc.b * light.intensity * std::max(0.0, (*n)*ld);
       }
     }
   }
@@ -50,9 +44,9 @@ Color Raytracer::compute_pixel_value(vec ray, vec camera, vector<Light> lights, 
   // Evaluate Shading model.
   // Lambertian shading method.
   if(intersection) {
-    lambert_shade.r = min((int) (lambert_shade.r * SCALE), SCALE);
-    lambert_shade.g = min((int) (lambert_shade.g * SCALE), SCALE);
-    lambert_shade.b = min((int) (lambert_shade.b * SCALE), SCALE);
+    lambert_shade.r = std::min((int) (lambert_shade.r * SCALE), SCALE);
+    lambert_shade.g = std::min((int) (lambert_shade.g * SCALE), SCALE);
+    lambert_shade.b = std::min((int) (lambert_shade.b * SCALE), SCALE);
   } 
 
   delete ip, n;

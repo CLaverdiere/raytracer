@@ -8,10 +8,10 @@ class Scene {
     int pixels_width, pixels_height, focal_length;
     std::vector<Surface*> scene_objects;
     Raytracer* raytracer;
-    vec camera;
+    Camera* camera;
     std::vector<Light> lights;
 
-    Scene(int pixels_width, int pixels_height, int focal_length, vec camera,
+    Scene(int pixels_width, int pixels_height, int focal_length, Camera* camera,
         std::vector<Light> lights, std::vector<Surface*> scene_objects,
         Raytracer* raytracer);
     ~Scene();

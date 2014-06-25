@@ -16,7 +16,7 @@ Scene* parse_nff_spheres(const char* filename) {
   fi >> bgg;
   fi >> bgb;
 
-  std::cout << bgr << " " << bgg << " " << bgb << std::endl;
+  // std::cout << bgr << " " << bgg << " " << bgb << std::endl;
 
   // Parse View attributes.
   double fromx, fromy, fromz;
@@ -27,7 +27,7 @@ Scene* parse_nff_spheres(const char* filename) {
   fi >> fromz;
 
   vec from(fromx, fromy, fromz);
-  std::cout << from.x() << " " << from.y() << " " << from.z() << std::endl;
+  // std::cout << from.x() << " " << from.y() << " " << from.z() << std::endl;
 
   double atx, aty, atz;
   fi >> in; // at
@@ -36,7 +36,7 @@ Scene* parse_nff_spheres(const char* filename) {
   fi >> atz;
 
   vec at(atx, aty, atz);
-  std::cout << at.x() << " " << at.y() << " " << at.z() << std::endl;
+  // std::cout << at.x() << " " << at.y() << " " << at.z() << std::endl;
 
   double upx, upy, upz;
   fi >> in; // up
@@ -45,26 +45,26 @@ Scene* parse_nff_spheres(const char* filename) {
   fi >> upz;
 
   vec up(upx, upy, upz);
-  std::cout << up.x() << " " << up.y() << " " << up.z() << std::endl;
+  // std::cout << up.x() << " " << up.y() << " " << up.z() << std::endl;
 
   double angle;
   fi >> in; // angle
   fi >> angle;
 
-  std::cout << angle << std::endl;
+  // std::cout << angle << std::endl;
 
   double hither;
   fi >> in; // hither
   fi >> hither;
 
-  std::cout << hither << std::endl;
+  // std::cout << hither << std::endl;
 
   double resx, resy;
   fi >> in; // hither
   fi >> resx;
   fi >> resy;
 
-  std::cout << resx << " " << resy << std::endl;
+  // std::cout << resx << " " << resy << std::endl;
 
   // Parse Fill attributes.
   double r, g, b, kd, ks, shine, t, ior;
@@ -78,8 +78,8 @@ Scene* parse_nff_spheres(const char* filename) {
   fi >> t;     // transmittance
   fi >> ior;   // index of refraction
 
-  std::cout << r << " " << g << " " << b << " " << kd << " " << ks << " " <<
-              shine << " " << t << " " << ior << " " << std::endl;
+  // std::cout << r << " " << g << " " << b << " " << kd << " " << ks << " " <<
+  //             shine << " " << t << " " << ior << " " << std::endl;
 
   // Parse Spheres
   double cx, cy, cz, rad;
@@ -93,19 +93,19 @@ Scene* parse_nff_spheres(const char* filename) {
     fi >> rad; // radius
 
     if(fi.eof()) break;
-    Color col = {.1, .4, .8}; // TODO find a way around hardcoding color value.
-    scene_objects.push_back(new Sphere(col, vec(cx, cy, cz), rad));
-    std::cout << cx << " " << cy << " " << cz << " " << rad << std::endl;
+    Color col = {r, g, b};
+    scene_objects.push_back(new Sphere(col, vec(cx*255, cy*255, cz*255), rad*255));
+    // std::cout << cx << " " << cy << " " << cz << " " << rad << std::endl;
   }
 
   fi.close();
 
   // Read parsed attributes into Scene object.
   Color bg_col = {bgr, bgg, bgb};
-  vec camera(fromx, fromy, fromz);
   std::vector<Light> lights;
+  Camera* camera = new Camera(from, at);
   Raytracer* raytracer = new Raytracer();
-  Scene* parsed_scene = new Scene(resx, resy, (resx+resy)/2, camera, lights, scene_objects, raytracer);
+  Scene* parsed_scene = new Scene(resx, resy, (resx+resy)/4, camera, lights, scene_objects, raytracer);
 
   return parsed_scene;
 }

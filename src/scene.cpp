@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, std::vector<Light> lights, std::vector<Surface*> scene_objects, Raytracer* raytracer) :
+Scene::Scene(int pixels_width, int pixels_height, int focal_length, Camera* camera, std::vector<Light> lights, std::vector<Surface*> scene_objects, Raytracer* raytracer) :
   pixels_width(pixels_width),
   pixels_height(pixels_height),
   focal_length(focal_length),
@@ -17,6 +17,7 @@ Scene::Scene(int pixels_width, int pixels_height, int focal_length, vec camera, 
 Scene::~Scene() {
   delete[] pixels;
   delete raytracer;
+  delete camera;
   for(std::vector<Surface*>::iterator it = scene_objects.begin(); it != scene_objects.end(); ++it) {
     delete *it;
   }
@@ -56,12 +57,14 @@ Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
   // Add triangles to scene
   // scene_objects.push_back(t1);
 
-  vec camera(0, 0, 0);
 
   Light l1(.9, vec(-width, -height, 0));
   std::vector<Light> lights;
   lights.push_back(l1);
 
+  vec from(0, 0, 0);
+  vec at(0, 0, -focal_length);
+  Camera* camera = new Camera(from, at);
   Raytracer* raytracer = new Raytracer();
 
   scene = new Scene(500, 500, 250, camera, lights, scene_objects, raytracer);
