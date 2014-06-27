@@ -3,7 +3,7 @@
 int main(int argc, const char *argv[])
 {
   const char* out_file = "pics/sphere.ppm";
-  const char* in_file = "nff/balls1.nff";
+  const char* in_file = "nff/balls_custom.nff";
 
   // Scene* out_scene = Scene::gen_sample_scene(500, 500);
   // out_scene->trace_scene();
@@ -14,8 +14,7 @@ int main(int argc, const char *argv[])
   Scene* in_scene = parse_nff_spheres(in_file);
 
   // Add lights to scene.
-  Light l1(.9, vec(0, 0, 3));
-  // Light l1(.9, vec(in_scene->pixels_width, in_scene->pixels_height, 0));
+  Light l1(.9, vec(in_scene->pixels_width, in_scene->pixels_height, 0));
   std::vector<Light> lights;
   in_scene->lights.push_back(l1);
 

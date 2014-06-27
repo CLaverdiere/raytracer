@@ -112,7 +112,7 @@ Scene* parse_nff_spheres(const char* filename) {
 
   fi.close();
 
-  // TODO add bg color.
+  // TODO angle, hither
 
   // Read parsed attributes into Scene object.
   vec to = at - from;
@@ -120,7 +120,7 @@ Scene* parse_nff_spheres(const char* filename) {
   Color bg_col = {bgr, bgg, bgb};
   Camera* camera = new Camera(from, at);
   Raytracer* raytracer = new Raytracer();
-  Scene* parsed_scene = new Scene(resx, resy, img_dims, camera, lights, scene_objects, raytracer);
+  Scene* parsed_scene = new Scene(resx, resy, img_dims, camera, lights, bg_col, scene_objects, raytracer);
 
   return parsed_scene;
 }

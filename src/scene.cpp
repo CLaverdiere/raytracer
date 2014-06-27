@@ -4,13 +4,14 @@
 #include <stdlib.h>
 
 Scene::Scene(int pixels_width, int pixels_height, std::vector<double> img_dims,
-    Camera* camera, std::vector<Light> lights, std::vector<Surface*>
-    scene_objects, Raytracer* raytracer) :
+    Camera* camera, std::vector<Light> lights, Color bg_col,
+    std::vector<Surface*> scene_objects, Raytracer* raytracer) :
   pixels_width(pixels_width),
   pixels_height(pixels_height),
   img_dims(img_dims),
   camera(camera),
   lights(lights),
+  bg_col(bg_col),
   scene_objects(scene_objects),
   raytracer(raytracer)
 {
@@ -75,7 +76,9 @@ Scene* Scene::gen_sample_scene(int width, int height) {
   img_dims.push_back(500);
   img_dims.push_back(500);
 
-  scene = new Scene(500, 500, img_dims, camera, lights, scene_objects, raytracer);
+  Color bg_col = {0, 0, 0};
+
+  scene = new Scene(500, 500, img_dims, camera, lights, bg_col, scene_objects, raytracer);
 
   return scene;
 };
@@ -83,23 +86,19 @@ Scene* Scene::gen_sample_scene(int width, int height) {
 void Scene::trace_scene() {
   for(int i=0; i<pixels_height; i++) {
     for(int j=0; j<pixels_width; j++) {
-      // double l = img_dims.at(0), 
-      //        b = img_dims.at(1), 
-      //        r = img_dims.at(2), 
-      //        t = img_dims.at(3); 
-      double l = -5, 
-             b = -5, 
-             r = 5, 
-             t = 5; 
+      double l = img_dims.at(0) * 2,
+             r = img_dims.at(1) * 2,
+             b = img_dims.at(2) * 2,
+             t = img_dims.at(3) * 2;
       double u = l + ((r - l) * (j + 0.5) / pixels_height);
       double v = b + ((t - b) * (i + 0.5) / pixels_width);
 
-      // std::cout << l << std::endl <<  b << std::endl << r << std::endl << t << std::endl << std::endl; 
+      // std::cout << l << std::endl <<  r << std::endl << b << std::endl << t << std::endl << std::endl; 
 
       vec e_to_ip(camera->center.x() - u, camera->center.y() - v, (camera->center - camera->pos).z()); // BUG: centers?
       vec d = e_to_ip.unitlength();
 
-      Color color = raytracer->compute_pixel_value(d, camera, lights, scene_objects);
+      Color color = raytracer->compute_pixel_value(d, camera, lights, bg_col, scene_objects);
       pixels[(i*pixels_height+j)*3] = (unsigned int) color.r;
       pixels[(i*pixels_height+j)*3+1] = (unsigned int) color.g;
       pixels[(i*pixels_height+j)*3+2] = (unsigned int) color.b;

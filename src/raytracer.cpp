@@ -16,9 +16,10 @@
 
 #define SCALE 255
 
-Color Raytracer::compute_pixel_value(vec ray, Camera* camera, std::vector<Light> lights, std::vector<Surface*> surfaces) {
+Color Raytracer::compute_pixel_value(vec ray, Camera* camera,
+    std::vector<Light> lights, Color bg_col, std::vector<Surface*> surfaces) {
   vec *ip = NULL, *n = NULL, ld;
-  Color lambert_shade = {0, 0, 0};
+  Color lambert_shade = {bg_col.r*SCALE, bg_col.g*SCALE, bg_col.b*SCALE};
   bool intersection = false;
 
   // Perspective view calculation.
