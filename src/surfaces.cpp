@@ -28,11 +28,14 @@ vec* Sphere::get_intersection(vec e, vec d) {
   return ip;
 };
 
-vec* Sphere::get_surface_normal(vec ip) {
+vec* Sphere::get_surface_normal(vec ip, Camera* camera) {
   // TODO only compute some values once.
   // unit vector perpendicular to surface of sphere.
   // distance from center of sphere to intersection point.
-  vec* norm = new vec((c - ip).unitlength());
+
+  // TODO calc to_c
+  vec to_c = c - camera->pos;
+  vec* norm = new vec((ip - to_c).unitlength()); // WANT ip - (sphere center - camera)
   return norm;
 };
 
@@ -102,7 +105,7 @@ vec* Triangle::get_intersection(vec e, vec d) {
 // The surface normal of a triangle is the cross product
 // of any two sides.
 // TODO only compute this once.
-vec* Triangle::get_surface_normal(vec ip) {
+vec* Triangle::get_surface_normal(vec ip, Camera* camera) {
   vec* norm = new vec((v2-v1) ^ (v3-v1));
   return norm;
 };

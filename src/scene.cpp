@@ -1,11 +1,14 @@
 #include "scene.h"
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 
-Scene::Scene(int pixels_width, int pixels_height, int focal_length, Camera* camera, std::vector<Light> lights, std::vector<Surface*> scene_objects, Raytracer* raytracer) :
+Scene::Scene(int pixels_width, int pixels_height, std::vector<double> img_dims,
+    Camera* camera, std::vector<Light> lights, std::vector<Surface*>
+    scene_objects, Raytracer* raytracer) :
   pixels_width(pixels_width),
   pixels_height(pixels_height),
-  focal_length(focal_length),
+  img_dims(img_dims),
   camera(camera),
   lights(lights),
   scene_objects(scene_objects),
@@ -34,16 +37,16 @@ Scene* Scene::import_scene(std::string filename) {
   // TODO: Read in nff file.
 };
 
-Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
+Scene* Scene::gen_sample_scene(int width, int height) {
   Scene* scene;
   std::vector<Surface*> scene_objects;
 
   // Sphere centers.
-  vec c1(0   , 0   , -focal_length*4   );
+  vec c1(0, 0, 4);
 
   // Sphere creation.
   Color col1 = {.1, .3, .8};
-  Sphere* s1 = new Sphere(col1, c1, (width+height) / 2);
+  Sphere* s1 = new Sphere(col1, c1, 3);
 
   // Triangle creation.
   // vec v1(0, -150, -focal_length);
@@ -57,17 +60,22 @@ Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
   // Add triangles to scene
   // scene_objects.push_back(t1);
 
-
-  Light l1(.9, vec(-width, -height, 0));
+  Light l1(.9, vec(-width, -height, -200));
   std::vector<Light> lights;
   lights.push_back(l1);
 
   vec from(0, 0, 0);
-  vec at(0, 0, -focal_length);
+  vec at(0, 0, 50);
   Camera* camera = new Camera(from, at);
   Raytracer* raytracer = new Raytracer();
 
-  scene = new Scene(500, 500, 250, camera, lights, scene_objects, raytracer);
+  std::vector<double> img_dims;
+  img_dims.push_back(-500);
+  img_dims.push_back(-500);
+  img_dims.push_back(500);
+  img_dims.push_back(500);
+
+  scene = new Scene(500, 500, img_dims, camera, lights, scene_objects, raytracer);
 
   return scene;
 };
@@ -75,10 +83,20 @@ Scene* Scene::gen_sample_scene(int focal_length, int width, int height) {
 void Scene::trace_scene() {
   for(int i=0; i<pixels_height; i++) {
     for(int j=0; j<pixels_width; j++) {
-      double u = j - pixels_height/2;
-      double v = i - pixels_width/2;
+      // double l = img_dims.at(0), 
+      //        b = img_dims.at(1), 
+      //        r = img_dims.at(2), 
+      //        t = img_dims.at(3); 
+      double l = -5, 
+             b = -5, 
+             r = 5, 
+             t = 5; 
+      double u = l + ((r - l) * (j + 0.5) / pixels_height);
+      double v = b + ((t - b) * (i + 0.5) / pixels_width);
 
-      vec e_to_ip(u, v, -focal_length);
+      // std::cout << l << std::endl <<  b << std::endl << r << std::endl << t << std::endl << std::endl; 
+
+      vec e_to_ip(camera->center.x() - u, camera->center.y() - v, (camera->center - camera->pos).z()); // BUG: centers?
       vec d = e_to_ip.unitlength();
 
       Color color = raytracer->compute_pixel_value(d, camera, lights, scene_objects);

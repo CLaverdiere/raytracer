@@ -19,7 +19,6 @@
 Color Raytracer::compute_pixel_value(vec ray, Camera* camera, std::vector<Light> lights, std::vector<Surface*> surfaces) {
   vec *ip = NULL, *n = NULL, ld;
   Color lambert_shade = {0, 0, 0};
-  double light_intensity = 1;
   bool intersection = false;
 
   // Perspective view calculation.
@@ -31,8 +30,8 @@ Color Raytracer::compute_pixel_value(vec ray, Camera* camera, std::vector<Light>
       lambert_shade.r = lambert_shade.g = lambert_shade.b = 0;
       for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
         Light light = *lit;
-        n = s->get_surface_normal(*ip);
-        ld = (*ip - light.pos).unitlength(); // unit vector pointing towards light source.
+        n = s->get_surface_normal(*ip, camera);
+        ld = (light.pos - *ip).unitlength(); // unit vector pointing towards light source. // BUG: should be ip - light?
         intersection = true; // discriminant negative ⇒ no intersection.
         lambert_shade.r += s->dc.r * light.intensity * std::max(0.0, (*n)*ld);
         lambert_shade.g += s->dc.g * light.intensity * std::max(0.0, (*n)*ld);
@@ -47,7 +46,8 @@ Color Raytracer::compute_pixel_value(vec ray, Camera* camera, std::vector<Light>
     lambert_shade.r = std::min((int) (lambert_shade.r * SCALE), SCALE);
     lambert_shade.g = std::min((int) (lambert_shade.g * SCALE), SCALE);
     lambert_shade.b = std::min((int) (lambert_shade.b * SCALE), SCALE);
-  } 
+    // std::cout << lambert_shade.r << " " << lambert_shade.g << " " << lambert_shade.b << std::endl;
+  }
 
   delete ip, n;
 

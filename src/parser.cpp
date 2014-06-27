@@ -82,8 +82,10 @@ Scene* parse_nff_spheres(const char* filename) {
   //             shine << " " << t << " " << ior << " " << std::endl;
 
   // Parse Spheres
-  double cx, cy, cz, rad;
+  double cx, cy, cz, rad, 
+         minx=0, miny=0, maxx=0, maxy=0; // used for image view.
   std::vector<Surface*> scene_objects;
+  std::vector<double> img_dims;
 
   while(!fi.eof()) {
     fi >> in; // s
@@ -92,20 +94,33 @@ Scene* parse_nff_spheres(const char* filename) {
     fi >> cz; // centerz
     fi >> rad; // radius
 
+    if(cx < minx) minx = cx;
+    if(cx > maxx) maxx = cx;
+    if(cy < miny) miny = cy;
+    if(cy > maxy) maxy = cy;
+
     if(fi.eof()) break;
-    Color col = {r, g, b};
-    scene_objects.push_back(new Sphere(col, vec(cx*255, cy*255, cz*255), rad*255));
+    Color col = {r*kd, g*kd, b*kd};
+    scene_objects.push_back(new Sphere(col, vec(cx, cy, cz), rad));
     // std::cout << cx << " " << cy << " " << cz << " " << rad << std::endl;
   }
 
+  img_dims.push_back(minx);
+  img_dims.push_back(maxx);
+  img_dims.push_back(miny);
+  img_dims.push_back(maxy);
+
   fi.close();
 
+  // TODO add bg color.
+
   // Read parsed attributes into Scene object.
-  Color bg_col = {bgr, bgg, bgb};
+  vec to = at - from;
   std::vector<Light> lights;
+  Color bg_col = {bgr, bgg, bgb};
   Camera* camera = new Camera(from, at);
   Raytracer* raytracer = new Raytracer();
-  Scene* parsed_scene = new Scene(resx, resy, (resx+resy)/4, camera, lights, scene_objects, raytracer);
+  Scene* parsed_scene = new Scene(resx, resy, img_dims, camera, lights, scene_objects, raytracer);
 
   return parsed_scene;
 }

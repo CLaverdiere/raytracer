@@ -1,4 +1,3 @@
-#include "camera.h"
 #include "light.h"
 #include "surfaces.h"
 #include <vector>
