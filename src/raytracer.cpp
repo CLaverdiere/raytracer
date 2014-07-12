@@ -21,6 +21,7 @@ Color Raytracer::compute_pixel_value(vec ray, Camera* camera,
   vec *ip = NULL, *n = NULL, ld;
   Color lambert_shade = {bg_col.r*SCALE, bg_col.g*SCALE, bg_col.b*SCALE};
   bool intersection = false;
+  double closest_hit_distance = 0;
 
   // Perspective view calculation.
   for(std::vector<Surface*>::iterator sit=surfaces.begin(); sit != surfaces.end(); ++sit) {
@@ -28,15 +29,20 @@ Color Raytracer::compute_pixel_value(vec ray, Camera* camera,
     ip = s->get_intersection(camera->pos, ray);
 
     if(ip != NULL) {
-      lambert_shade.r = lambert_shade.g = lambert_shade.b = 0;
-      for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
-        Light light = *lit;
-        n = s->get_surface_normal(*ip, camera);
-        ld = (light.pos - *ip).unitlength(); // unit vector pointing towards light source. // BUG: should be ip - light?
-        intersection = true; // discriminant negative ⇒ no intersection.
-        lambert_shade.r += s->dc.r * light.intensity * std::max(0.0, (*n)*ld);
-        lambert_shade.g += s->dc.g * light.intensity * std::max(0.0, (*n)*ld);
-        lambert_shade.b += s->dc.b * light.intensity * std::max(0.0, (*n)*ld);
+      if(closest_hit_distance == 0) { closest_hit_distance = ip->length(); };
+
+      if(ip->length() <= closest_hit_distance) {
+        closest_hit_distance = ip->length();
+        lambert_shade.r = lambert_shade.g = lambert_shade.b = 0;
+        for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
+          Light light = *lit;
+          n = s->get_surface_normal(*ip, camera);
+          ld = (light.pos - *ip).unitlength(); // unit vector pointing towards light source. // BUG: should be ip - light?
+          intersection = true; // discriminant negative ⇒ no intersection.
+          lambert_shade.r += s->dc.r * light.intensity * std::max(0.0, (*n)*ld);
+          lambert_shade.g += s->dc.g * light.intensity * std::max(0.0, (*n)*ld);
+          lambert_shade.b += s->dc.b * light.intensity * std::max(0.0, (*n)*ld);
+        }
       }
     }
   }

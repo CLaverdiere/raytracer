@@ -87,15 +87,14 @@ Scene* Scene::gen_sample_scene(int width, int height) {
 void Scene::trace_scene() {
   for(int i=0; i<pixels_height; i++) {
     for(int j=0; j<pixels_width; j++) {
-      double l = -5,
-             r = 5,
-             b = -5,
-             t = 5;
+      double l = -1,
+             r = 1,
+             b = -1,
+             t = 1;
       // double l = std::min(-1.0, img_dims.at(0)) * 5,
       //        r = std::max(1.0, img_dims.at(1)) * 5,
       //        b = std::min(-1.0, img_dims.at(2)) * 5,
       //        t = std::max(1.0, img_dims.at(3)) * 5;
-      double fov = 45;
       double u = l + ((r - l) * (j + 0.5) / pixels_height);
       double v = b + ((t - b) * (i + 0.5) / pixels_width);
 
