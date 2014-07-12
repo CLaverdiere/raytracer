@@ -115,12 +115,14 @@ Scene* parse_nff_spheres(const char* filename) {
   // TODO angle, hither
 
   // Read parsed attributes into Scene object.
+  std::string projection_type = "parallel";
   vec to = at - from;
   std::vector<Light> lights;
   Color bg_col = {bgr, bgg, bgb};
   Camera* camera = new Camera(from, at);
   Raytracer* raytracer = new Raytracer();
-  Scene* parsed_scene = new Scene(resx, resy, img_dims, camera, lights, bg_col, scene_objects, raytracer);
+  Scene* parsed_scene = new Scene(resx, resy, img_dims, projection_type,
+      camera, lights, bg_col, scene_objects, raytracer);
 
   return parsed_scene;
 }

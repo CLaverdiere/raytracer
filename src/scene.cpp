@@ -4,11 +4,12 @@
 #include <stdlib.h>
 
 Scene::Scene(int pixels_width, int pixels_height, std::vector<double> img_dims,
-    Camera* camera, std::vector<Light> lights, Color bg_col,
-    std::vector<Surface*> scene_objects, Raytracer* raytracer) :
+    std::string projection_type, Camera* camera, std::vector<Light> lights,
+    Color bg_col, std::vector<Surface*> scene_objects, Raytracer* raytracer) :
   pixels_width(pixels_width),
   pixels_height(pixels_height),
   img_dims(img_dims),
+  projection_type(projection_type),
   camera(camera),
   lights(lights),
   bg_col(bg_col),
@@ -78,7 +79,7 @@ Scene* Scene::gen_sample_scene(int width, int height) {
 
   Color bg_col = {0, 0, 0};
 
-  scene = new Scene(500, 500, img_dims, camera, lights, bg_col, scene_objects, raytracer);
+  scene = new Scene(500, 500, img_dims, "pers", camera, lights, bg_col, scene_objects, raytracer);
 
   return scene;
 };
@@ -86,19 +87,38 @@ Scene* Scene::gen_sample_scene(int width, int height) {
 void Scene::trace_scene() {
   for(int i=0; i<pixels_height; i++) {
     for(int j=0; j<pixels_width; j++) {
-      double l = img_dims.at(0) * 2,
-             r = img_dims.at(1) * 2,
-             b = img_dims.at(2) * 2,
-             t = img_dims.at(3) * 2;
+      double l = -5,
+             r = 5,
+             b = -5,
+             t = 5;
+      // double l = std::min(-1.0, img_dims.at(0)) * 5,
+      //        r = std::max(1.0, img_dims.at(1)) * 5,
+      //        b = std::min(-1.0, img_dims.at(2)) * 5,
+      //        t = std::max(1.0, img_dims.at(3)) * 5;
+      double fov = 45;
       double u = l + ((r - l) * (j + 0.5) / pixels_height);
       double v = b + ((t - b) * (i + 0.5) / pixels_width);
 
       // std::cout << l << std::endl <<  r << std::endl << b << std::endl << t << std::endl << std::endl; 
 
-      vec e_to_ip(camera->center.x() - u, camera->center.y() - v, (camera->center - camera->pos).z()); // BUG: centers?
-      vec d = e_to_ip.unitlength();
+      // TODO change perspective to enum type.
+      Camera camera_shifted = *camera;
+      Color color;
+      vec d;
 
-      Color color = raytracer->compute_pixel_value(d, camera, lights, bg_col, scene_objects);
+      if(projection_type == "pers") { // perspective projection
+        vec e_to_p(u - camera->center.x(), 
+                   v - camera->center.y(), 
+                   (camera->center - camera->pos).z());
+        d = e_to_p.unitlength();
+        color = raytracer->compute_pixel_value(d, camera, lights, bg_col, scene_objects);
+      } else { // parallel projection
+        d = (camera->center - camera->pos).unitlength();
+        camera_shifted.pos.x(camera_shifted.pos.x() + u);
+        camera_shifted.pos.y(camera_shifted.pos.y() + v);
+        color = raytracer->compute_pixel_value(d, &camera_shifted, lights, bg_col, scene_objects);
+      }
+
       pixels[(i*pixels_height+j)*3] = (unsigned int) color.r;
       pixels[(i*pixels_height+j)*3+1] = (unsigned int) color.g;
       pixels[(i*pixels_height+j)*3+2] = (unsigned int) color.b;

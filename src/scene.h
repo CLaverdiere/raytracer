@@ -7,6 +7,7 @@ class Scene {
     unsigned char* pixels;
     int pixels_width, pixels_height;
     std::vector<double> img_dims;
+    std::string projection_type;
     std::vector<Surface*> scene_objects;
     Camera* camera;
     std::vector<Light> lights;
@@ -14,8 +15,9 @@ class Scene {
     Raytracer* raytracer;
 
     Scene(int pixels_width, int pixels_height, std::vector<double> img_dims,
-        Camera* camera, std::vector<Light> lights, Color bg_col,
-        std::vector<Surface*> scene_objects, Raytracer* raytracer);
+        std::string projection_type, Camera* camera, std::vector<Light> lights,
+        Color bg_col, std::vector<Surface*> scene_objects, Raytracer*
+        raytracer);
     ~Scene();
     void export_scene(const char* filename);
     Scene* import_scene(std::string filename);
