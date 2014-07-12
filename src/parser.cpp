@@ -115,7 +115,7 @@ Scene* parse_nff_spheres(const char* filename) {
   // TODO angle, hither
 
   // Read parsed attributes into Scene object.
-  std::string projection_type = "parallel";
+  Projection projection_type = Parallel;
   vec to = at - from;
   std::vector<Light> lights;
   Color bg_col = {bgr, bgg, bgb};

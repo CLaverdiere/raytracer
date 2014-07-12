@@ -1,3 +1,4 @@
+#include "projection.h"
 #include "raytracer.h"
 #include <string>
 #include <vector>
@@ -7,7 +8,7 @@ class Scene {
     unsigned char* pixels;
     int pixels_width, pixels_height;
     std::vector<double> img_dims;
-    std::string projection_type;
+    Projection projection_type;
     std::vector<Surface*> scene_objects;
     Camera* camera;
     std::vector<Light> lights;
@@ -15,7 +16,7 @@ class Scene {
     Raytracer* raytracer;
 
     Scene(int pixels_width, int pixels_height, std::vector<double> img_dims,
-        std::string projection_type, Camera* camera, std::vector<Light> lights,
+        Projection projection_type, Camera* camera, std::vector<Light> lights,
         Color bg_col, std::vector<Surface*> scene_objects, Raytracer*
         raytracer);
     ~Scene();

@@ -1,0 +1,1 @@
+enum Projection { Parallel, Perspective };

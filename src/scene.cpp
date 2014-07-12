@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 Scene::Scene(int pixels_width, int pixels_height, std::vector<double> img_dims,
-    std::string projection_type, Camera* camera, std::vector<Light> lights,
+    Projection projection_type, Camera* camera, std::vector<Light> lights,
     Color bg_col, std::vector<Surface*> scene_objects, Raytracer* raytracer) :
   pixels_width(pixels_width),
   pixels_height(pixels_height),
@@ -79,7 +79,7 @@ Scene* Scene::gen_sample_scene(int width, int height) {
 
   Color bg_col = {0, 0, 0};
 
-  scene = new Scene(500, 500, img_dims, "pers", camera, lights, bg_col, scene_objects, raytracer);
+  scene = new Scene(500, 500, img_dims, Parallel, camera, lights, bg_col, scene_objects, raytracer);
 
   return scene;
 };
@@ -101,18 +101,17 @@ void Scene::trace_scene() {
 
       // std::cout << l << std::endl <<  r << std::endl << b << std::endl << t << std::endl << std::endl; 
 
-      // TODO change perspective to enum type.
       Camera camera_shifted = *camera;
       Color color;
       vec d;
 
-      if(projection_type == "pers") { // perspective projection
+      if(projection_type == Perspective) {
         vec e_to_p(u - camera->center.x(), 
                    v - camera->center.y(), 
                    (camera->center - camera->pos).z());
         d = e_to_p.unitlength();
         color = raytracer->compute_pixel_value(d, camera, lights, bg_col, scene_objects);
-      } else { // parallel projection
+      } else { // parallel projection by default.
         d = (camera->center - camera->pos).unitlength();
         camera_shifted.pos.x(camera_shifted.pos.x() + u);
         camera_shifted.pos.y(camera_shifted.pos.y() + v);
