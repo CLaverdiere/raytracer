@@ -2,7 +2,7 @@
 
 int main(int argc, const char *argv[])
 {
-  const char* in_file = "nff/balls2.nff";
+  const char* in_file = "nff/balls_single.nff";
   const char* out_file = "pics/sphere.ppm";
 
   // Scene* out_scene = Scene::gen_sample_scene(500, 500);

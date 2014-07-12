@@ -1,6 +1,7 @@
 #include "parser.h"
 
 // TODO implement most view attributes.
+// TODO light intensity is NOT the same thing as diffuse coef.
 
 Scene* parse_nff_spheres(const char* filename) {
   std::ifstream fi;
@@ -66,6 +67,7 @@ Scene* parse_nff_spheres(const char* filename) {
 
   // std::cout << resx << " " << resy << std::endl;
 
+  // TODO use map instead.
   // Parse Fill attributes.
   double r, g, b, kd, ks, shine, t, ior;
   fi >> in;    // f
@@ -122,7 +124,7 @@ Scene* parse_nff_spheres(const char* filename) {
   Camera* camera = new Camera(from, at);
   Raytracer* raytracer = new Raytracer();
   Scene* parsed_scene = new Scene(resx, resy, img_dims, projection_type,
-      camera, lights, bg_col, scene_objects, raytracer);
+      camera, lights, bg_col, ks, shine, scene_objects, raytracer);
 
   return parsed_scene;
 }

@@ -1,11 +1,11 @@
-#include "scene.h"
 #include <iostream>
+#include "scene.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 Scene::Scene(int pixels_width, int pixels_height, std::vector<double> img_dims,
     Projection projection_type, Camera* camera, std::vector<Light> lights,
-    Color bg_col, std::vector<Surface*> scene_objects, Raytracer* raytracer) :
+    Color bg_col, double ks, double shine, std::vector<Surface*> scene_objects, Raytracer* raytracer) :
   pixels_width(pixels_width),
   pixels_height(pixels_height),
   img_dims(img_dims),
@@ -13,6 +13,8 @@ Scene::Scene(int pixels_width, int pixels_height, std::vector<double> img_dims,
   camera(camera),
   lights(lights),
   bg_col(bg_col),
+  ks(ks),
+  shine(shine),
   scene_objects(scene_objects),
   raytracer(raytracer)
 {
@@ -33,10 +35,6 @@ void Scene::export_scene(const char* filename) {
   fprintf(f, "P6\n%d %d\n%d\n", pixels_width, pixels_height, 255);
   fwrite(pixels, 1, pixels_height*pixels_width*3, f);
   fclose(f);
-};
-
-Scene* Scene::import_scene(std::string filename) {
-  // TODO: Read in nff file.
 };
 
 Scene* Scene::gen_sample_scene(int width, int height) {
@@ -79,7 +77,7 @@ Scene* Scene::gen_sample_scene(int width, int height) {
 
   Color bg_col = {0, 0, 0};
 
-  scene = new Scene(500, 500, img_dims, Parallel, camera, lights, bg_col, scene_objects, raytracer);
+  scene = new Scene(500, 500, img_dims, Parallel, camera, lights, bg_col, .5, 3, scene_objects, raytracer);
 
   return scene;
 };
@@ -101,6 +99,7 @@ void Scene::trace_scene() {
       // std::cout << l << std::endl <<  r << std::endl << b << std::endl << t << std::endl << std::endl; 
 
       Camera camera_shifted = *camera;
+      Shading shading_method = Blinn_Phong;
       Color color;
       vec d;
 
@@ -109,12 +108,14 @@ void Scene::trace_scene() {
                    v - camera->center.y(), 
                    (camera->center - camera->pos).z());
         d = e_to_p.unitlength();
-        color = raytracer->compute_pixel_value(d, camera, lights, bg_col, scene_objects);
+        color = raytracer->compute_pixel_value(d, camera, lights, bg_col, ks,
+            shine, shading_method, scene_objects);
       } else { // parallel projection by default.
         d = (camera->center - camera->pos).unitlength();
         camera_shifted.pos.x(camera_shifted.pos.x() + u);
         camera_shifted.pos.y(camera_shifted.pos.y() + v);
-        color = raytracer->compute_pixel_value(d, &camera_shifted, lights, bg_col, scene_objects);
+        color = raytracer->compute_pixel_value(d, &camera_shifted, lights,
+            bg_col, ks, shine, shading_method, scene_objects);
       }
 
       pixels[(i*pixels_height+j)*3] = (unsigned int) color.r;
