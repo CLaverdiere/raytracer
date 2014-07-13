@@ -17,16 +17,18 @@
 
 #define SCALE 255
 
-Color Raytracer::compute_pixel_value(vec ray, Camera* camera,
-    std::vector<Light> lights, Color bg_col, double ks, double shine, Shading
-    shading_method, std::vector<Surface*> surfaces) {
+Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scene_attrs, 
+    Camera* camera, std::vector<Light> lights, std::vector<Surface*> scene_objects, 
+    Projection projection_type, Shading shading_method) {
   vec *ip = NULL, *n = NULL, ld, v;
-  Color shade = {bg_col.r*SCALE, bg_col.g*SCALE, bg_col.b*SCALE};
+  Color shade = {scene_attrs.at("bg_r")*SCALE, 
+                 scene_attrs.at("bg_g")*SCALE, 
+                 scene_attrs.at("bg_b")*SCALE};
   bool intersection = false;
   double closest_hit_distance = 0;
 
   // Perspective view calculation.
-  for(std::vector<Surface*>::iterator sit=surfaces.begin(); sit != surfaces.end(); ++sit) {
+  for(std::vector<Surface*>::iterator sit=scene_objects.begin(); sit != scene_objects.end(); ++sit) {
     Surface* s = *sit;
     ip = s->get_intersection(camera->pos, ray);
 
@@ -48,12 +50,13 @@ Color Raytracer::compute_pixel_value(vec ray, Camera* camera,
             shade.b += s->dc.b * light.intensity * std::max(0.0, (*n)*ld);
           } else { // default is Blinn-Phong
             vec h = (v + ld);
-            shade.r += s->dc.r * (light.intensity * std::max(0.0, (*n)*ld) 
-              + ks * light.intensity * pow(std::max(0.0, (*n)*h), shine));
-            shade.g += s->dc.g * (light.intensity * std::max(0.0, (*n)*ld) 
-              + ks * light.intensity * pow(std::max(0.0, (*n)*h), shine));
-            shade.b += s->dc.b * (light.intensity * std::max(0.0, (*n)*ld) 
-              + ks * light.intensity * pow(std::max(0.0, (*n)*h), shine));
+            // TODO de-uglify this.
+            shade.r += s->dc.r * light.intensity * (scene_attrs.at("kd") * (std::max(0.0, (*n)*ld)) 
+              + scene_attrs.at("ks") * pow(std::max(0.0, (*n)*h), scene_attrs.at("shine")));
+            shade.g += s->dc.g * light.intensity * (scene_attrs.at("kd") * (std::max(0.0, (*n)*ld)) 
+              + scene_attrs.at("ks") * pow(std::max(0.0, (*n)*h), scene_attrs.at("shine")));
+            shade.b += s->dc.b * light.intensity * (scene_attrs.at("kd") * (std::max(0.0, (*n)*ld)) 
+              + scene_attrs.at("ks") * pow(std::max(0.0, (*n)*h), scene_attrs.at("shine")));
           }
         }
       }

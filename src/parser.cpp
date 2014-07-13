@@ -1,130 +1,110 @@
 #include "parser.h"
 
 // TODO implement most view attributes.
-// TODO light intensity is NOT the same thing as diffuse coef.
 
-Scene* parse_nff_spheres(const char* filename) {
+// Parse our file for scene attributes.
+std::map<std::string, double> parse_nff_attrs(const char* filename) {
+  std::map<std::string, double> scene_attrs;
   std::ifstream fi;
+
   fi.open(filename);
 
   // Identifier storage.
   std::string in;
 
   // Parse background colors.
-  double bgr, bgg, bgb;
   fi >> in; // b
-  fi >> bgr;
-  fi >> bgg;
-  fi >> bgb;
-
-  // std::cout << bgr << " " << bgg << " " << bgb << std::endl;
+  fi >> scene_attrs["bg_r"];
+  fi >> scene_attrs["bg_g"];
+  fi >> scene_attrs["bg_b"];
 
   // Parse View attributes.
-  double fromx, fromy, fromz;
   fi >> in; // v
   fi >> in; // from
-  fi >> fromx;
-  fi >> fromy;
-  fi >> fromz;
+  fi >> scene_attrs["from_x"];
+  fi >> scene_attrs["from_y"];
+  fi >> scene_attrs["from_z"];
 
-  vec from(fromx, fromy, fromz);
-  // std::cout << from.x() << " " << from.y() << " " << from.z() << std::endl;
-
-  double atx, aty, atz;
   fi >> in; // at
-  fi >> atx;
-  fi >> aty;
-  fi >> atz;
+  fi >> scene_attrs["atx"];
+  fi >> scene_attrs["aty"];
+  fi >> scene_attrs["atz"];
 
-  vec at(atx, aty, atz);
-  // std::cout << at.x() << " " << at.y() << " " << at.z() << std::endl;
-
-  double upx, upy, upz;
   fi >> in; // up
-  fi >> upx;
-  fi >> upy;
-  fi >> upz;
+  fi >> scene_attrs["upx"];
+  fi >> scene_attrs["upy"];
+  fi >> scene_attrs["upz"];
 
-  vec up(upx, upy, upz);
-  // std::cout << up.x() << " " << up.y() << " " << up.z() << std::endl;
-
-  double angle;
   fi >> in; // angle
-  fi >> angle;
+  fi >> scene_attrs["angle"];
 
-  // std::cout << angle << std::endl;
-
-  double hither;
   fi >> in; // hither
-  fi >> hither;
+  fi >> scene_attrs["hither"];
 
-  // std::cout << hither << std::endl;
+  fi >> in; // resolution
+  fi >> scene_attrs["resx"];
+  fi >> scene_attrs["resy"];
 
-  double resx, resy;
-  fi >> in; // hither
-  fi >> resx;
-  fi >> resy;
-
-  // std::cout << resx << " " << resy << std::endl;
-
-  // TODO use map instead.
   // Parse Fill attributes.
-  double r, g, b, kd, ks, shine, t, ior;
   fi >> in;    // f
-  fi >> r;     // red
-  fi >> g;     // green
-  fi >> b;     // blue
-  fi >> kd;    // diffuse component
-  fi >> ks;    // specular
-  fi >> shine; // phong cosine power
-  fi >> t;     // transmittance
-  fi >> ior;   // index of refraction
-
-  // std::cout << r << " " << g << " " << b << " " << kd << " " << ks << " " <<
-  //             shine << " " << t << " " << ior << " " << std::endl;
-
-  // Parse Spheres
-  double cx, cy, cz, rad, 
-         minx=0, miny=0, maxx=0, maxy=0; // used for image view.
-  std::vector<Surface*> scene_objects;
-  std::vector<double> img_dims;
-
-  while(!fi.eof()) {
-    fi >> in; // s
-    fi >> cx; // centerx
-    fi >> cy; // centery
-    fi >> cz; // centerz
-    fi >> rad; // radius
-
-    if(cx < minx) minx = cx;
-    if(cx > maxx) maxx = cx;
-    if(cy < miny) miny = cy;
-    if(cy > maxy) maxy = cy;
-
-    if(fi.eof()) break;
-    Color col = {r*kd, g*kd, b*kd};
-    scene_objects.push_back(new Sphere(col, vec(cx, cy, cz), rad));
-    // std::cout << cx << " " << cy << " " << cz << " " << rad << std::endl;
-  }
-
-  img_dims.push_back(minx);
-  img_dims.push_back(maxx);
-  img_dims.push_back(miny);
-  img_dims.push_back(maxy);
+  fi >> scene_attrs["fill_r"]; // red
+  fi >> scene_attrs["fill_g"]; // green
+  fi >> scene_attrs["fill_b"]; // blue
+  fi >> scene_attrs["kd"];     // diffuse component
+  fi >> scene_attrs["ks"];     // specular
+  fi >> scene_attrs["shine"];  // phong cosine power
+  fi >> scene_attrs["t"];      // transmittance
+  fi >> scene_attrs["ior"];    // index of refraction
 
   fi.close();
 
-  // TODO angle, hither
+  return scene_attrs;
+};
 
-  // Read parsed attributes into Scene object.
-  Projection projection_type = Parallel;
-  vec to = at - from;
-  std::vector<Light> lights;
-  Color bg_col = {bgr, bgg, bgb};
-  Camera* camera = new Camera(from, at);
-  Raytracer* raytracer = new Raytracer();
-  Scene* parsed_scene = new Scene(resx, resy, img_dims, projection_type,
-      camera, lights, bg_col, ks, shine, scene_objects, raytracer);
+// Parse our file for all objects.
+// Returns a vector containing all scene objects.
+// Currently only works for spheres.
+// TODO: account for other object types.
+std::vector<Surface*> parse_nff_objects(const char* filename, std::map<std::string, double> scene_attrs) {
+  std::ifstream fi;
 
-  return parsed_scene;
-}
+  fi.open(filename);
+
+  // Identifier storage.
+  std::string in;
+
+  // Jump to the point in the file where spheres are declared.
+  while(in != "s") {
+    fi >> in; 
+  }
+
+  // Parse Objects
+  std::vector<Surface*> scene_objects;
+
+  bool first_object = true;
+  while(!fi.eof()) {
+    double cx, cy, cz, rad;
+
+    // The "s" was already parsed on the first run, so skip it.
+    if(!first_object) {
+      fi >> in; // s
+    } else {
+      first_object = false; 
+    }
+
+    fi >> cx;  // centerx
+    fi >> cy;  // centery
+    fi >> cz;  // centerz
+    fi >> rad; // radius
+
+    Color col = {scene_attrs.at("fill_r"), 
+                 scene_attrs.at("fill_g"), 
+                 scene_attrs.at("fill_b")};
+
+    scene_objects.push_back(new Sphere(col, vec(cx, cy, cz), rad));
+    if(fi.eof()) break;
+  }
+
+  fi.close();
+  return scene_objects;
+};
