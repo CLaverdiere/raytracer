@@ -21,9 +21,9 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
     Camera* camera, std::vector<Light> lights, std::vector<Surface*> scene_objects, 
     Projection projection_type, Shading shading_method) {
   vec *ip = NULL, *n = NULL, ld, v;
-  Color shade = {scene_attrs.at("bg_r")*SCALE, 
-                 scene_attrs.at("bg_g")*SCALE, 
-                 scene_attrs.at("bg_b")*SCALE};
+  Color shade(scene_attrs.at("bg_r")*SCALE, 
+              scene_attrs.at("bg_g")*SCALE, 
+              scene_attrs.at("bg_b")*SCALE);
   bool intersection = false;
   double closest_hit_distance = 0;
 
@@ -37,7 +37,7 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
 
       if(ip->length() <= closest_hit_distance) {
         closest_hit_distance = ip->length();
-        shade.r = shade.g = shade.b = 0;
+        shade.x(0); shade.y(0); shade.z(0);
         for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
           Light light = *lit;
           n = s->get_surface_normal(*ip, camera);
@@ -45,17 +45,10 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
           v = -ray; // unit vector pointing towards camera.
           intersection = true; // discriminant negative ⇒ no intersection.
           if(shading_method == Lambertian) {
-            shade.r += s->dc.r * light.intensity * std::max(0.0, (*n)*ld);
-            shade.g += s->dc.g * light.intensity * std::max(0.0, (*n)*ld);
-            shade.b += s->dc.b * light.intensity * std::max(0.0, (*n)*ld);
+            shade += s->dc * light.intensity * std::max(0.0, (*n)*ld);
           } else { // default is Blinn-Phong
             vec h = (v + ld);
-            // TODO de-uglify this.
-            shade.r += s->dc.r * light.intensity * (scene_attrs.at("kd") * (std::max(0.0, (*n)*ld)) 
-              + scene_attrs.at("ks") * pow(std::max(0.0, (*n)*h), scene_attrs.at("shine")));
-            shade.g += s->dc.g * light.intensity * (scene_attrs.at("kd") * (std::max(0.0, (*n)*ld)) 
-              + scene_attrs.at("ks") * pow(std::max(0.0, (*n)*h), scene_attrs.at("shine")));
-            shade.b += s->dc.b * light.intensity * (scene_attrs.at("kd") * (std::max(0.0, (*n)*ld)) 
+            shade += s->dc * light.intensity * (scene_attrs.at("kd") * (std::max(0.0, (*n)*ld)) 
               + scene_attrs.at("ks") * pow(std::max(0.0, (*n)*h), scene_attrs.at("shine")));
           }
         }
@@ -66,10 +59,9 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
   // Evaluate Shading model.
   // Lambertian shading method.
   if(intersection) {
-    shade.r = std::min((int) (shade.r * SCALE), SCALE);
-    shade.g = std::min((int) (shade.g * SCALE), SCALE);
-    shade.b = std::min((int) (shade.b * SCALE), SCALE);
-    // std::cout << shade.r << " " << shade.g << " " << shade.b << std::endl;
+    shade.x(std::min((int) (shade.x() * SCALE), SCALE));
+    shade.y(std::min((int) (shade.y() * SCALE), SCALE));
+    shade.z(std::min((int) (shade.z() * SCALE), SCALE));
   }
 
   delete ip, n;

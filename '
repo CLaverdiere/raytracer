@@ -61,9 +61,9 @@ void Scene::trace_scene() {
             lights, scene_objects, projection_type, shading_method);
       }
 
-      pixels[(i*(int)scene_attrs["resy"]+j)*3] = (unsigned int) color.x();
-      pixels[(i*(int)scene_attrs["resy"]+j)*3+1] = (unsigned int) color.y();
-      pixels[(i*(int)scene_attrs["resy"]+j)*3+2] = (unsigned int) color.z();
+      pixels[(i*(int)scene_attrs["resy"]+j)*3] = (unsigned int) color.r;
+      pixels[(i*(int)scene_attrs["resy"]+j)*3+1] = (unsigned int) color.g;
+      pixels[(i*(int)scene_attrs["resy"]+j)*3+2] = (unsigned int) color.b;
     }
   }
 };

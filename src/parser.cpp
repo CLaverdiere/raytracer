@@ -97,9 +97,9 @@ std::vector<Surface*> parse_nff_objects(const char* filename, std::map<std::stri
     fi >> cz;  // centerz
     fi >> rad; // radius
 
-    Color col = {scene_attrs.at("fill_r"), 
-                 scene_attrs.at("fill_g"), 
-                 scene_attrs.at("fill_b")};
+    Color col(scene_attrs.at("fill_r"), 
+              scene_attrs.at("fill_g"), 
+              scene_attrs.at("fill_b"));
 
     scene_objects.push_back(new Sphere(col, vec(cx, cy, cz), rad));
     if(fi.eof()) break;
