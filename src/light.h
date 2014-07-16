@@ -1,6 +1,5 @@
 #include "vec.h"
 
-// TODO destructor
 class Light {
   public:
     double intensity;

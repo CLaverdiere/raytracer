@@ -4,7 +4,7 @@
 
 class Surface {
   public:
-    Color dc; // diffuse coefficient
+    Color dc; // default color
     virtual bool hit(vec e, vec d) = 0;
     virtual vec* get_intersection(vec e, vec d) = 0;
     virtual vec* get_surface_normal(vec ip, Camera* camera) = 0;

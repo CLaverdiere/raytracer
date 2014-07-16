@@ -1,8 +1,10 @@
 #include "parser.h"
 
+// TODO: Bug with non-square image dimensions. Produces garbage.
+
 int main(int argc, const char *argv[])
 {
-  const char* in_file = "nff/balls_single.nff";
+  const char* in_file = "nff/balls2.nff";
   const char* out_file = "pics/sphere.ppm";
 
   // Scene* out_scene = Scene::gen_sample_scene(500, 500);
@@ -20,10 +22,18 @@ int main(int argc, const char *argv[])
   // Read scene objects from infile.
   std::vector<Surface*> scene_objects = parse_nff_objects(in_file, scene_attrs);
 
+  // Modify objects in subtle ways.
+  offset_saturation_multi(scene_objects); 
+  offset_hue_multi(scene_objects);
+
   // Add lights to scene.
   Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 0));
+  Light l2(.7, 2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
+  Light l3(.7, -2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
   std::vector<Light> lights;
   lights.push_back(l1);
+  lights.push_back(l2);
+  lights.push_back(l3);
 
   // Create scene
   Scene* in_scene = new Scene(scene_attrs, lights, scene_objects, projection_type, shading_method);

@@ -38,7 +38,7 @@ void Scene::export_scene(const char* filename) {
 void Scene::trace_scene() {
   for(int i=0; i<scene_attrs["resy"]; i++) {
     for(int j=0; j<scene_attrs["resx"]; j++) {
-      double l = -1, r = 1, b = -1, t = 1;
+      double l = -1, r = 1, b = -1, t = 1; // TODO What should these really be?
       double u = l + ((r - l) * (j + 0.5) / scene_attrs["resy"]);
       double v = b + ((t - b) * (i + 0.5) / scene_attrs["resx"]);
 
