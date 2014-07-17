@@ -6,13 +6,17 @@
 
 // TODO Separate these shapes into their own files.
 
+Sphere::Sphere(Color dc, vec c, double r) : c(c), r(r) { 
+  this->dc = dc;
+};
+
 // e: location vector of camera.
 // d: direction unit-vector from camera to sphere.
 double Sphere::get_discriminant(vec e, vec d) {
   return pow(d*(e-c), 2) - (d*d)*((e-c)*(e-c) - r*r);
 }
 
-vec* Sphere::get_intersection(vec e, vec d) {
+vec* Sphere::get_intersection(vec e, vec d, float lower_t_bound) {
   vec *ip = NULL;
 
   // Find discriminant.
@@ -23,7 +27,9 @@ vec* Sphere::get_intersection(vec e, vec d) {
   double t = std::min((-d*(e-c) + sqrt(disc)) / (d*d), (-d*(e-c) - sqrt(disc)) / (d*d));
 
   // intersection point vector.
-  ip = new vec(d * t);
+  if(t > lower_t_bound) {
+    ip = new vec(d * t);
+  }
 
   return ip;
 };
@@ -50,6 +56,10 @@ std::ostream& operator<<(std::ostream& os, const Sphere& s) {
   os << "x=" << s.c.x() << " y=" << s.c.y() << " z=" << s.c.z() << " r=" << s.r;
   return os;
 }
+
+Triangle::Triangle(Color dc, vec v1, vec v2, vec v3) : v1(v1), v2(v2), v3(v3) { 
+  this->dc = dc;
+};
 
 // Using Cramer's rule to solve linear system.
 vec* Triangle::get_intersection(vec e, vec d) {

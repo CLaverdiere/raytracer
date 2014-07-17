@@ -1,1 +1,1 @@
-enum Shading { Lambertian, Blinn_Phong };
+enum Shading { None, Lambertian, Blinn_Phong };
