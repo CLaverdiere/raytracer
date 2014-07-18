@@ -16,33 +16,35 @@ double Sphere::get_discriminant(vec e, vec d) {
   return pow(d*(e-c), 2) - (d*d)*((e-c)*(e-c) - r*r);
 }
 
-vec* Sphere::get_intersection(vec e, vec d, float lower_t_bound) {
-  vec *ip = NULL;
+bool Sphere::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
+  // TODO Investigate boost::optional.
+  // This function should be able to return either a vector, or fail to return one.
+  // This way, we could return a vector copy, and not have to deal with passing
+  //   references back and forth.
+  // Similar to 'Maybe' in Haskell.
 
   // Find discriminant.
   double disc = get_discriminant(e, d);
-  if(disc < 0) return ip;
+
+  if(disc < 0) return false;
 
   // solution for parametric t.
   double t = std::min((-d*(e-c) + sqrt(disc)) / (d*d), (-d*(e-c) - sqrt(disc)) / (d*d));
 
   // intersection point vector.
   if(t > lower_t_bound) {
-    ip = new vec(d * t);
+    ip = d * t;
+    return true;
   }
 
-  return ip;
+  return false;
 };
 
-vec* Sphere::get_surface_normal(vec ip, Camera* camera) {
-  // TODO only compute some values once.
-  // unit vector perpendicular to surface of sphere.
-  // distance from center of sphere to intersection point.
-
-  // TODO calc to_c
+void Sphere::get_surface_normal(vec &norm, vec ip, Camera* camera) {
+  // Distance from center of sphere to intersection point.
   vec to_c = c - camera->pos;
-  vec* norm = new vec((ip - to_c).unitlength()); // WANT ip - (sphere center - camera)
-  return norm;
+
+  norm = (ip - to_c).unitlength(); // WANT ip - (sphere center - camera)
 };
 
 bool Sphere::hit(vec e, vec d) {
@@ -62,9 +64,7 @@ Triangle::Triangle(Color dc, vec v1, vec v2, vec v3) : v1(v1), v2(v2), v3(v3) {
 };
 
 // Using Cramer's rule to solve linear system.
-vec* Triangle::get_intersection(vec e, vec d) {
-  vec* ip = NULL;
-
+bool Triangle::get_intersection(vec &ip, vec e, vec d) {
   double xa_m_xb = v1[0] - v1[1];
   double xa_m_xc = v1[0] - v1[2];
   double xa_m_xe = v1[0] - e[0];
@@ -89,7 +89,7 @@ vec* Triangle::get_intersection(vec e, vec d) {
 
   double t = det3(matrix_t) / det_a;
 
-  if(t < 0) return ip;
+  if(t < 0) return false;
 
   // Compute gamma
   double matrix_gamma[] = { xa_m_xb, xa_m_xe, d[0],
@@ -97,7 +97,7 @@ vec* Triangle::get_intersection(vec e, vec d) {
                            za_m_zb, za_m_ze, d[2] };
 
   double gamma = det3(matrix_gamma) / det_a;
-  if(gamma < 0 || gamma > 1) return ip;
+  if(gamma < 0 || gamma > 1) return false;
 
   // Compute beta
   double matrix_beta[] = { xa_m_xe, xa_m_xc, d[0],
@@ -105,19 +105,18 @@ vec* Triangle::get_intersection(vec e, vec d) {
                           za_m_ze, za_m_zc, d[2] };
 
   double beta = det3(matrix_beta) / det_a;
-  if(beta < 0 || beta > 1 - gamma) return ip;
+  if(beta < 0 || beta > 1 - gamma) return false;
 
-  ip = new vec(e + t*d);
+  ip = e + t*d;
   std::cout << "triangle hit" << std::endl;
-  return ip;
+  return true;
 };
 
 // The surface normal of a triangle is the cross product
 // of any two sides.
 // TODO only compute this once.
-vec* Triangle::get_surface_normal(vec ip, Camera* camera) {
-  vec* norm = new vec((v2-v1) ^ (v3-v1));
-  return norm;
+void Triangle::get_surface_normal(vec &norm, vec ip, Camera* camera) {
+  norm = (v2-v1) ^ (v3-v1);
 };
 
 // TODO implement.
