@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define LOADING_WIDTH 40
+
 Scene::Scene(std::map<std::string, double> scene_attrs, std::vector<Light> lights, std::vector<Surface*> scene_objects, Projection projection_type, Shading shading_method) :
   lights(lights),
   projection_type(projection_type),
@@ -36,6 +38,7 @@ void Scene::export_scene(const char* filename) {
 };
 
 void Scene::trace_scene() {
+  int loading_delim = scene_attrs["resy"] / LOADING_WIDTH;
   for(int i=0; i<scene_attrs["resy"]; i++) {
     for(int j=0; j<scene_attrs["resx"]; j++) {
       double l = -1, r = 1, b = -1, t = 1; // TODO What should these really be?
@@ -64,6 +67,21 @@ void Scene::trace_scene() {
       pixels[(i*(int)scene_attrs["resy"]+j)*3] = (unsigned int) color.x();
       pixels[(i*(int)scene_attrs["resy"]+j)*3+1] = (unsigned int) color.y();
       pixels[(i*(int)scene_attrs["resy"]+j)*3+2] = (unsigned int) color.z();
+
+    }
+
+    // Loading Bar
+    // TODO: Add option to toggle this feature.
+    if(i == 0) {
+       std::cout << "Render Status:"  << std::endl;
+       std::cout << "[0%" << std::string(LOADING_WIDTH-4, '-') << "100%]" << std::endl;
+       std::cout << "[" << std::flush;
+    } else {
+      if(i % loading_delim == 0) {
+         std::cout << "-" << std::flush;
+      }
     }
   }
+
+  std::cout << "]" << std::endl;
 };

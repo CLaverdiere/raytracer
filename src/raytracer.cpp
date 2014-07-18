@@ -16,7 +16,7 @@
 #include "raytracer.h"
 
 #define SCALE 255 // RGB scale ends at 255.
-#define SHADOW_ADJUSTMENT 0.01 // Constant to avoid incorrect shadow intersections.
+#define SHADOW_ADJUSTMENT 0.001 // Constant to avoid incorrect shadow intersections.
 
 Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scene_attrs,
     Camera* camera, std::vector<Light> lights, std::vector<Surface*> scene_objects,

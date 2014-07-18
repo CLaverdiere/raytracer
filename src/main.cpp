@@ -1,6 +1,7 @@
 #include "parser.h"
 
 // TODO: Bug with non-square image dimensions. Produces garbage.
+// TODO: Fix memory leaks.
 
 int main(int argc, const char *argv[])
 {
@@ -20,15 +21,15 @@ int main(int argc, const char *argv[])
 
   // Modify objects' color in subtle ways.
   // offset_saturation_multi(scene_objects); 
-  offset_hue_multi(scene_objects);
+  // offset_hue_multi(scene_objects);
 
   // Add lights to scene.
   Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 500));
-  Light l2(.7, 2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
+  Light l2(.6, vec(0, 0, 500));
   Light l3(.7, -2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
   std::vector<Light> lights;
   lights.push_back(l1);
-  // lights.push_back(l2);
+  lights.push_back(l2);
   // lights.push_back(l3);
 
   // Create scene
