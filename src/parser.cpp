@@ -3,7 +3,7 @@
 // TODO implement most view attributes.
 
 // Parse our file for scene attributes.
-std::map<std::string, double> parse_nff_attrs(const char* filename) {
+std::map<std::string, double> parse_nff_attrs(const char* filename, int &file_pos) {
   std::map<std::string, double> scene_attrs;
   std::ifstream fi;
 
@@ -56,6 +56,9 @@ std::map<std::string, double> parse_nff_attrs(const char* filename) {
   fi >> scene_attrs["t"];      // transmittance
   fi >> scene_attrs["ior"];    // index of refraction
 
+  // Store position in file before closing.
+  file_pos = fi.tellg();
+
   fi.close();
 
   return scene_attrs;
@@ -65,7 +68,7 @@ std::map<std::string, double> parse_nff_attrs(const char* filename) {
 // Returns a vector containing all scene objects.
 // Currently only works for spheres.
 // TODO: account for other object types.
-std::vector<Surface*> parse_nff_objects(const char* filename, std::map<std::string, double> scene_attrs) {
+std::vector<Surface*> parse_nff_objects(const char* filename, std::map<std::string, double> scene_attrs, int &file_pos) {
   std::ifstream fi;
 
   fi.open(filename);
@@ -74,23 +77,15 @@ std::vector<Surface*> parse_nff_objects(const char* filename, std::map<std::stri
   std::string in;
 
   // Jump to the point in the file where spheres are declared.
-  while(in != "s") {
-    fi >> in; 
-  }
+  fi.seekg(file_pos);
 
   // Parse Objects
   std::vector<Surface*> scene_objects;
 
-  bool first_object = true;
   while(!fi.eof()) {
     double cx, cy, cz, rad;
 
-    // The "s" was already parsed on the first run, so skip it.
-    if(!first_object) {
-      fi >> in; // s
-    } else {
-      first_object = false; 
-    }
+    fi >> in; // s
 
     fi >> cx;  // centerx
     fi >> cy;  // centery

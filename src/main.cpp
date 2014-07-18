@@ -8,8 +8,11 @@ int main(int argc, const char *argv[])
   const char* in_file = "nff/balls2.nff";
   const char* out_file = "pics/sphere.ppm";
 
+  // Keep track of file parsing position.
+  int file_pos = 0;
+
   // Read scene attributes from infile.
-  std::map<std::string, double> scene_attrs = parse_nff_attrs(in_file);
+  std::map<std::string, double> scene_attrs = parse_nff_attrs(in_file, file_pos);
 
   // TODO Add extra environment variables not specified by nff spec.
   //  ie: shadows_enabled, reflection_enabled, etc.
@@ -17,7 +20,7 @@ int main(int argc, const char *argv[])
   Shading shading_method = Blinn_Phong;
 
   // Read scene objects from infile.
-  std::vector<Surface*> scene_objects = parse_nff_objects(in_file, scene_attrs);
+  std::vector<Surface*> scene_objects = parse_nff_objects(in_file, scene_attrs, file_pos);
 
   // Modify objects' color in subtle ways.
   // offset_saturation_multi(scene_objects); 
