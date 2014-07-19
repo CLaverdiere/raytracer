@@ -5,10 +5,14 @@
 
 #define LOADING_WIDTH 40
 
-Scene::Scene(std::map<std::string, double> scene_attrs, std::vector<Light> lights, std::vector<Surface*> scene_objects, Projection projection_type, Shading shading_method) :
+Scene::Scene(std::map<std::string, double> scene_attrs, 
+    std::map<std::string, bool> scene_flags, 
+    std::vector<Light> lights, std::vector<Surface*>
+    scene_objects, Projection projection_type, Shading shading_method) :
   lights(lights),
   projection_type(projection_type),
   scene_attrs(scene_attrs),
+  scene_flags(scene_flags),
   scene_objects(scene_objects),
   shading_method(shading_method)
 {
@@ -54,13 +58,13 @@ void Scene::trace_scene() {
                    v - camera->center.y(), 
                    (camera->center - camera->pos).z());
         d = e_to_p.unitlength();
-        color = raytracer->compute_pixel_value(d, scene_attrs, camera, lights,
+        color = raytracer->compute_pixel_value(d, scene_attrs, scene_flags, camera, lights,
             scene_objects, projection_type, shading_method, 0);
       } else { // parallel projection by default.
         d = (camera->center - camera->pos).unitlength();
         camera_shifted.pos.x(camera_shifted.pos.x() + u);
         camera_shifted.pos.y(camera_shifted.pos.y() + v);
-        color = raytracer->compute_pixel_value(d, scene_attrs, &camera_shifted,
+        color = raytracer->compute_pixel_value(d, scene_attrs, scene_flags, &camera_shifted,
             lights, scene_objects, projection_type, shading_method, 0);
       }
 

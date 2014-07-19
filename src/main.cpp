@@ -1,10 +1,23 @@
 #include "parser.h"
 
 // TODO: Bug with non-square image dimensions. Produces garbage.
-// TODO: Fix memory leaks.
 
 int main(int argc, const char *argv[])
 {
+  // Global scene flags.
+  bool reflections_on = false;
+  bool shadows_on = false;
+
+  // Global scene flags map.
+  std::map<std::string, bool> scene_flags;
+  scene_flags["reflections_on"] = reflections_on;
+  scene_flags["shadows_on"] = shadows_on;
+
+  // Extra scene settings not specified in NFF spec.
+  Projection projection_type = Parallel;
+  Shading shading_method = Blinn_Phong;
+
+  // NFF file parsing
   const char* in_file = "nff/balls2.nff";
   const char* out_file = "pics/sphere.ppm";
 
@@ -14,19 +27,14 @@ int main(int argc, const char *argv[])
   // Read scene attributes from infile.
   std::map<std::string, double> scene_attrs = parse_nff_attrs(in_file, file_pos);
 
-  // TODO Add extra environment variables not specified by nff spec.
-  //  ie: shadows_enabled, reflection_enabled, etc.
-  Projection projection_type = Parallel;
-  Shading shading_method = Blinn_Phong;
-
   // Read scene objects from infile.
   std::vector<Surface*> scene_objects = parse_nff_objects(in_file, scene_attrs, file_pos);
 
-  // Modify objects' color in subtle ways.
+  // Object color modification.
   // offset_saturation_multi(scene_objects); 
   // offset_hue_multi(scene_objects);
 
-  // Add lights to scene.
+  // Scene lighting.
   Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 500));
   Light l2(.6, vec(0, 0, 500));
   Light l3(.7, -2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
@@ -36,7 +44,7 @@ int main(int argc, const char *argv[])
   // lights.push_back(l3);
 
   // Create scene
-  Scene* in_scene = new Scene(scene_attrs, lights, scene_objects, projection_type, shading_method);
+  Scene* in_scene = new Scene(scene_attrs, scene_flags, lights, scene_objects, projection_type, shading_method);
 
   // Trace scene.
   in_scene->trace_scene();

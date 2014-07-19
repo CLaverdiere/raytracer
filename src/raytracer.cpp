@@ -21,12 +21,16 @@
 #define SHADOW_ADJUSTMENT 0.001 // Constant to avoid incorrect shadow intersections.
 #define MAX_RECURSION_DEPTH 5
 
+// TODO Passing way too many things here. Refactor this.
+// Possibly merge the raytracer object entirely into a scene
+//   class method.
 Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scene_attrs,
-    Camera* camera, std::vector<Light> lights, std::vector<Surface*> scene_objects,
-    Projection projection_type, Shading shading_method, int recursion_depth) {
-  Color shade(scene_attrs.at("bg_r"),
-              scene_attrs.at("bg_g"),
-              scene_attrs.at("bg_b"));
+    std::map<std::string, bool> scene_flags, Camera* camera, std::vector<Light>
+    lights, std::vector<Surface*> scene_objects, Projection projection_type,
+    Shading shading_method, int recursion_depth) {
+  Color shade(scene_attrs["bg_r"],
+              scene_attrs["bg_g"],
+              scene_attrs["bg_b"]);
   bool intersection = false;
   double closest_hit_distance = 0;
   vec ip, closest_ip, n, ld, v, placeholder;
@@ -66,20 +70,21 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
       v = -ray; // unit vector pointing towards camera.
 
       // Specular Reflection Recursion
-      if(recursion_depth < MAX_RECURSION_DEPTH) {
+      if(scene_flags["reflections_on"] && recursion_depth < MAX_RECURSION_DEPTH) {
         vec rec_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
         Camera camera_shifted = *camera;
         camera_shifted.pos += ip;
-        camera_shifted.center = rec_ray;
-        shade += this->compute_pixel_value(rec_ray, scene_attrs, &camera_shifted,
+        shade += this->compute_pixel_value(rec_ray, scene_attrs, scene_flags, &camera_shifted,
                  lights, scene_objects, projection_type, shading_method, recursion_depth+1);
       } else { // We've hit our max recursion depth.
         // Shadow computations.
-        for(std::vector<Surface*>::iterator sit_sc=scene_objects.begin(); sit_sc != scene_objects.end(); ++sit_sc) {
-          Surface* s_sc = *sit_sc; // surface shadow-candidate.
-          if(s_sc->get_intersection(placeholder, ip + camera->pos, ld, 0)) {
-            in_shadow = true;
-            break;
+        if(scene_flags["shadows_on"]) {
+          for(std::vector<Surface*>::iterator sit_sc=scene_objects.begin(); sit_sc != scene_objects.end(); ++sit_sc) {
+            Surface* s_sc = *sit_sc; // surface shadow-candidate.
+            if(s_sc->get_intersection(placeholder, ip + camera->pos, ld, 0)) {
+              in_shadow = true;
+              break;
+            }
           }
         }
 
@@ -89,8 +94,8 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
             shade += s->dc * light.intensity * std::max(0.0, n*ld);
           } else if(shading_method == Blinn_Phong) {
             vec h = (v + ld);
-            shade += s->dc * light.intensity * (scene_attrs.at("kd") * (std::max(0.0, n*ld))
-              + scene_attrs.at("ks") * pow(std::max(0.0, n*h), scene_attrs.at("shine")));
+            shade += s->dc * light.intensity * (scene_attrs["kd"] * (std::max(0.0, n*ld))
+              + scene_attrs["ks"] * pow(std::max(0.0, n*h), scene_attrs["shine"]));
           } else { // No shading.
             shade = s->dc;
           }
