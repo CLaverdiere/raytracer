@@ -55,13 +55,13 @@ void Scene::trace_scene() {
                    (camera->center - camera->pos).z());
         d = e_to_p.unitlength();
         color = raytracer->compute_pixel_value(d, scene_attrs, camera, lights,
-            scene_objects, projection_type, shading_method);
+            scene_objects, projection_type, shading_method, 0);
       } else { // parallel projection by default.
         d = (camera->center - camera->pos).unitlength();
         camera_shifted.pos.x(camera_shifted.pos.x() + u);
         camera_shifted.pos.y(camera_shifted.pos.y() + v);
         color = raytracer->compute_pixel_value(d, scene_attrs, &camera_shifted,
-            lights, scene_objects, projection_type, shading_method);
+            lights, scene_objects, projection_type, shading_method, 0);
       }
 
       pixels[(i*(int)scene_attrs["resy"]+j)*3] = (unsigned int) color.x();
