@@ -5,7 +5,6 @@
 // for each pixel:
 //  compute viewing ray.
 //  if ray hits an object with t ∈ [0,∞]:
-//    compute n.
 //    evalutate shading model and set pixel to that color.
 //  else:
 //    set pixel color to background color.
@@ -17,7 +16,7 @@
 #include "math.h"
 #include "raytracer.h"
 
-#define SCALE 255 // RGB scale ends at 255.
+#define SCALE 255 // 8-bit RGB scale.
 #define SHADOW_ADJUSTMENT 0.001 // Constant to avoid incorrect shadow intersections.
 #define MAX_RECURSION_DEPTH 5
 
@@ -39,6 +38,7 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
 
   // Closest object intersection calculations.
   for(std::vector<Surface*>::iterator sit=scene_objects.begin(); sit != scene_objects.end(); ++sit) {
+    // (stores in ip) intersection point with surface.
     bool hit_surface = (*sit)->get_intersection(ip, camera->pos, ray, 0);
 
     if(hit_surface) {
@@ -69,19 +69,20 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
       ld = (light.pos - ip).unitlength(); // unit vector pointing towards light source. // BUG: should be ip - light?
       v = -ray; // unit vector pointing towards camera.
 
-      // Specular Reflection Recursion
-      if(scene_flags["reflections_on"] && recursion_depth < MAX_RECURSION_DEPTH) {
-        vec rec_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
+      // Specular Reflection Recursion.
+      if(recursion_depth < MAX_RECURSION_DEPTH && scene_flags["reflections_on"]) {
+        vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
         Camera camera_shifted = *camera;
         camera_shifted.pos += ip;
-        shade += this->compute_pixel_value(rec_ray, scene_attrs, scene_flags, &camera_shifted,
+        shade += this->compute_pixel_value(mirror_ray, scene_attrs, scene_flags, &camera_shifted,
                  lights, scene_objects, projection_type, shading_method, recursion_depth+1);
       } else { // We've hit our max recursion depth.
         // Shadow computations.
         if(scene_flags["shadows_on"]) {
           for(std::vector<Surface*>::iterator sit_sc=scene_objects.begin(); sit_sc != scene_objects.end(); ++sit_sc) {
             Surface* s_sc = *sit_sc; // surface shadow-candidate.
-            if(s_sc->get_intersection(placeholder, ip + camera->pos, ld, 0)) {
+            bool hit_surface = s_sc->get_intersection(placeholder, ip + camera->pos, ld, 0);
+            if(hit_surface) {
               in_shadow = true;
               break;
             }

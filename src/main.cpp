@@ -1,6 +1,7 @@
 #include "parser.h"
 
 // TODO: Bug with non-square image dimensions. Produces garbage.
+// TODO: Implement ambient shading.
 
 int main(int argc, const char *argv[])
 {
@@ -35,8 +36,8 @@ int main(int argc, const char *argv[])
   // offset_hue_multi(scene_objects);
 
   // Scene lighting.
-  Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 500));
-  Light l2(.6, vec(0, 0, 500));
+  Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 200));
+  Light l2(.3, vec(0, 0, 500));
   Light l3(.7, -2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
   std::vector<Light> lights;
   lights.push_back(l1);

@@ -71,7 +71,6 @@ void Scene::trace_scene() {
       pixels[(i*(int)scene_attrs["resy"]+j)*3] = (unsigned int) color.x();
       pixels[(i*(int)scene_attrs["resy"]+j)*3+1] = (unsigned int) color.y();
       pixels[(i*(int)scene_attrs["resy"]+j)*3+2] = (unsigned int) color.z();
-
     }
 
     // Loading Bar

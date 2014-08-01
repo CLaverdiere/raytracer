@@ -70,11 +70,15 @@ std::map<std::string, double> parse_nff_attrs(const char* filename, int &file_po
 // TODO: account for other object types.
 std::vector<Surface*> parse_nff_objects(const char* filename, std::map<std::string, double> scene_attrs, int &file_pos) {
   std::ifstream fi;
-
   fi.open(filename);
 
   // Identifier storage.
   std::string in;
+
+  // Single object color.
+  Color col(scene_attrs.at("fill_r"), 
+            scene_attrs.at("fill_g"), 
+            scene_attrs.at("fill_b"));
 
   // Jump to the point in the file where spheres are declared.
   fi.seekg(file_pos);
@@ -83,20 +87,29 @@ std::vector<Surface*> parse_nff_objects(const char* filename, std::map<std::stri
   std::vector<Surface*> scene_objects;
 
   while(!fi.eof()) {
-    double cx, cy, cz, rad;
 
-    fi >> in; // s
+    fi >> in; // Object identifier
 
-    fi >> cx;  // centerx
-    fi >> cy;  // centery
-    fi >> cz;  // centerz
-    fi >> rad; // radius
+    if(in == "s") { // sphere
+      double cx, cy, cz, rad;
+      fi >> cx;  // centerx
+      fi >> cy;  // centery
+      fi >> cz;  // centerz
+      fi >> rad; // radius
 
-    Color col(scene_attrs.at("fill_r"), 
-              scene_attrs.at("fill_g"), 
-              scene_attrs.at("fill_b"));
+      scene_objects.push_back(new Sphere(col, vec(cx, cy, cz), rad));
+    } else if(in == "p") { // plane
+      double nx, ny, nz, qx, qy, qz;
+      fi >> nx;  // centerx
+      fi >> ny;  // centery
+      fi >> nz;  // centerz
+      fi >> qx;  // centerx
+      fi >> qy;  // centery
+      fi >> qz;  // centerz
 
-    scene_objects.push_back(new Sphere(col, vec(cx, cy, cz), rad));
+      scene_objects.push_back(new Plane(col, vec(nx, ny, nz), vec(qx, qy, qz)));
+    }
+
     if(fi.eof()) break;
   }
 

@@ -2,6 +2,8 @@
 #include "color.h"
 #include "vec.h"
 
+// TODO find how to avoid redeclaring the virtual methods in derived classes.
+
 class Surface {
   public:
     Color dc; // default color
@@ -18,6 +20,7 @@ class Surface {
 
 class Sphere: public Surface {
   public:
+    // A sphere is defined by a vector center c, and a radius r.
     vec c; // center
     double r; // radius
 
@@ -34,10 +37,23 @@ class Sphere: public Surface {
 
 class Triangle: public Surface {
   public:
-    vec v1, v2, v3; // three verticies
+    // A triangle is defined by three vertices.
+    vec v1, v2, v3;
 
     Triangle(Color dc, vec v1, vec v2, vec v3);
     bool hit(vec e, vec d);
-    bool get_intersection(vec &ip, vec e, vec d);
+    bool get_intersection(vec &ip, vec e, vec d, float lower_t_bound);
+    void get_surface_normal(vec &norm, vec ip, Camera* camera);
+};
+
+class Plane: public Surface {
+  public:
+    // a plane is defined by a normal vector n to the plane, 
+    //   and a point q on the plane.
+    vec n, q;
+
+    Plane(Color dc, vec n, vec q);
+    bool hit(vec e, vec d);
+    bool get_intersection(vec &ip, vec e, vec d, float lower_t_bound);
     void get_surface_normal(vec &norm, vec ip, Camera* camera);
 };

@@ -14,7 +14,14 @@ Sphere::Sphere(Color dc, vec c, double r) : c(c), r(r) {
 // d: direction unit-vector from camera to sphere.
 double Sphere::get_discriminant(vec e, vec d) {
   return pow(d*(e-c), 2) - (d*d)*((e-c)*(e-c) - r*r);
-}
+};
+
+bool Sphere::hit(vec e, vec d) {
+  double disc = get_discriminant(e, d);
+
+  // If Discriminant negative, no intersection.
+  return disc > 0;
+};
 
 bool Sphere::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
   // TODO Investigate boost::optional.
@@ -47,24 +54,22 @@ void Sphere::get_surface_normal(vec &norm, vec ip, Camera* camera) {
   norm = (ip - to_c).unitlength(); // WANT ip - (sphere center - camera)
 };
 
-bool Sphere::hit(vec e, vec d) {
-  double disc = get_discriminant(e, d);
-
-  // If Discriminant negative, no intersection.
-  return disc > 0;
-};
-
 std::ostream& operator<<(std::ostream& os, const Sphere& s) {
   os << "x=" << s.c.x() << " y=" << s.c.y() << " z=" << s.c.z() << " r=" << s.r;
   return os;
-}
+};
 
 Triangle::Triangle(Color dc, vec v1, vec v2, vec v3) : v1(v1), v2(v2), v3(v3) { 
   this->dc = dc;
 };
 
+// TODO implement.
+bool Triangle::hit(vec e, vec d) {
+  return false;
+};
+
 // Using Cramer's rule to solve linear system.
-bool Triangle::get_intersection(vec &ip, vec e, vec d) {
+bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
   double xa_m_xb = v1[0] - v1[1];
   double xa_m_xc = v1[0] - v1[2];
   double xa_m_xe = v1[0] - e[0];
@@ -119,7 +124,29 @@ void Triangle::get_surface_normal(vec &norm, vec ip, Camera* camera) {
   norm = (v2-v1) ^ (v3-v1);
 };
 
+Plane::Plane(Color dc, vec n, vec q) : n(n), q(q) {
+  this->dc = dc;
+};
+
 // TODO implement.
-bool Triangle::hit(vec e, vec d) {
+bool Plane::hit(vec e, vec d) {
   return false;
+};
+
+bool Plane::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
+  // float t = (n * (q - e)) / (e * d);
+  float t = (n * (q - e)) / (n * d);
+  // float t = -((e * n) + d) / (n * d)
+
+  // intersection point vector.
+  if(t > lower_t_bound) {
+    ip = d * t;
+    return true;
+  }
+
+  return false;
+};
+
+void Plane::get_surface_normal(vec &norm, vec ip, Camera* camera) {
+  norm = n;
 };
