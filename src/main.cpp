@@ -10,7 +10,9 @@ int main(int argc, const char *argv[])
   // -l : loading bar. Display a loading bar while raytracing happens.
   // -q : quiet. No stdout output.
   // -v : verbose. Prints option information at the start of the program.
-  bool verbose = std::find(argv, argv+argc, (std::string) "-v") != argv+argc ? true : false;
+  bool loading_bar = std::find(argv, argv+argc, (std::string) "-l") != argv+argc ? true : false;
+  bool quiet       = std::find(argv, argv+argc, (std::string) "-q") != argv+argc ? true : false;
+  bool verbose     = std::find(argv, argv+argc, (std::string) "-v") != argv+argc ? true : false;
 
   // Global scene flags.
   bool reflections_on = false;
@@ -18,8 +20,11 @@ int main(int argc, const char *argv[])
 
   // Global scene flags map.
   std::map<std::string, bool> scene_flags;
+  scene_flags["loading_bar"] = loading_bar;
   scene_flags["reflections_on"] = reflections_on;
+  scene_flags["quiet"] = quiet;
   scene_flags["shadows_on"] = shadows_on;
+  scene_flags["verbose"] = verbose;
 
   // Extra scene settings not specified in NFF spec.
   Projection projection_type = Parallel;
@@ -51,9 +56,9 @@ int main(int argc, const char *argv[])
   lights.push_back(l2);
   // lights.push_back(l3);
 
-  std::cout << "Raytracer program for CMSC 435 at UMBC" << std::endl << std::endl;
-
-  if(verbose) {
+  // Initial program output.
+  if(!quiet) {
+    std::cout << "Raytracer program for CMSC 435 at UMBC" << std::endl << std::endl;
     std::cout << "Program Settings:" << std::endl;
     std::cout << "Shading Method: " << ShadingNames[shading_method] << std::endl;
     std::cout << "Projection Type: " << ProjectionNames[projection_type] << std::endl;
@@ -63,12 +68,15 @@ int main(int argc, const char *argv[])
   }
 
   // Create scene
+  if(!quiet) { std::cout << "Parsing scene from " << in_file << std::endl; }
   Scene* in_scene = new Scene(scene_attrs, scene_flags, lights, scene_objects, projection_type, shading_method);
 
   // Trace scene.
+  if(!quiet) { std::cout << "Tracing scene" << std::endl; }
   in_scene->trace_scene();
 
   // Export scene to ppm file.
+  if(!quiet) { std::cout << "Exporting image to " << out_file << std::endl; }
   in_scene->export_scene(out_file);
 
   delete in_scene;

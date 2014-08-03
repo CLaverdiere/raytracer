@@ -73,18 +73,20 @@ void Scene::trace_scene() {
       pixels[(i*(int)scene_attrs["resy"]+j)*3+2] = (unsigned int) color.z();
     }
 
-    // Loading Bar
-    // TODO: Add option to toggle this feature.
-    if(i == 0) {
-       std::cout << "Render Status:"  << std::endl;
-       std::cout << "[0%" << std::string(LOADING_WIDTH-4, '-') << "100%]" << std::endl;
-       std::cout << "[" << std::flush;
-    } else {
-      if(i % loading_delim == 0) {
-         std::cout << "-" << std::flush;
+    // Loading Bar (Pass -l option to enable.)
+    if(scene_flags["loading_bar"]) {
+      if(i == 0) {
+         std::cout << "[0%" << std::string(LOADING_WIDTH-4, '-') << "100%]" << std::endl;
+         std::cout << "[" << std::flush;
+      } else {
+        if(i % loading_delim == 0) {
+           std::cout << "-" << std::flush;
+        }
       }
     }
   }
 
-  std::cout << "]" << std::endl;
+  if(scene_flags["loading_bar"]) {
+    std::cout << "]" << std::endl;
+  }
 };
