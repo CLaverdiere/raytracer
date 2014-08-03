@@ -69,6 +69,7 @@ bool Triangle::hit(vec e, vec d) {
 };
 
 // Using Cramer's rule to solve linear system.
+// FIXME This doesn't work yet.
 bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
   double xa_m_xb = v1[0] - v1[1];
   double xa_m_xc = v1[0] - v1[2];
@@ -133,10 +134,9 @@ bool Plane::hit(vec e, vec d) {
   return false;
 };
 
+// FIXME This doesn't work fully yet.
 bool Plane::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
-  // float t = (n * (q - e)) / (e * d);
   float t = (n * (q - e)) / (n * d);
-  // float t = -((e * n) + d) / (n * d)
 
   // intersection point vector.
   if(t > lower_t_bound) {

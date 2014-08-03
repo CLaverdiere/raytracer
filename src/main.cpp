@@ -3,6 +3,7 @@
 
 // TODO: Bug with non-square image dimensions. Produces garbage.
 // TODO: Implement ambient shading.
+// TODO: Implement configuration file for scene attributes.
 
 int main(int argc, const char *argv[])
 {
