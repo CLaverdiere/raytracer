@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "parser.h"
 
 // TODO: Bug with non-square image dimensions. Produces garbage.
@@ -5,6 +6,12 @@
 
 int main(int argc, const char *argv[])
 {
+  // Parse command line flags.
+  // -l : loading bar. Display a loading bar while raytracing happens.
+  // -q : quiet. No stdout output.
+  // -v : verbose. Prints option information at the start of the program.
+  bool verbose = std::find(argv, argv+argc, (std::string) "-v") != argv+argc ? true : false;
+
   // Global scene flags.
   bool reflections_on = false;
   bool shadows_on = false;
@@ -43,6 +50,17 @@ int main(int argc, const char *argv[])
   lights.push_back(l1);
   lights.push_back(l2);
   // lights.push_back(l3);
+
+  std::cout << "Raytracer program for CMSC 435 at UMBC" << std::endl << std::endl;
+
+  if(verbose) {
+    std::cout << "Program Settings:" << std::endl;
+    std::cout << "Shading Method: " << ShadingNames[shading_method] << std::endl;
+    std::cout << "Projection Type: " << ProjectionNames[projection_type] << std::endl;
+    std::cout << "Reflections: " << std::boolalpha << reflections_on << std::endl;
+    std::cout << "Shadows: " << std::boolalpha << shadows_on << std::endl;
+    std::cout << std::endl;
+  }
 
   // Create scene
   Scene* in_scene = new Scene(scene_attrs, scene_flags, lights, scene_objects, projection_type, shading_method);
