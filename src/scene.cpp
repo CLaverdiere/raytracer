@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include "scene.h"
 #include <stdio.h>
@@ -5,8 +6,8 @@
 
 #define LOADING_WIDTH 40
 
-Scene::Scene(std::map<std::string, double> scene_attrs, 
-    std::map<std::string, bool> scene_flags, 
+Scene::Scene(std::map<std::string, double> scene_attrs,
+    std::map<std::string, bool> scene_flags,
     std::vector<Light> lights, std::vector<Surface*>
     scene_objects, Projection projection_type, Shading shading_method) :
   lights(lights),
@@ -54,8 +55,8 @@ void Scene::trace_scene() {
       vec d;
 
       if(projection_type == Perspective) {
-        vec e_to_p(u - camera->center.x(), 
-                   v - camera->center.y(), 
+        vec e_to_p(u - camera->center.x(),
+                   v - camera->center.y(),
                    (camera->center - camera->pos).z());
         d = e_to_p.unitlength();
         color = raytracer->compute_pixel_value(d, scene_attrs, scene_flags, camera, lights,
