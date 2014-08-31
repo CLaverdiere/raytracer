@@ -17,7 +17,7 @@ int main(int argc, const char *argv[])
 
   // Global scene flags.
   bool reflections_on = false;
-  bool shadows_on = false;
+  bool shadows_on = true;
 
   // Global scene flags map.
   std::map<std::string, bool> scene_flags;
@@ -45,7 +45,7 @@ int main(int argc, const char *argv[])
   std::vector<Surface*> scene_objects = parse_nff_objects(in_file, scene_attrs, file_pos);
 
   // Object color modification.
-  // offset_saturation_multi(scene_objects); 
+  // offset_saturation_multi(scene_objects);
   // offset_hue_multi(scene_objects);
 
   // Scene lighting.

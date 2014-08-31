@@ -59,8 +59,6 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
     ip = closest_ip;
     s = closest_surface;
 
-    shade.x(0); shade.y(0); shade.z(0);
-
     // Lighting computations.
     for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
       bool in_shadow = false;
