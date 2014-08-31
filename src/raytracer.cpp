@@ -59,9 +59,9 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
     ip = closest_ip;
     s = closest_surface;
 
-    // Uncomment to have background shading affect fill color of scene.
-    // It looks nicer this way.
-    // shade.x(0); shade.y(0); shade.z(0);
+    if(!scene_flags["bg_blend_effect"]) {
+      shade.x(0); shade.y(0); shade.z(0);
+    }
 
     // Lighting computations.
     for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {

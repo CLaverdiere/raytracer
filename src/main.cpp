@@ -18,9 +18,11 @@ int main(int argc, const char *argv[])
   // Global scene flags.
   bool reflections_on = false;
   bool shadows_on = true;
+  bool bg_blend_effect = true;
 
   // Global scene flags map.
   std::map<std::string, bool> scene_flags;
+  scene_flags["bg_blend_effect"] = bg_blend_effect;
   scene_flags["loading_bar"] = loading_bar;
   scene_flags["reflections_on"] = reflections_on;
   scene_flags["quiet"] = quiet;
@@ -32,7 +34,7 @@ int main(int argc, const char *argv[])
   Shading shading_method = Blinn_Phong;
 
   // NFF file parsing
-  const char* in_file = "nff/balls3.nff";
+  const char* in_file = "nff/balls2.nff";
   const char* out_file = "pics/sphere.ppm";
 
   // Keep track of file parsing position.
