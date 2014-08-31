@@ -71,39 +71,40 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
       ld = (light.pos - ip).unitlength(); // unit vector pointing towards light source. // BUG: should be ip - light?
       v = -ray; // unit vector pointing towards camera.
 
+      // Shadow computations.
+      if(scene_flags["shadows_on"]) {
+        for(std::vector<Surface*>::iterator sit_sc=scene_objects.begin(); sit_sc != scene_objects.end(); ++sit_sc) {
+          Surface* s_sc = *sit_sc; // surface shadow-candidate.
+          bool hit_surface = s_sc->get_intersection(placeholder, ip + camera->pos, ld, 0);
+          if(hit_surface) {
+            in_shadow = true;
+            break;
+          }
+        }
+      }
+
+      // Shading computations.
+      if(!in_shadow) {
+        if(shading_method == Lambertian) {
+          shade += s->dc * light.intensity * std::max(0.0, n*ld);
+        } else if(shading_method == Blinn_Phong) {
+          vec h = (v + ld);
+          shade += s->dc * light.intensity * (scene_attrs["kd"] * (std::max(0.0, n*ld))
+            + scene_attrs["ks"] * pow(std::max(0.0, n*h), scene_attrs["shine"]));
+        } else { // No shading.
+          shade = s->dc;
+        }
+      }
+
       // Specular Reflection Recursion.
       if(recursion_depth < MAX_RECURSION_DEPTH && scene_flags["reflections_on"]) {
         vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
         Camera camera_shifted = *camera;
         camera_shifted.pos += ip;
-        shade += this->compute_pixel_value(mirror_ray, scene_attrs, scene_flags, &camera_shifted,
-                 lights, scene_objects, projection_type, shading_method, recursion_depth+1);
-      } else { // We've hit our max recursion depth.
-        // Shadow computations.
-        if(scene_flags["shadows_on"]) {
-          for(std::vector<Surface*>::iterator sit_sc=scene_objects.begin(); sit_sc != scene_objects.end(); ++sit_sc) {
-            Surface* s_sc = *sit_sc; // surface shadow-candidate.
-            bool hit_surface = s_sc->get_intersection(placeholder, ip + camera->pos, ld, 0);
-            if(hit_surface) {
-              in_shadow = true;
-              break;
-            }
-          }
-        }
-
-        // Shading computations.
-        if(!in_shadow) {
-          if(shading_method == Lambertian) {
-            shade += s->dc * light.intensity * std::max(0.0, n*ld);
-          } else if(shading_method == Blinn_Phong) {
-            vec h = (v + ld);
-            shade += s->dc * light.intensity * (scene_attrs["kd"] * (std::max(0.0, n*ld))
-              + scene_attrs["ks"] * pow(std::max(0.0, n*h), scene_attrs["shine"]));
-          } else { // No shading.
-            shade = s->dc;
-          }
-        }
-      }
+        shade += scene_attrs["ks"] * this->compute_pixel_value(mirror_ray,
+            scene_attrs, scene_flags, &camera_shifted, lights, scene_objects,
+            projection_type, shading_method, recursion_depth+1); // TODO not sure if "ks" goes here or not.
+      } 
     }
   }
 

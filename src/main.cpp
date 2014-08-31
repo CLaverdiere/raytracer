@@ -16,7 +16,7 @@ int main(int argc, const char *argv[])
   bool verbose     = std::find(argv, argv+argc, (std::string) "-v") != argv+argc ? true : false;
 
   // Global scene flags.
-  bool reflections_on = false;
+  bool reflections_on = true;
   bool shadows_on = true;
   bool bg_blend_effect = true;
 
