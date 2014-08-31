@@ -16,14 +16,18 @@ int main(int argc, const char *argv[])
   bool verbose     = std::find(argv, argv+argc, (std::string) "-v") != argv+argc ? true : false;
 
   // Global scene flags.
+  bool bg_blend_effect = true;
+  bool random_hue = false;
+  bool random_saturation = false;
   bool reflections_on = true;
   bool shadows_on = true;
-  bool bg_blend_effect = true;
 
   // Global scene flags map.
   std::map<std::string, bool> scene_flags;
   scene_flags["bg_blend_effect"] = bg_blend_effect;
   scene_flags["loading_bar"] = loading_bar;
+  scene_flags["random_hue"] = random_hue;
+  scene_flags["random_saturation"] = random_saturation;
   scene_flags["reflections_on"] = reflections_on;
   scene_flags["quiet"] = quiet;
   scene_flags["shadows_on"] = shadows_on;
@@ -34,7 +38,7 @@ int main(int argc, const char *argv[])
   Shading shading_method = Blinn_Phong;
 
   // NFF file parsing
-  const char* in_file = "nff/balls3.nff";
+  const char* in_file = "nff/balls2.nff";
   const char* out_file = "pics/sphere.ppm";
 
   // Keep track of file parsing position.
@@ -47,8 +51,13 @@ int main(int argc, const char *argv[])
   std::vector<Surface*> scene_objects = parse_nff_objects(in_file, scene_attrs, file_pos);
 
   // Object color modification.
-  // offset_saturation_multi(scene_objects);
-  // offset_hue_multi(scene_objects);
+  if(scene_flags["random_saturation"]) {
+    offset_saturation_multi(scene_objects);
+  }
+
+  if(scene_flags["random_hue"]) {
+    offset_hue_multi(scene_objects);
+  }
 
   // Scene lighting.
   Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 200));
