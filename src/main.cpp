@@ -34,7 +34,7 @@ int main(int argc, const char *argv[])
   Shading shading_method = Blinn_Phong;
 
   // NFF file parsing
-  const char* in_file = "nff/balls2.nff";
+  const char* in_file = "nff/balls3.nff";
   const char* out_file = "pics/sphere.ppm";
 
   // Keep track of file parsing position.
