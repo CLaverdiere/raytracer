@@ -35,9 +35,20 @@ Scene::~Scene() {
   }
 };
 
-void Scene::export_scene(const char* filename) {
+void Scene::export_scene(const char* filename, std::string filetype) {
   FILE *f = fopen(filename, "wb");
-  fprintf(f, "P6\n%d %d\n%d\n", (int) scene_attrs["resx"], (int) scene_attrs["resy"], 255);
+
+  if(filetype == "ppm") {
+    fprintf(f, "P6\n%d %d\n%d\n", (int) scene_attrs["resx"], (int) scene_attrs["resy"], 255);
+  } else if(filetype == "pam") {
+    fprintf(f, "P7\n");
+    fprintf(f, "WIDTH %d\nHEIGHT %d\nDEPTH 3\n", (int) scene_attrs["resx"], (int) scene_attrs["resy"]);
+    fprintf(f, "MAXVAL 255\nTUPLTYPE RGB\nENDHDR\n");
+  } else {
+    std::cout << "Unknown output file type specified." << std::endl;
+    return;
+  }
+
   fwrite(pixels, 1, scene_attrs["resy"]*scene_attrs["resx"]*3, f);
   fclose(f);
 };

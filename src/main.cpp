@@ -39,7 +39,7 @@ int main(int argc, const char *argv[])
 
   // NFF file parsing
   const char* in_file = "nff/balls2.nff";
-  const char* out_file = "pics/sphere.ppm";
+  const char* out_file = "pics/sphere.pam";
 
   // Keep track of file parsing position.
   int file_pos = 0;
@@ -89,7 +89,7 @@ int main(int argc, const char *argv[])
 
   // Export scene to ppm file.
   if(!quiet) { std::cout << "Exporting image to " << out_file << std::endl; }
-  in_scene->export_scene(out_file);
+  in_scene->export_scene(out_file, "pam");
 
   delete in_scene;
 

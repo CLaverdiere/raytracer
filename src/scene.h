@@ -20,6 +20,6 @@ class Scene {
         std::vector<Light> lights, std::vector<Surface*>
         scene_objects, Projection projection_type, Shading shading_method);
     ~Scene();
-    void export_scene(const char* filename);
+    void export_scene(const char* filename, std::string filetype);
     void trace_scene();
 };
