@@ -1,9 +1,11 @@
 #include <algorithm>
 #include "parser.h"
+#include "string.h"
 
 // TODO: Bug with non-square image dimensions. Produces garbage.
 // TODO: Implement ambient shading.
 // TODO: Implement configuration file for scene attributes.
+// TODO: Get rid of this "if quiet" nonsense.
 
 int main(int argc, const char *argv[])
 {
@@ -14,6 +16,29 @@ int main(int argc, const char *argv[])
   bool loading_bar = std::find(argv, argv+argc, (std::string) "-l") != argv+argc ? true : false;
   bool quiet       = std::find(argv, argv+argc, (std::string) "-q") != argv+argc ? true : false;
   bool verbose     = std::find(argv, argv+argc, (std::string) "-v") != argv+argc ? true : false;
+
+  // Greeting.
+  if(!quiet) {
+    std::cout << std::endl;
+    std::cout << "Raytracer program for CMSC 435 at UMBC" << std::endl;
+    std::cout << "Chris Laverdiere 2014" << std::endl << std::endl;
+  }
+
+  // Parse input filename as final command line argument.
+  const char* in_file;
+  if(argc > 1) {
+    in_file = *(argv+(argc-1));
+    if(strstr(in_file, "nff")) {
+      if(!quiet) {
+        std::cout << "Reading " << in_file << std::endl;
+      }
+    } else {
+      in_file = "nff/trace.nff";
+      if(!quiet) {
+        std::cout << "WARNING: No nff input file found. Using " << in_file << " as default." << std::endl;
+      }
+    }
+  }
 
   // Global scene flags.
   bool bg_blend_effect = true;
@@ -37,9 +62,8 @@ int main(int argc, const char *argv[])
   Projection projection_type = Parallel;
   Shading shading_method = Blinn_Phong;
 
-  // NFF file parsing
-  const char* in_file = "nff/balls2.nff";
-  const char* out_file = "pics/sphere.pam";
+  // Default output filename.
+  const char* out_file = "pics/trace.pam";
 
   // Keep track of file parsing position.
   int file_pos = 0;
@@ -50,11 +74,12 @@ int main(int argc, const char *argv[])
   // Read scene objects from infile.
   std::vector<Surface*> scene_objects = parse_nff_objects(in_file, scene_attrs, file_pos);
 
-  // Object color modification.
+  // Object saturation modification.
   if(scene_flags["random_saturation"]) {
     offset_saturation_multi(scene_objects);
   }
 
+  // Object hue modification.
   if(scene_flags["random_hue"]) {
     offset_hue_multi(scene_objects);
   }
@@ -68,9 +93,8 @@ int main(int argc, const char *argv[])
   lights.push_back(l2);
   // lights.push_back(l3);
 
-  // Initial program output.
+  // Extra program output.
   if(!quiet) {
-    std::cout << "Raytracer program for CMSC 435 at UMBC" << std::endl << std::endl;
     std::cout << "Program Settings:" << std::endl;
     std::cout << "Shading Method: " << ShadingNames[shading_method] << std::endl;
     std::cout << "Projection Type: " << ProjectionNames[projection_type] << std::endl;
