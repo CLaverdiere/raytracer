@@ -29,7 +29,7 @@ tetra-3.png:
 # make as trace.ppm, then rename
 %.pam: %.nff trace
 	$(BUILD_DIR)/trace < $*.nff
-	mv trace.pam $@
+	# mv trace.pam $@
 
 # how to build trace executable from OBJS files
 # link with c++ compiler to allow c++ code

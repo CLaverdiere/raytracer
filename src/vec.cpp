@@ -1,216 +1,108 @@
-/* -*- c++ -*-
- * vec.cpp
- * CMSC 435/634, Spring 2012
- * Jacob Thompson <thompso1@umbc.edu>
- *
- * Three-dimensional vector class.
- */
-
-#include "vec.h"
 #include <cmath>
-#include <iostream>
+#include "vec.h"
 
-using namespace std;
-
-// default constructor
-vec::vec () throw ()
-   : m_x (0.0), m_y (0.0), m_z (0.0)
-{
+// Arithmetic vector operations with scalars.
+vec vec::operator + (const double &other) {
+  return vec(x+other, y+other, z+other);
 }
 
-// constructor
-vec::vec (const double x, const double y, const double z) throw ()
-   : m_x (x), m_y (y), m_z (z)
-{
+vec operator + (const double d, const vec &v) {
+  return vec(v.x + d, v.y + d, v.z + d);
 }
 
-// x accessor
-double vec::x () const throw ()
-{
-   return m_x;
+vec& vec::operator += (const double &other) {
+  x += other; y += other; z += other;
+  return *this;
 }
 
-// y accessor
-double vec::y () const throw ()
-{
-   return m_y;
+vec vec::operator - (const double &other) {
+  return vec(x-other, y-other, z-other);
 }
 
-// z accessor
-double vec::z () const throw ()
-{
-   return m_z;
+vec operator - (const double d, const vec &v) {
+  return vec(v.x - d, v.y - d, v.z - d);
 }
 
-// access ith component
-double vec::operator [] (unsigned i) const throw ()
-{
-   switch (i)
-   {
-      case 0:
-	 return m_x;
-      case 1:
-	 return m_y;
-      case 2:
-	 return m_z;
-   }
-   return NAN;
+vec& vec::operator -= (const double &other) {
+  x -= other; y -= other; z -= other;
+  return *this;
 }
 
-// x mutator
-void vec::x (const double x) throw ()
-{
-   m_x = x;
+vec vec::operator * (const double &other) {
+  return vec(x*other, y*other, z*other);
 }
 
-// y mutator
-void vec::y (const double y) throw ()
-{
-   m_y = y;
+vec operator * (const double d, const vec &v) {
+  return vec(v.x * d, v.y * d, v.z * d);
 }
 
-// z mutator
-void vec::z (const double z) throw ()
-{
-   m_z = z;
+vec& vec::operator *= (const double &other) {
+  x *= other; y *= other; z *= other;
+  return *this;
 }
 
-// unary plus
-vec vec::operator + () const throw ()
-{
-   return *this;
+vec vec::operator / (const double &other) {
+  return vec(x/other, y/other, z/other);
 }
 
-// negation
-vec vec::operator - () const throw ()
-{
-   return vec (-m_x, -m_y, -m_z);
+vec operator / (const double d, const vec &v) {
+  return vec(v.x / d, v.y / d, v.z / d);
 }
 
-// in-place addition
-vec &vec::operator += (const vec &that) throw ()
-{
-   m_x += that.m_x;
-   m_y += that.m_y;
-   m_z += that.m_z;
-   return *this;
+vec& vec::operator /= (const double &other) {
+  x /= other; y /= other; z /= other;
+  return *this;
 }
 
-// in-place subtraction
-vec &vec::operator -= (const vec &that) throw ()
-{
-   m_x -= that.m_x;
-   m_y -= that.m_y;
-   m_z -= that.m_z;
-   return *this;
+
+// Vector operations.
+vec vec::operator + (const vec &other) {
+  return vec(x+other.x, y+other.y, z+other.z);
 }
 
-// addition
-vec vec::operator + (const vec &that) const throw ()
-{
-   vec v (*this);
-   return v += that;
+vec& vec::operator += (const vec &other) {
+  x += other.x; y += other.y; z += other.z;
+  return *this;
 }
 
-// subtraction
-vec vec::operator - (const vec &that) const throw ()
-{
-   vec v (*this);
-   return v -= that;
+vec vec::operator - (const vec &other) {
+  return vec(x-other.x, y-other.y, z-other.z);
 }
 
-// in-place scalar multiply
-vec &vec::operator *= (const double s) throw ()
-{
-   m_x *= s;
-   m_y *= s;
-   m_z *= s;
-   return *this;
+vec& vec::operator -= (const vec &other) {
+  x -= other.x; y -= other.y; z -= other.z;
+  return *this;
 }
 
-// scalar multiply
-vec vec::operator * (const double s) const throw ()
-{
-   vec v (*this);
-   return v *= s;
+// Negate all values.
+vec vec::operator - () {
+  return vec(-x, -y, -z);
 }
 
-// in-place scalar divide
-vec &vec::operator /= (const double s) throw ()
-{
-   m_x /= s;
-   m_y /= s;
-   m_z /= s;
-   return *this;
+// Dot product
+double vec::operator * (const vec &other) {
+  return x*other.x + y*other.y + z*other.z;
 }
 
-// scalar divide
-vec vec::operator / (const double s) const throw ()
-{
-   vec v (*this);
-   return v /= s;
+// Cross product
+vec vec::operator ^ (const vec &other) {
+  return vec(y*other.z - z*other.y, -1 * (x*other.z - z*other.x), x*other.y - y*other.x);
 }
 
-// dot product
-double vec::operator * (const vec &that) const throw ()
-{
-   return m_x * that.m_x + m_y * that.m_y + m_z * that.m_z;
+
+// Vector properties
+// Unit vector
+vec vec::unit() {
+  return *this / this->mag();
 }
 
-// cross product
-vec vec::operator ^ (const vec &that) const throw ()
-{
-   return vec (m_y * that.m_z - m_z * that.m_y,
-	       m_z * that.m_x - m_x * that.m_z,
-	       m_x * that.m_y - m_y * that.m_x);
+// Magnitude
+double vec::mag() {
+  return sqrt(x*x + y*y + z*z);
 }
 
-// in-place cross product
-vec &vec::operator ^= (const vec &that) throw ()
-{
-   return *this = *this ^ that;
-}
-
-// length (magnitude, norm) of vector
-double vec::length () const throw ()
-{
-   return sqrt (*this * *this);
-}
-
-// unit vector in direction of this vector (normalized)
-vec vec::unitlength () const throw ()
-{
-   return *this / this->length();
-}
-
-// in-place normalize
-vec &vec::normalize () throw ()
-{
-   return *this /= this->length();
-}
-
-// scalar multiplication, scalar on left side
-vec operator * (const double s, const vec &v) throw ()
-{
-   return v * s;
-}
-
-// output operator
-ostream &operator << (ostream &sout, const vec &v)
-{
-   sout << v.x () << ' ' << v.y () << ' ' << v.z ();
-   return sout;
-}
-
-// input operator
-std::istream &operator >> (std::istream &sin, vec &v)
-{
-   double x, y, z;
-   sin >> x;
-   sin >> y;
-   sin >> z;
-   v.x (x);
-   v.y (y);
-   v.z (z);
-   return sin;
+// Print a vector for debugging.
+std::ostream &operator << (std::ostream &out, vec &v) {
+  out << "<" << v.x << ", " << v.y << ", " << v.z << ">";
+  return out;
 }

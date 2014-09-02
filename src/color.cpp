@@ -8,9 +8,7 @@ Color offset_saturation_single(Color c) {
   srand(time(NULL));
   double r = (rand() % 10) / 10.0;
 
-  c.x(c.x() * r);
-  c.y(c.y() * r);
-  c.z(c.z() * r);
+  c *= r;
   return c;
 }
 
@@ -20,9 +18,7 @@ void offset_saturation_multi(std::vector<Surface*> scene_objects) {
     double r = (rand() % 10) / 10.0;
     Surface* s = *it;
 
-    s->dc.x(s->dc.x() * r);
-    s->dc.y(s->dc.y() * r);
-    s->dc.z(s->dc.z() * r);
+    s->dc *= r;
   }
 }
 
@@ -32,9 +28,9 @@ Color offset_hue_single(Color c) {
   double rg = (rand() % 10) / 10.0;
   double rb = (rand() % 10) / 10.0;
 
-  c.x(c.x() * rr);
-  c.y(c.y() * rg);
-  c.z(c.z() * rb);
+  c.x = c.x * rr;
+  c.y = c.y * rg;
+  c.z = c.z * rb;
 
   return c;
 }
@@ -47,8 +43,8 @@ void offset_hue_multi(std::vector<Surface*> scene_objects) {
     double rb = (rand() % 10) / 10.0;
     Surface* s = *it;
 
-    s->dc.x(s->dc.x() * rr);
-    s->dc.y(s->dc.y() * rg);
-    s->dc.z(s->dc.z() * rb);
+    s->dc.x = s->dc.x * rr;
+    s->dc.y = s->dc.y * rg;
+    s->dc.z = s->dc.z * rb;
   }
 }

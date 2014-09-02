@@ -1,89 +1,56 @@
-/* -*- c++ -*-
- * vec.h
- * CMSC 435/634, Spring 2012
- * Jacob Thompson <thompso1@umbc.edU>
- *
- * Three-dimensional vector class.
- */
+#ifndef _VEC_
+#define _VEC_
 
-#ifndef VEC_H
-#define VEC_H
+#include <iostream>
 
-#include <iosfwd>
+class vec {
+  public:
+    double x, y, z;
 
-class vec
-{
-public:
-   // default constructor
-   vec () throw ();
-  
-   // constructor
-   vec (const double x, const double y, const double z) throw ();
+    vec() : x(0), y(0), z(0) { };
+    vec(double x, double y, double z) : x(x), y(y), z(z) { };
 
-   // accessors
-   double x () const throw ();
-   double y () const throw ();
-   double z () const throw ();
-   double operator [] (unsigned i) const throw ();
+    // Arithmetic vector operations with scalars.
+    vec  operator +  (const double &other);
+    vec& operator += (const double &other);
 
-   // mutators
-   void x (const double x) throw ();
-   void y (const double y) throw ();
-   void z (const double z) throw ();
+    vec  operator -  (const double &other);
+    vec& operator -= (const double &other);
 
-   // unary plus and negation
-   vec operator + () const throw ();
-   vec operator - () const throw ();
+    vec  operator *  (const double &other);
+    vec& operator *= (const double &other);
 
-   // in-place addition and subtraction
-   vec &operator += (const vec &that) throw ();
-   vec &operator -= (const vec &that) throw ();
+    vec  operator /  (const double &other);
+    vec& operator /= (const double &other);
 
-   // addition and subtraction
-   vec operator + (const vec &that) const throw ();
-   vec operator - (const vec &that) const throw ();
+    // Vector operations.
+    vec  operator +  (const vec &other);
+    vec& operator += (const vec &other);
 
-   // in-place scalar multiply
-   vec &operator *= (const double s) throw ();
+    vec  operator -  (const vec &other);
+    vec& operator -= (const vec &other);
 
-   // scalar multiply
-   vec operator * (const double s) const throw ();
+    // Negate vector components.
+    vec operator - ();
 
-   // in-place scalar divide
-   vec &operator /= (const double s) throw ();
+    // Dot product
+    double  operator *  (const vec &other);
 
-   // scalar divide
-   vec operator / (const double s) const throw ();
+    // Cross product
+    vec  operator ^  (const vec &other);
 
-   // dot product
-   double operator * (const vec &that) const throw ();
-
-   // cross product
-   vec operator ^ (const vec &that) const throw ();
-
-   // in-place cross product
-   vec &operator ^= (const vec &that) throw ();
-
-   // length (magnitude, norm)
-   double length () const throw ();
-
-   // unit vector in direction of this vector (normalized)
-   vec unitlength () const throw ();
-
-   // in-place normalize
-   vec &normalize () throw ();
-
-private:
-   double m_x, m_y, m_z;
+    // Vector properties
+    vec unit(); // Unit vector
+    double mag(); // Magnitude
 };
 
-// scalar multiplication, scalar on left side
-vec operator * (const double s, const vec &v) throw ();
+// Other combinations of arithmetic for convenience.
+vec operator + (const double d, const vec &v);
+vec operator - (const double d, const vec &v);
+vec operator * (const double d, const vec &v);
+vec operator / (const double d, const vec &v);
 
-// output operator
-std::ostream &operator << (std::ostream &sout, const vec &v);
-
-// input operator
-std::istream &operator >> (std::istream &sin, vec &v);
+// Print a vector for debugging.
+std::ostream &operator << (std::ostream &out, vec &v);
 
 #endif

@@ -32,7 +32,7 @@ class Sphere: public Surface {
     // Finds the discriminant of a unit vector d to our sphere, from origin e.
     double get_discriminant(vec e, vec d);
 
-    friend std::ostream& operator<<(std::ostream& os, const Sphere& s);
+    // friend std::ostream& operator<<(std::ostream& os, const Sphere& s);
 };
 
 class Triangle: public Surface {

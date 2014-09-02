@@ -44,11 +44,11 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
     if(hit_surface) {
       intersection = true;
       if(closest_hit_distance == 0) { 
-        closest_hit_distance = ip.length(); 
+        closest_hit_distance = ip.mag(); 
       };
 
-      if(ip.length() <= closest_hit_distance) {
-        closest_hit_distance = ip.length();
+      if(ip.mag() <= closest_hit_distance) {
+        closest_hit_distance = ip.mag();
         closest_surface = *sit;
         closest_ip = ip;
       }
@@ -60,7 +60,7 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
     s = closest_surface;
 
     if(!scene_flags["bg_blend_effect"]) {
-      shade.x(0); shade.y(0); shade.z(0);
+      shade.x = 0; shade.y = 0; shade.z = 0;
     }
 
     // Lighting computations.
@@ -68,7 +68,7 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
       bool in_shadow = false;
       Light light = *lit;
       s->get_surface_normal(n, ip, camera); // (stores in n) unit vector for surface normal.
-      ld = (light.pos - ip).unitlength(); // unit vector pointing towards light source. // BUG: should be ip - light?
+      ld = (light.pos - ip).unit(); // unit vector pointing towards light source. // BUG: should be ip - light?
       v = -ray; // unit vector pointing towards camera.
 
       // Shadow computations.
@@ -111,9 +111,9 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
   // Scale color to RGB limit.
   // Only scale when not in reflection calculation.
   if(recursion_depth == 0) {
-    shade.x(std::min((int) (shade.x() * SCALE), SCALE));
-    shade.y(std::min((int) (shade.y() * SCALE), SCALE));
-    shade.z(std::min((int) (shade.z() * SCALE), SCALE));
+    shade.x = std::min((int) (shade.x * SCALE), SCALE);
+    shade.y = std::min((int) (shade.y * SCALE), SCALE);
+    shade.z = std::min((int) (shade.z * SCALE), SCALE);
   }
 
   return shade;

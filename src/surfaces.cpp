@@ -51,13 +51,13 @@ void Sphere::get_surface_normal(vec &norm, vec ip, Camera* camera) {
   // Distance from center of sphere to intersection point.
   vec to_c = c - camera->pos;
 
-  norm = (ip - to_c).unitlength(); // WANT ip - (sphere center - camera)
+  norm = (ip - to_c).unit(); // WANT ip - (sphere center - camera)
 };
 
-std::ostream& operator<<(std::ostream& os, const Sphere& s) {
-  os << "x=" << s.c.x() << " y=" << s.c.y() << " z=" << s.c.z() << " r=" << s.r;
-  return os;
-};
+// std::ostream& operator<<(std::ostream& os, const Sphere& s) {
+//   os << "x=" << s.c.x << " y=" << s.c.y << " z=" << s.c.z << " r=" << s.r;
+//   return os;
+// };
 
 Triangle::Triangle(Color dc, vec v1, vec v2, vec v3) : v1(v1), v2(v2), v3(v3) { 
   this->dc = dc;
@@ -71,20 +71,20 @@ bool Triangle::hit(vec e, vec d) {
 // Using Cramer's rule to solve linear system.
 // FIXME This doesn't work yet.
 bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
-  double xa_m_xb = v1[0] - v1[1];
-  double xa_m_xc = v1[0] - v1[2];
-  double xa_m_xe = v1[0] - e[0];
-  double ya_m_yb = v2[0] - v2[1];
-  double ya_m_yc = v2[0] - v2[2];
-  double ya_m_ye = v2[0] - e[1];
-  double za_m_zb = v3[0] - v3[1];
-  double za_m_zc = v3[0] - v3[2];
-  double za_m_ze = v3[0] - e[2];
+  double xa_m_xb = v1.x - v1.y;
+  double xa_m_xc = v1.x - v1.z;
+  double xa_m_xe = v1.x - e.x;
+  double ya_m_yb = v2.x - v2.y;
+  double ya_m_yc = v2.x - v2.z;
+  double ya_m_ye = v2.x - e.y;
+  double za_m_zb = v3.x - v3.y;
+  double za_m_zc = v3.x - v3.z;
+  double za_m_ze = v3.x - e.z;
 
   // Compute a
-  double matrix_a[] = { xa_m_xb, xa_m_xc, d[0],
-                       ya_m_yb, ya_m_yc, d[1],
-                       za_m_zb, za_m_zc, d[2] };
+  double matrix_a[] = { xa_m_xb, xa_m_xc, d.x,
+                       ya_m_yb, ya_m_yc, d.y,
+                       za_m_zb, za_m_zc, d.z };
 
   double det_a = det3(matrix_a);
 
@@ -98,17 +98,17 @@ bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
   if(t < 0) return false;
 
   // Compute gamma
-  double matrix_gamma[] = { xa_m_xb, xa_m_xe, d[0],
-                           ya_m_yb, ya_m_ye, d[1],
-                           za_m_zb, za_m_ze, d[2] };
+  double matrix_gamma[] = { xa_m_xb, xa_m_xe, d.x,
+                           ya_m_yb, ya_m_ye, d.y,
+                           za_m_zb, za_m_ze, d.z };
 
   double gamma = det3(matrix_gamma) / det_a;
   if(gamma < 0 || gamma > 1) return false;
 
   // Compute beta
-  double matrix_beta[] = { xa_m_xe, xa_m_xc, d[0],
-                          ya_m_ye, ya_m_yc, d[1],
-                          za_m_ze, za_m_zc, d[2] };
+  double matrix_beta[] = { xa_m_xe, xa_m_xc, d.x,
+                          ya_m_ye, ya_m_yc, d.y,
+                          za_m_ze, za_m_zc, d.z };
 
   double beta = det3(matrix_beta) / det_a;
   if(beta < 0 || beta > 1 - gamma) return false;

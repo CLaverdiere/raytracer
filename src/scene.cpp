@@ -66,23 +66,23 @@ void Scene::trace_scene() {
       vec d;
 
       if(projection_type == Perspective) {
-        vec e_to_p(u - camera->center.x(),
-                   v - camera->center.y(),
-                   (camera->center - camera->pos).z());
-        d = e_to_p.unitlength();
+        vec e_to_p(u - camera->center.x,
+                   v - camera->center.y,
+                   (camera->center - camera->pos).z);
+        d = e_to_p.unit();
         color = raytracer->compute_pixel_value(d, scene_attrs, scene_flags, camera, lights,
             scene_objects, projection_type, shading_method, 0);
       } else { // parallel projection by default.
-        d = (camera->center - camera->pos).unitlength();
-        camera_shifted.pos.x(camera_shifted.pos.x() + u);
-        camera_shifted.pos.y(camera_shifted.pos.y() + v);
+        d = (camera->center - camera->pos).unit();
+        camera_shifted.pos.x = camera_shifted.pos.x + u;
+        camera_shifted.pos.y = camera_shifted.pos.y + v;
         color = raytracer->compute_pixel_value(d, scene_attrs, scene_flags, &camera_shifted,
             lights, scene_objects, projection_type, shading_method, 0);
       }
 
-      pixels[(i*(int)scene_attrs["resy"]+j)*3] = (unsigned int) color.x();
-      pixels[(i*(int)scene_attrs["resy"]+j)*3+1] = (unsigned int) color.y();
-      pixels[(i*(int)scene_attrs["resy"]+j)*3+2] = (unsigned int) color.z();
+      pixels[(i*(int)scene_attrs["resy"]+j)*3] = (unsigned int) color.x;
+      pixels[(i*(int)scene_attrs["resy"]+j)*3+1] = (unsigned int) color.y;
+      pixels[(i*(int)scene_attrs["resy"]+j)*3+2] = (unsigned int) color.z;
     }
 
     // Loading Bar (Pass -l option to enable.)
