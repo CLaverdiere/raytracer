@@ -41,11 +41,11 @@ int main(int argc, const char *argv[])
   }
 
   // Global scene flags.
-  bool bg_blend_effect = true;
+  bool bg_blend_effect = false;
   bool random_hue = false;
   bool random_saturation = false;
-  bool reflections_on = true;
-  bool shadows_on = true;
+  bool reflections_on = false;
+  bool shadows_on = false;
 
   // Global scene flags map.
   std::map<std::string, bool> scene_flags;
@@ -60,7 +60,8 @@ int main(int argc, const char *argv[])
 
   // Extra scene settings not specified in NFF spec.
   Projection projection_type = Parallel;
-  Shading shading_method = Blinn_Phong;
+  Shading shading_method = None;
+  // Shading shading_method = Blinn_Phong;
 
   // Default output filename.
   const char* out_file = "pics/trace.pam";
@@ -83,7 +84,7 @@ int main(int argc, const char *argv[])
   // Scene lighting.
   Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 200));
   Light l2(.3, vec(0, 0, 500));
-  Light l3(.7, -2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
+  // Light l3(.7, -2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
   std::vector<Light> lights;
   lights.push_back(l1);
   lights.push_back(l2);
@@ -98,6 +99,12 @@ int main(int argc, const char *argv[])
     std::cout << "Shadows: " << std::boolalpha << shadows_on << std::endl;
     std::cout << std::endl;
   }
+
+  // DEBUG
+  // for(std::vector<Surface*>::iterator sit=scene_objects.begin(); sit != scene_objects.end(); ++sit) {
+  //   Triangle* t = (Triangle*) *sit;
+  //   std::cout << *t << std::endl;
+  // }
 
   // Create scene
   if(!quiet) { std::cout << "Parsing scene from " << in_file << std::endl; }

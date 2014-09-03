@@ -31,9 +31,9 @@ class Sphere: public Surface {
 
     // Finds the discriminant of a unit vector d to our sphere, from origin e.
     double get_discriminant(vec e, vec d);
-
-    // friend std::ostream& operator<<(std::ostream& os, const Sphere& s);
 };
+
+std::ostream &operator << (std::ostream &out, Sphere& s);
 
 class Triangle: public Surface {
   public:
@@ -46,6 +46,9 @@ class Triangle: public Surface {
     void get_surface_normal(vec &norm, vec ip, Camera* camera);
 };
 
+std::ostream &operator << (std::ostream &out, Triangle& t);
+
+// NOT IN NFF SPEC.
 class Plane: public Surface {
   public:
     // a plane is defined by a normal vector n to the plane, 

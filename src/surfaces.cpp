@@ -54,10 +54,10 @@ void Sphere::get_surface_normal(vec &norm, vec ip, Camera* camera) {
   norm = (ip - to_c).unit(); // WANT ip - (sphere center - camera)
 };
 
-// std::ostream& operator<<(std::ostream& os, const Sphere& s) {
-//   os << "x=" << s.c.x << " y=" << s.c.y << " z=" << s.c.z << " r=" << s.r;
-//   return os;
-// };
+std::ostream &operator << (std::ostream &out, Sphere &s) {
+  out << "SPHERE: c=" << s.c << " r=" << s.r;
+  return out;
+}
 
 Triangle::Triangle(Color dc, vec v1, vec v2, vec v3) : v1(v1), v2(v2), v3(v3) { 
   this->dc = dc;
@@ -69,6 +69,7 @@ bool Triangle::hit(vec e, vec d) {
 };
 
 // Using Cramer's rule to solve linear system.
+// We solve by storing determinants used multiple times, for speed.
 // FIXME This doesn't work yet.
 bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
   double xa_m_xb = v1.x - v1.y;
@@ -81,40 +82,53 @@ bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
   double za_m_zc = v3.x - v3.z;
   double za_m_ze = v3.x - e.z;
 
-  // Compute a
-  double matrix_a[] = { xa_m_xb, xa_m_xc, d.x,
-                       ya_m_yb, ya_m_yc, d.y,
-                       za_m_zb, za_m_zc, d.z };
+  // Store determinants.
+  double ei_m_hf = ya_m_yc*d.z - d.y*za_m_zc;
+  double gf_m_di = d.x*za_m_zc - xa_m_xc*d.z;
+  double dh_m_eg = xa_m_xc*d.y - ya_m_yc*d.x;
+  double ak_m_jb = xa_m_xb*ya_m_ye - xa_m_xe*ya_m_yb;
+  double jc_m_al = xa_m_xe*za_m_zb - xa_m_xb*za_m_ze;
+  double bl_m_kc = ya_m_yb*za_m_ze - ya_m_ye*za_m_zb;
+  double M = xa_m_xb * ei_m_hf + ya_m_yb * gf_m_di + za_m_zb * dh_m_eg;
 
-  double det_a = det3(matrix_a);
+  // Compute a
+  // double matrix_a[] = { xa_m_xb, xa_m_xc, d.x,
+  //                       ya_m_yb, ya_m_yc, d.y,
+  //                       za_m_zb, za_m_zc, d.z };
+
+  // double det_a = det3(matrix_a);
 
   // Compute t
-  double matrix_t[] = { xa_m_xb, xa_m_xc, xa_m_xe,
-                     ya_m_yb, ya_m_yc, ya_m_ye,
-                     za_m_zb, za_m_zc, za_m_ze };
+  // double matrix_t[] = { xa_m_xb, xa_m_xc, xa_m_xe,
+  //                       ya_m_yb, ya_m_yc, ya_m_ye,
+  //                       za_m_zb, za_m_zc, za_m_ze };
 
-  double t = det3(matrix_t) / det_a;
+  // double t = det3(matrix_t) / det_a;
+  double t = -1 * (za_m_zc * ak_m_jb + ya_m_yc * jc_m_al + xa_m_xc * bl_m_kc) / M;
 
-  if(t < 0) return false;
+  if(t < 0) { return false; }
 
   // Compute gamma
-  double matrix_gamma[] = { xa_m_xb, xa_m_xe, d.x,
-                           ya_m_yb, ya_m_ye, d.y,
-                           za_m_zb, za_m_ze, d.z };
+  // double matrix_gamma[] = { xa_m_xb, xa_m_xe, d.x,
+  //                           ya_m_yb, ya_m_ye, d.y,
+  //                           za_m_zb, za_m_ze, d.z };
 
-  double gamma = det3(matrix_gamma) / det_a;
-  if(gamma < 0 || gamma > 1) return false;
+  // double gamma = det3(matrix_gamma) / det_a;
+  double gamma = (d.z * ak_m_jb + d.y * jc_m_al + d.x * bl_m_kc) / M;
+
+  if(gamma < 0 || gamma > 1) { return false; }
 
   // Compute beta
-  double matrix_beta[] = { xa_m_xe, xa_m_xc, d.x,
-                          ya_m_ye, ya_m_yc, d.y,
-                          za_m_ze, za_m_zc, d.z };
+  // double matrix_beta[] = { xa_m_xe, xa_m_xc, d.x,
+  //                          ya_m_ye, ya_m_yc, d.y,
+  //                          za_m_ze, za_m_zc, d.z };
 
-  double beta = det3(matrix_beta) / det_a;
-  if(beta < 0 || beta > 1 - gamma) return false;
+  // double beta = det3(matrix_beta) / det_a;
+  double beta = (xa_m_xe * ei_m_hf + ya_m_ye * gf_m_di + za_m_ze * dh_m_eg) / M;
 
-  ip = e + t*d;
-  std::cout << "triangle hit" << std::endl;
+  if(beta < 0 || beta > 1 - gamma) { return false; }
+
+  ip = d * t; // add e?
   return true;
 };
 
@@ -124,6 +138,11 @@ bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
 void Triangle::get_surface_normal(vec &norm, vec ip, Camera* camera) {
   norm = (v2-v1) ^ (v3-v1);
 };
+
+std::ostream &operator << (std::ostream &out, Triangle &t) {
+  out << "TRIANGLE: v1=" << t.v1 << " v2=" << t.v2 << " v3=" << t.v3;
+  return out;
+}
 
 Plane::Plane(Color dc, vec n, vec q) : n(n), q(q) {
   this->dc = dc;
