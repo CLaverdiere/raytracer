@@ -65,14 +65,10 @@ int main(int argc, const char *argv[])
   // Default output filename.
   const char* out_file = "pics/trace.pam";
 
-  // Keep track of file parsing position.
-  int file_pos = 0;
-
-  // Read scene attributes from infile.
-  std::map<std::string, double> scene_attrs = parse_nff_attrs(in_file, file_pos);
-
-  // Read scene objects from infile.
-  std::vector<Surface*> scene_objects = parse_nff_objects(in_file, scene_attrs, file_pos);
+  // Read scene attributes, objects from infile.
+  std::map<std::string, double> scene_attrs;
+  std::vector<Surface*> scene_objects;
+  parse_nff_file(in_file, scene_attrs, scene_objects);
 
   // Object saturation modification.
   if(scene_flags["random_saturation"]) {
