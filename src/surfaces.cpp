@@ -70,17 +70,16 @@ bool Triangle::hit(vec e, vec d) {
 
 // Using Cramer's rule to solve linear system.
 // We solve by storing determinants used multiple times, for speed.
-// FIXME This doesn't work yet.
 bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
-  double xa_m_xb = v1.x - v1.y;
-  double xa_m_xc = v1.x - v1.z;
+  double xa_m_xb = v1.x - v2.x;
+  double xa_m_xc = v1.x - v3.x;
   double xa_m_xe = v1.x - e.x;
-  double ya_m_yb = v2.x - v2.y;
-  double ya_m_yc = v2.x - v2.z;
-  double ya_m_ye = v2.x - e.y;
-  double za_m_zb = v3.x - v3.y;
-  double za_m_zc = v3.x - v3.z;
-  double za_m_ze = v3.x - e.z;
+  double ya_m_yb = v1.y - v2.y;
+  double ya_m_yc = v1.y - v3.y;
+  double ya_m_ye = v1.y - e.y;
+  double za_m_zb = v1.z - v2.z;
+  double za_m_zc = v1.z - v3.z;
+  double za_m_ze = v1.z - e.z;
 
   // Store determinants.
   double ei_m_hf = ya_m_yc*d.z - d.y*za_m_zc;
