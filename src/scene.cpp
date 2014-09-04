@@ -61,6 +61,15 @@ void Scene::trace_scene() {
       double u = l + ((r - l) * (j + 0.5) / scene_attrs["resy"]);
       double v = b + ((t - b) * (i + 0.5) / scene_attrs["resx"]);
 
+      // Angle is in degrees, so convert to rads.
+      double angle = (scene_attrs["angle"] * M_PI) / 180;
+
+      // Rotate the image coordinates using standard rotation matrix.
+      // [ cos,  sin ] * [u] 
+      // [ -sin, cos ]   [v]
+      u = cos(angle) * u  + sin(angle) * v;
+      v = -sin(angle) * u + cos(angle) * v;
+
       Camera camera_shifted = *camera;
       Color color;
       vec d;

@@ -13,8 +13,8 @@ int main(int argc, const char *argv[])
   bool bg_blend_effect = false;
   bool random_hue = false;
   bool random_saturation = false;
-  bool reflections_on = true;
-  bool shadows_on = true;
+  bool reflections_on = false;
+  bool shadows_on = false;
   double light_intensity = .7;
 
   // Parse command line flags.
