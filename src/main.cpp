@@ -14,8 +14,8 @@ int main(int argc, const char *argv[])
   bool random_hue = false;
   bool random_saturation = false;
   bool reflections_on = true;
-  bool shadows_on = false;
-  double light_intensity = .5;
+  bool shadows_on = true;
+  double light_intensity = .7;
 
   // Parse command line flags.
   // -l : loading bar. Display a loading bar while raytracing happens.
@@ -38,7 +38,7 @@ int main(int argc, const char *argv[])
     in_file = *(argv+(argc-1));
     if(strstr(in_file, "nff")) {
       if(!quiet) {
-        std::cout << "Reading " << in_file << std::endl;
+        std::cout << "Reading " << in_file << std::endl << std::endl;
       }
     } else {
       in_file = "nff/trace.nff";
@@ -103,11 +103,9 @@ int main(int argc, const char *argv[])
     if (scene_objects.size() == 0) {
       std::cout << "WARNING: No objects specified in scene." << std::endl;
     }
-    std::cout << std::endl;
   }
 
   // Create scene
-  if(!quiet) { std::cout << "Parsing scene from " << in_file << std::endl; }
   Scene* in_scene = new Scene(scene_attrs, scene_flags, lights, scene_objects, projection_type, shading_method);
 
   // Trace scene.
