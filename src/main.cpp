@@ -60,8 +60,8 @@ int main(int argc, const char *argv[])
 
   // Extra scene settings not specified in NFF spec.
   Projection projection_type = Parallel;
-  Shading shading_method = None;
-  // Shading shading_method = Blinn_Phong;
+  // Shading shading_method = None;
+  Shading shading_method = Blinn_Phong;
 
   // Default output filename.
   const char* out_file = "pics/trace.pam";
@@ -69,7 +69,8 @@ int main(int argc, const char *argv[])
   // Read scene attributes, objects from infile.
   std::map<std::string, double> scene_attrs;
   std::vector<Surface*> scene_objects;
-  parse_nff_file(in_file, scene_attrs, scene_objects);
+  std::vector<Light> lights;
+  parse_nff_file(in_file, scene_attrs, scene_objects, lights);
 
   // Object saturation modification.
   if(scene_flags["random_saturation"]) {
@@ -82,12 +83,12 @@ int main(int argc, const char *argv[])
   }
 
   // Scene lighting.
-  Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 200));
-  Light l2(.3, vec(0, 0, 500));
+  // Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 200));
+  // Light l2(.3, vec(0, 0, 500));
   // Light l3(.7, -2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
-  std::vector<Light> lights;
-  lights.push_back(l1);
-  lights.push_back(l2);
+  // std::vector<Light> lights;
+  // lights.push_back(l1);
+  // lights.push_back(l2);
   // lights.push_back(l3);
 
   // Extra program output.
@@ -99,12 +100,6 @@ int main(int argc, const char *argv[])
     std::cout << "Shadows: " << std::boolalpha << shadows_on << std::endl;
     std::cout << std::endl;
   }
-
-  // DEBUG
-  // for(std::vector<Surface*>::iterator sit=scene_objects.begin(); sit != scene_objects.end(); ++sit) {
-  //   Triangle* t = (Triangle*) *sit;
-  //   std::cout << *t << std::endl;
-  // }
 
   // Create scene
   if(!quiet) { std::cout << "Parsing scene from " << in_file << std::endl; }

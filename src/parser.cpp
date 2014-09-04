@@ -1,7 +1,7 @@
 #include "parser.h"
 
 void parse_nff_file(const char* filename, std::map<std::string, double>
-                    &scene_attrs, std::vector<Surface*> &scene_objects) {
+    &scene_attrs, std::vector<Surface*> &scene_objects, std::vector<Light> &lights) {
   std::ifstream fi;
   fi.open(filename);
 
@@ -22,7 +22,7 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       fi >> scene_attrs["bg_b"];
 
     } else if(in == "c") { // Cone or cylinder primitive.
-      // NOT IMPLEMENTED.
+      // PARSED, BUT NOT IMPLEMENTED.
       std::cout << "Parsing c" << std::endl;
       fi >> in; fi >> in; fi >> in; fi >> in; // base vector, radius.
       fi >> in; fi >> in; fi >> in; fi >> in; // apex vector, radius.
@@ -37,34 +37,51 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       fi >> scene_attrs["shine"];  // phong cosine power
       fi >> scene_attrs["t"];      // transmittance
       fi >> scene_attrs["ior"];    // index of refraction
-      fill_col = Color(scene_attrs.at("fill_r"), 
-                       scene_attrs.at("fill_g"), 
+      fill_col = Color(scene_attrs.at("fill_r"),
+                       scene_attrs.at("fill_g"),
                        scene_attrs.at("fill_b"));
 
     } else if(in == "l") { // Positional light location.
       std::cout << "Parsing l" << std::endl;
-      // TODO NOT IMPLEMENTED.
-      fi >> in; fi >> in; fi >> in; 
+      // Optional RGB light component not implemented.
+      double lx, ly, lz;
+      fi >> lx; fi >> ly; fi >> lz;
+      lights.push_back(Light(1, vec(lx, ly, lz)));
 
     } else if(in == "p") { // Polygon primitive.
       std::cout << "Parsing p" << std::endl;
-      // TODO NOT IMPLEMENTED FOR ANY POLYGON, ONLY TRIANGLES.
-      double v1x, v1y, v1z,
-             v2x, v2y, v2z,
-             v3x, v3y, v3z;
-      fi >> in; // Number of verts.
-      fi >> v1x; fi >> v1y; fi >> v1z;
-      fi >> v2x; fi >> v2y; fi >> v2z;
-      fi >> v3x; fi >> v3y; fi >> v3z;
-      
-      scene_objects.push_back(new Triangle(fill_col, 
-                                 vec(v1x, v1y, v1z), 
-                                 vec(v2x, v2y, v2z), 
-                                 vec(v3x, v3y, v3z)));
+      // For an n sided polygon, split it into triangles.
+      double vx, vy, vz;
+      int num_verts;
+      vec verts[3];
+
+      fi >> num_verts;
+
+      // First, read in a single vertex.
+      // Store this in an array of three vectors, representing a triangle.
+      // This overwrites the oldest vector with the newest one parsed, or a new vector if empty.
+      // Add that new triangle to our object collection. Repeat.
+      for(int i=0; i < num_verts; i++) {
+        fi >> vx; fi >> vy; fi >> vz;
+        
+        verts[i % 3] = vec(vx, vy, vz);
+
+        if(i >= 2) { // We have at least three vertices parsed to form a triangle.
+          scene_objects.push_back(new Triangle(fill_col, verts[0], verts[1], verts[2]));
+        }
+      }
 
     } else if(in == "pp") { // Polygonal patch primitive.
       std::cout << "Parsing pp" << std::endl;
-      // TODO NOT IMPLEMENTED.
+      // PARSED, BUT NOT IMPLEMENTED.
+      int num_verts;
+      double vx, vy, vz,
+             nx, ny, nz;
+      fi >> num_verts;
+      for(int i=0; i < num_verts; i++) {
+        fi >> vx; fi >> vy; fi >> vz;
+        fi >> nx; fi >> ny; fi >> nz;
+      }
 
     } else if(in == "s") { // Sphere primitive.
       std::cout << "Parsing s" << std::endl;
