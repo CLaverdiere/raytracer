@@ -16,19 +16,16 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
     if(fi.eof()) { break; }
 
     if(in == "b") { // Background color
-      std::cout << "Parsing b" << std::endl;
       fi >> scene_attrs["bg_r"];
       fi >> scene_attrs["bg_g"];
       fi >> scene_attrs["bg_b"];
 
     } else if(in == "c") { // Cone or cylinder primitive.
       // PARSED, BUT NOT IMPLEMENTED.
-      std::cout << "Parsing c" << std::endl;
       fi >> in; fi >> in; fi >> in; fi >> in; // base vector, radius.
       fi >> in; fi >> in; fi >> in; fi >> in; // apex vector, radius.
 
     } else if(in == "f") { // Object material properties.
-      std::cout << "Parsing f" << std::endl;
       fi >> scene_attrs["fill_r"]; // red
       fi >> scene_attrs["fill_g"]; // green
       fi >> scene_attrs["fill_b"]; // blue
@@ -42,14 +39,12 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
                        scene_attrs.at("fill_b"));
 
     } else if(in == "l") { // Positional light location.
-      std::cout << "Parsing l" << std::endl;
       // Optional RGB light component not implemented.
       double lx, ly, lz;
       fi >> lx; fi >> ly; fi >> lz;
-      lights.push_back(Light(1, vec(lx, ly, lz)));
+      lights.push_back(Light(scene_attrs["light_intensity"], vec(lx, ly, lz)));
 
     } else if(in == "p") { // Polygon primitive.
-      std::cout << "Parsing p" << std::endl;
       // For an n sided polygon, split it into triangles.
       double vx, vy, vz;
       int num_verts;
@@ -72,7 +67,6 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       }
 
     } else if(in == "pp") { // Polygonal patch primitive.
-      std::cout << "Parsing pp" << std::endl;
       // PARSED, BUT NOT IMPLEMENTED.
       int num_verts;
       double vx, vy, vz,
@@ -84,7 +78,6 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       }
 
     } else if(in == "s") { // Sphere primitive.
-      std::cout << "Parsing s" << std::endl;
       double cx, cy, cz, rad;
       fi >> cx;  // centerx
       fi >> cy;  // centery
@@ -93,7 +86,6 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       scene_objects.push_back(new Sphere(fill_col, vec(cx, cy, cz), rad));
 
     } else if(in == "v") { // Viewing vectors and angles.
-      std::cout << "Parsing v" << std::endl;
 
       // Assuming that these are always in the same order.
       fi >> in; // from

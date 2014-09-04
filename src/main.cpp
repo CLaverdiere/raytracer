@@ -9,6 +9,14 @@
 
 int main(int argc, const char *argv[])
 {
+  // Global scene settings. Edit these to change scene settings.
+  bool bg_blend_effect = false;
+  bool random_hue = false;
+  bool random_saturation = false;
+  bool reflections_on = true;
+  bool shadows_on = false;
+  double light_intensity = .5;
+
   // Parse command line flags.
   // -l : loading bar. Display a loading bar while raytracing happens.
   // -q : quiet. No stdout output.
@@ -40,13 +48,6 @@ int main(int argc, const char *argv[])
     }
   }
 
-  // Global scene flags.
-  bool bg_blend_effect = false;
-  bool random_hue = false;
-  bool random_saturation = false;
-  bool reflections_on = false;
-  bool shadows_on = false;
-
   // Global scene flags map.
   std::map<std::string, bool> scene_flags;
   scene_flags["bg_blend_effect"] = bg_blend_effect;
@@ -70,6 +71,8 @@ int main(int argc, const char *argv[])
   std::map<std::string, double> scene_attrs;
   std::vector<Surface*> scene_objects;
   std::vector<Light> lights;
+
+  scene_attrs["light_intensity"] = light_intensity;
   parse_nff_file(in_file, scene_attrs, scene_objects, lights);
 
   // Object saturation modification.
@@ -82,15 +85,6 @@ int main(int argc, const char *argv[])
     offset_hue_multi(scene_objects);
   }
 
-  // Scene lighting.
-  // Light l1(.9, vec(scene_attrs["resx"], scene_attrs["resy"], 200));
-  // Light l2(.3, vec(0, 0, 500));
-  // Light l3(.7, -2*vec(-scene_attrs["resx"], -scene_attrs["resy"], 0));
-  // std::vector<Light> lights;
-  // lights.push_back(l1);
-  // lights.push_back(l2);
-  // lights.push_back(l3);
-
   // Extra program output.
   if(!quiet) {
     std::cout << "Program Settings:" << std::endl;
@@ -98,6 +92,17 @@ int main(int argc, const char *argv[])
     std::cout << "Projection Type: " << ProjectionNames[projection_type] << std::endl;
     std::cout << "Reflections: " << std::boolalpha << reflections_on << std::endl;
     std::cout << "Shadows: " << std::boolalpha << shadows_on << std::endl;
+    std::cout << std::endl;
+  }
+
+  // Helpful warnings.
+  if(!quiet) {
+    if (lights.size() == 0) {
+      std::cout << "WARNING: No lights specified in scene." << std::endl;
+    }
+    if (scene_objects.size() == 0) {
+      std::cout << "WARNING: No objects specified in scene." << std::endl;
+    }
     std::cout << std::endl;
   }
 
