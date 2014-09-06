@@ -1,6 +1,18 @@
 #include <cmath>
 #include "vec.h"
 
+// Vector properties
+// Unit vector
+vec vec::unit() {
+  return *this / this->mag();
+}
+
+// Magnitude
+double vec::mag() {
+  return sqrt(x*x + y*y + z*z);
+}
+
+
 // Arithmetic vector operations with scalars.
 vec vec::operator + (const double &other) {
   return vec(x+other, y+other, z+other);
@@ -89,17 +101,6 @@ vec vec::operator ^ (const vec &other) {
   return vec(y*other.z - z*other.y, -1 * (x*other.z - z*other.x), x*other.y - y*other.x);
 }
 
-
-// Vector properties
-// Unit vector
-vec vec::unit() {
-  return *this / this->mag();
-}
-
-// Magnitude
-double vec::mag() {
-  return sqrt(x*x + y*y + z*z);
-}
 
 // Print a vector for debugging.
 std::ostream &operator << (std::ostream &out, vec &v) {

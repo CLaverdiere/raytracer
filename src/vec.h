@@ -10,6 +10,10 @@ class vec {
     vec() : x(0), y(0), z(0) { };
     vec(double x, double y, double z) : x(x), y(y), z(z) { };
 
+    // Vector properties
+    vec unit(); // Unit vector
+    double mag(); // Magnitude
+
     // Arithmetic vector operations with scalars.
     vec  operator +  (const double &other);
     vec& operator += (const double &other);
@@ -34,14 +38,10 @@ class vec {
     vec operator - ();
 
     // Dot product
-    double  operator *  (const vec &other);
+    double operator * (const vec &other);
 
     // Cross product
-    vec  operator ^  (const vec &other);
-
-    // Vector properties
-    vec unit(); // Unit vector
-    double mag(); // Magnitude
+    vec operator ^ (const vec &other);
 };
 
 // Other combinations of arithmetic for convenience.
