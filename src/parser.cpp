@@ -15,7 +15,10 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
     fi >> in; // Read in the next character.
     if(fi.eof()) { break; }
 
-    if(in == "b") { // Background color
+    if(in == "#") { // Comment.
+      std::getline(fi, in);
+    
+    } else if(in == "b") { // Background color
       fi >> scene_attrs["bg_r"];
       fi >> scene_attrs["bg_g"];
       fi >> scene_attrs["bg_b"];
