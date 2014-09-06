@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <string>
 #include "parser.h"
 #include "string.h"
 
@@ -15,7 +16,9 @@ int main(int argc, const char *argv[])
   bool random_saturation = false;
   bool reflections_on = false;
   bool shadows_on = false;
-  double light_intensity = .7;
+  double light_intensity = .71;
+  Projection projection_type = Parallel;
+  Shading shading_method = None;
 
   // Parse command line flags.
   // -l : loading bar. Display a loading bar while raytracing happens.
@@ -33,10 +36,10 @@ int main(int argc, const char *argv[])
   }
 
   // Parse input filename as final command line argument.
-  const char* in_file;
+  std::string in_file;
   if(argc > 1) {
     in_file = *(argv+(argc-1));
-    if(strstr(in_file, "nff")) {
+    if(in_file.find("nff") != std::string::npos) {
       if(!quiet) {
         std::cout << "Reading " << in_file << std::endl << std::endl;
       }
@@ -59,13 +62,16 @@ int main(int argc, const char *argv[])
   scene_flags["shadows_on"] = shadows_on;
   scene_flags["verbose"] = verbose;
 
-  // Extra scene settings not specified in NFF spec.
-  Projection projection_type = Parallel;
-  // Shading shading_method = None;
-  Shading shading_method = Blinn_Phong;
+  // Format output filename.
+  std::string out_file = in_file;
 
-  // Default output filename.
-  const char* out_file = "pics/trace.pam";
+  // output filename: 'nff/name.nff' -> 'pics/name.nff'
+  int index = out_file.find("nff");
+  out_file.replace(index, 3, "pics");
+
+  // output filename: 'pics/name.nff' -> 'pics/name.pam'
+  index = out_file.find("nff");
+  out_file.replace(index, 3, "pam");
 
   // Read scene attributes, objects from infile.
   std::map<std::string, double> scene_attrs;
@@ -73,7 +79,7 @@ int main(int argc, const char *argv[])
   std::vector<Light> lights;
 
   scene_attrs["light_intensity"] = light_intensity;
-  parse_nff_file(in_file, scene_attrs, scene_objects, lights);
+  parse_nff_file(in_file.c_str(), scene_attrs, scene_objects, lights);
 
   // Object saturation modification.
   if(scene_flags["random_saturation"]) {
@@ -114,7 +120,7 @@ int main(int argc, const char *argv[])
 
   // Export scene to ppm file.
   if(!quiet) { std::cout << "Exporting image to " << out_file << std::endl; }
-  in_scene->export_scene(out_file, "pam");
+  in_scene->export_scene(out_file.c_str(), "pam");
 
   delete in_scene;
 

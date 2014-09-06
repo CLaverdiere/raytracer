@@ -1,13 +1,27 @@
-CC=g++
-BUILD_DIR=./bin
-SRC_DIR=./src
-CFLAGS=-std=c++11 -g -Wall
-SRCS=$(SRC_DIR)/color.cpp $(SRC_DIR)/main.cpp $(SRC_DIR)/parser.cpp $(SRC_DIR)/raytracer.cpp $(SRC_DIR)/scene.cpp $(SRC_DIR)/surfaces.cpp $(SRC_DIR)/util.cpp $(SRC_DIR)/vec.cpp
+# Custom makefile Raytracer project.
+# (Couldn't get the other one working, but did take some things from it.)
 
+CC=g++
+
+BUILD_DIR=./bin
+NFF_DIR=./nff
+PICS_DIR=./pics
+SRC_DIR=./src
+
+CFLAGS=-std=c++11 -g -Wall
+
+SRCS=$(wildcard $(SRC_DIR)/*.cpp)
 OBJS=$(SRCS:.cpp=.o)
+
 EXEC=$(BUILD_DIR)/trace
 
-all: $(EXEC)
+$(EXEC):
+
+%.png: %.pam
+	convert $(PICS_DIR)/$< $(PICS_DIR)/$@
+
+%.pam: $(NFF_DIR)/%.nff $(EXEC)
+	$(EXEC) -l $<
 
 $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -o $(EXEC) $(OBJS)
