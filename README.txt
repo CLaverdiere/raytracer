@@ -18,4 +18,6 @@ Resources used:
   - Sphere intersection: 
       http://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
 
-< git log file goes here. >
+Both sphere and triangle tracing are functional.
+
+< git log filename goes here. >

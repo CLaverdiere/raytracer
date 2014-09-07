@@ -21,7 +21,7 @@ Scene::Scene(std::map<std::string, double> scene_attrs,
   vec at(scene_attrs["atx"], scene_attrs["aty"], scene_attrs["atz"]);
   vec up(scene_attrs["upx"], scene_attrs["upy"], scene_attrs["upz"]);
 
-  camera = new Camera(from, at);
+  camera = new Camera(from, at, up);
   pixels = new unsigned char [(int) scene_attrs.at("resx") * (int) scene_attrs.at("resy") * 3];
   raytracer = new Raytracer();
 };
@@ -36,7 +36,7 @@ Scene::~Scene() {
 };
 
 void Scene::export_scene(const char* filename, std::string filetype) {
-  FILE *f = fopen(filename, "wb");
+  FILE* f = fopen(filename, "wb");
 
   if(filetype == "ppm") {
     fprintf(f, "P6\n%d %d\n%d\n", (int) scene_attrs["resx"], (int) scene_attrs["resy"], 255);
@@ -55,41 +55,41 @@ void Scene::export_scene(const char* filename, std::string filetype) {
 
 void Scene::trace_scene() {
   int loading_delim = scene_attrs["resy"] / LOADING_WIDTH;
+  double l = -1, r = 1, b = -1, t = 1; // TODO What should these really be?
+
+  // Angle is in degrees, so convert to rads.
+  double angle = (scene_attrs["angle"] * M_PI) / 180;
+
   for(int i=0; i<scene_attrs["resy"]; i++) {
     for(int j=0; j<scene_attrs["resx"]; j++) {
-      double l = -1, r = 1, b = -1, t = 1; // TODO What should these really be?
       double u = l + ((r - l) * (j + 0.5) / scene_attrs["resy"]);
       double v = b + ((t - b) * (i + 0.5) / scene_attrs["resx"]);
 
-      // Angle is in degrees, so convert to rads.
-      double angle = (scene_attrs["angle"] * M_PI) / 180;
-
       // Rotate the image coordinates using standard rotation matrix.
-      // [ cos,  sin ] * [u] 
-      // [ -sin, cos ]   [v]
-      u = cos(angle) * u  + sin(angle) * v;
-      v = -sin(angle) * u + cos(angle) * v;
+      // [ cos, -sin ] * [u]
+      // [ sin, cos ]    [v]
+      u = cos(angle) * u - sin(angle) * v;
+      v = sin(angle) * u + cos(angle) * v;
 
       Camera camera_shifted = *camera;
       Color color;
       vec d;
 
       if(projection_type == Perspective) {
-        vec e_to_p(u - camera->center.x,
-                   v - camera->center.y,
-                   (camera->center - camera->pos).z);
-        d = e_to_p.unit();
-        color = raytracer->compute_pixel_value(d, scene_attrs, scene_flags, camera, lights,
+        d = camera->at.unit() + (u * camera->right.unit()) + (v * camera->up.unit()) - camera->pos; // TODO subtract camera pos here?
+        vec dnorm = d.unit();
+        color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, camera, lights,
             scene_objects, projection_type, shading_method, 0);
-      } else { // parallel projection by default.
-        d = (camera->center - camera->pos).unit();
+      } else { // Parallel projection by default.
+        d = (camera->at - camera->pos);
+        vec dnorm = d.unit();
         camera_shifted.pos.x = camera_shifted.pos.x + u;
         camera_shifted.pos.y = camera_shifted.pos.y + v;
-        color = raytracer->compute_pixel_value(d, scene_attrs, scene_flags, &camera_shifted,
+        color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, &camera_shifted,
             lights, scene_objects, projection_type, shading_method, 0);
       }
 
-      pixels[(i*(int)scene_attrs["resy"]+j)*3] = (unsigned int) color.x;
+      pixels[(i*(int)scene_attrs["resy"]+j)*3] =   (unsigned int) color.x;
       pixels[(i*(int)scene_attrs["resy"]+j)*3+1] = (unsigned int) color.y;
       pixels[(i*(int)scene_attrs["resy"]+j)*3+2] = (unsigned int) color.z;
     }
