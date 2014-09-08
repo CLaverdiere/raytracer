@@ -57,6 +57,8 @@ void Scene::trace_scene() {
   int loading_delim = scene_attrs["resy"] / LOADING_WIDTH;
   double l = -1, r = 1, b = -1, t = 1; // TODO What should these really be?
 
+  // Implement FOV.
+
   // Angle is in degrees, so convert to rads.
   double angle = (scene_attrs["angle"] * M_PI) / 180;
 
@@ -66,24 +68,29 @@ void Scene::trace_scene() {
       double v = b + ((t - b) * (i + 0.5) / scene_attrs["resx"]);
 
       // Rotate the image coordinates using standard rotation matrix.
+      // TODO fix stretching of image.
       // [ cos, -sin ] * [u]
       // [ sin, cos ]    [v]
       u = cos(angle) * u - sin(angle) * v;
       v = sin(angle) * u + cos(angle) * v;
 
-      Camera camera_shifted = *camera;
+      // There's a bug where the image is generated upside down.
+      // Probably because I stored the height data backwards.
+      // Until I find it, this is the fix, lol.
+      v = -v;
+
       Color color;
-      vec d;
+      vec d, dnorm;
 
       if(projection_type == Perspective) {
         d = camera->at_u + (u * camera->right) + (v * camera->up); // Use at_d do not normalize at vector.
-        vec dnorm = d.unit();
-        vec ud = (u * camera->right);
+        dnorm = d.unit();
         color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, camera, lights,
             scene_objects, projection_type, shading_method, 0);
       } else { // Parallel projection by default.
+        Camera camera_shifted = *camera;
         d = (camera->at - camera->pos);
-        vec dnorm = d.unit();
+        dnorm = d.unit();
         camera_shifted.pos.x = camera_shifted.pos.x + u;
         camera_shifted.pos.y = camera_shifted.pos.y + v;
         color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, &camera_shifted,
