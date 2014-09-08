@@ -1,6 +1,5 @@
-// General algorithm for raytracing, from
+// General algorithm for raytracing, implemented from
 //   Fundamentals of Computer Graphics, 3rd ed.
-//   Peter Shirley, Steve Marschner.
 //
 // for each pixel:
 //  compute viewing ray.
