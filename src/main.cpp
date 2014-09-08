@@ -44,9 +44,9 @@ int main(int argc, const char *argv[])
         std::cout << "Reading " << in_file << std::endl << std::endl;
       }
     } else {
-      in_file = "nff/trace.nff";
+      in_file = "";
       if(!quiet) {
-        std::cout << "WARNING: No nff input file found. Using " << in_file << " as default." << std::endl;
+        std::cout << "WARNING: No nff input file found. Using stdin as default." << std::endl;
       }
     }
   }
@@ -62,16 +62,22 @@ int main(int argc, const char *argv[])
   scene_flags["shadows_on"] = shadows_on;
   scene_flags["verbose"] = verbose;
 
-  // Format output filename.
+  // Create output filename.
   std::string out_file = in_file;
 
-  // output filename: 'nff/name.nff' -> 'pics/name.nff'
-  int index = out_file.find("nff");
-  out_file.replace(index, 3, "pics");
+  // Format output filename.
+  if(out_file != "") {
+    // output filename: 'nff/name.nff' -> 'pics/name.nff'
+    int index = out_file.find("nff");
+    out_file.replace(index, 3, "pics");
 
-  // output filename: 'pics/name.nff' -> 'pics/name.pam'
-  index = out_file.find("nff");
-  out_file.replace(index, 3, "pam");
+    // output filename: 'pics/name.nff' -> 'pics/name.pam'
+    index = out_file.find("nff");
+    out_file.replace(index, 3, "pam");
+  } else {
+    out_file = "pics/trace.pam";
+    std::cout << "WARNING: Using default output filename: trace.pam." << std::endl;
+  }
 
   // Read scene attributes, objects from infile.
   std::map<std::string, double> scene_attrs;

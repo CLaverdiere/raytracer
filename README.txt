@@ -23,3 +23,4 @@ Resources used:
 Both sphere and triangle tracing are functional.
 
 < git log filename goes here. >
+< also remove all pics/build files/etc >
