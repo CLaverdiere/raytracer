@@ -76,8 +76,9 @@ void Scene::trace_scene() {
       vec d;
 
       if(projection_type == Perspective) {
-        d = camera->at + (u * camera->right) + (v * camera->up); // TODO subtract camera pos here?
+        d = camera->at_u + (u * camera->right) + (v * camera->up); // Use at_d do not normalize at vector.
         vec dnorm = d.unit();
+        vec ud = (u * camera->right);
         color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, camera, lights,
             scene_objects, projection_type, shading_method, 0);
       } else { // Parallel projection by default.

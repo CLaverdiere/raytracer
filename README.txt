@@ -28,3 +28,4 @@ Resources used:
 
 < git log filename goes here. >
 < also remove all pics/build files/etc >
+< should make sure pics and bin are created first. >

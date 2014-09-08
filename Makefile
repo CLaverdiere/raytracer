@@ -8,7 +8,8 @@ NFF_DIR=./nff
 PICS_DIR=./pics
 SRC_DIR=./src
 
-CFLAGS=-std=c++11 -g -Wall
+# CFLAGS=-std=c++11 -g -Wall
+CFLAGS=-g -Wall
 
 SRCS=$(wildcard $(SRC_DIR)/*.cpp)
 OBJS=$(SRCS:.cpp=.o)
