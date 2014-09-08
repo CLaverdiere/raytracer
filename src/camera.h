@@ -8,5 +8,5 @@ class Camera {
     // The 'right' vector is calculated directly from 'at' and 'up'.
     vec pos, at, up, right;
 
-    Camera(vec pos, vec at, vec up) : pos(pos), at(at), up(up) { right = at ^ up; };
+    Camera(vec pos, vec at, vec up);
 };

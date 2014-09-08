@@ -17,6 +17,8 @@ Resources used:
   - Mostly: Chapter 4 of the text.
   - Sphere intersection: 
       http://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
+  - Perspective projection:
+      http://stackoverflow.com/questions/5944109/raytracer-computing-eye-rays
 
 Both sphere and triangle tracing are functional.
 

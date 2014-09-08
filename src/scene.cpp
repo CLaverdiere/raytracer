@@ -76,7 +76,7 @@ void Scene::trace_scene() {
       vec d;
 
       if(projection_type == Perspective) {
-        d = camera->at.unit() + (u * camera->right.unit()) + (v * camera->up.unit()) - camera->pos; // TODO subtract camera pos here?
+        d = camera->at + (u * camera->right) + (v * camera->up); // TODO subtract camera pos here?
         vec dnorm = d.unit();
         color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, camera, lights,
             scene_objects, projection_type, shading_method, 0);

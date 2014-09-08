@@ -1,5 +1,7 @@
 #include "parser.h"
 
+// TODO Object material properties should be unique to each object.
+
 void parse_nff_file(const char* filename, std::map<std::string, double>
     &scene_attrs, std::vector<Surface*> &scene_objects, std::vector<Light> &lights) {
   std::ifstream fi;
