@@ -5,8 +5,8 @@
 Camera::Camera(vec pos, vec at, vec up) { 
   this->pos = pos;
   this->at = at;
-  this->at_d = at - pos;
-  this->at_u = this->at_d.unit();
   this->up = up.unit();
-  this->right = (this->at_u ^ this->up).unit(); 
+  this->b_w = (pos - at).unit();
+  this->b_u = (up ^ b_w).unit();
+  this->b_v = (b_w ^ b_u).unit();
 };

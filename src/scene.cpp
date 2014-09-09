@@ -67,13 +67,6 @@ void Scene::trace_scene() {
       double u = l + ((r - l) * (j + 0.5) / scene_attrs["resy"]);
       double v = b + ((t - b) * (i + 0.5) / scene_attrs["resx"]);
 
-      // Rotate the image coordinates using standard rotation matrix.
-      // TODO fix stretching of image.
-      // [ cos, -sin ] * [u]
-      // [ sin, cos ]    [v]
-      u = cos(angle) * u - sin(angle) * v;
-      v = sin(angle) * u + cos(angle) * v;
-
       // There's a bug where the image is generated upside down.
       // Probably because I stored the height data backwards.
       // Until I find it, this is the fix, lol.
@@ -83,7 +76,7 @@ void Scene::trace_scene() {
       vec d, dnorm;
 
       if(projection_type == Perspective) {
-        d = camera->at_u + (u * camera->right) + (v * camera->up); // Use at_d do not normalize at vector.
+        d = (-camera->b_w) + (u * camera->b_u) + (v * camera->b_v);
         dnorm = d.unit();
         color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, camera, lights,
             scene_objects, projection_type, shading_method, 0);
