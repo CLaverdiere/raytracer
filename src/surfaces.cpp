@@ -6,8 +6,15 @@
 
 // TODO Separate these shapes into their own files.
 
-Sphere::Sphere(Color dc, vec c, double r) : c(c), r(r) { 
-  this->dc = dc;
+SurfaceAttr::SurfaceAttr() :
+  fill(Color(0,0,0)), kd(0), ks(0), shine(0), t(0), ior(0) { };
+
+SurfaceAttr::SurfaceAttr(Color fill, double kd, double ks, double shine, double t, double ior) :
+  fill(fill), kd(kd), ks(ks), shine(shine), t(t), ior(ior) { };
+
+
+Sphere::Sphere(SurfaceAttr attr, vec c, double r) : c(c), r(r) { 
+  this->attr = attr;
 };
 
 // e: location vector of camera.
@@ -59,8 +66,8 @@ std::ostream &operator << (std::ostream &out, Sphere &s) {
   return out;
 }
 
-Triangle::Triangle(Color dc, vec v1, vec v2, vec v3) : v1(v1), v2(v2), v3(v3) { 
-  this->dc = dc;
+Triangle::Triangle(SurfaceAttr attr, vec v1, vec v2, vec v3) : v1(v1), v2(v2), v3(v3) { 
+  this->attr = attr;
 };
 
 // TODO implement.
@@ -143,8 +150,8 @@ std::ostream &operator << (std::ostream &out, Triangle &t) {
   return out;
 }
 
-Plane::Plane(Color dc, vec n, vec q) : n(n), q(q) {
-  this->dc = dc;
+Plane::Plane(SurfaceAttr attr, vec n, vec q) : n(n), q(q) {
+  this->attr = attr;
 };
 
 // TODO implement.

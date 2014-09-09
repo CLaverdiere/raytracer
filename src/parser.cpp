@@ -8,6 +8,9 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
   std::ifstream ifs;
   std::istream* fi;
 
+  // Keep global set of surface attributes for object creation.
+  SurfaceAttr attr;
+
   // Use stdin if filename is empty.
   if(strcmp(filename, "")) {
     fi = &ifs;
@@ -15,8 +18,6 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
   } else {
     fi = &std::cin;
   }
-
-  Color fill_col;
 
   // Identifier storage.
   std::string in;
@@ -40,17 +41,17 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       (*fi) >> in; (*fi) >> in; (*fi) >> in; (*fi) >> in; // apex vector, radius.
 
     } else if(in == "f") { // Object material properties.
-      (*fi) >> scene_attrs["fill_r"]; // red
-      (*fi) >> scene_attrs["fill_g"]; // green
-      (*fi) >> scene_attrs["fill_b"]; // blue
-      (*fi) >> scene_attrs["kd"];     // diffuse component
-      (*fi) >> scene_attrs["ks"];     // specular
-      (*fi) >> scene_attrs["shine"];  // phong cosine power
-      (*fi) >> scene_attrs["t"];      // transmittance
-      (*fi) >> scene_attrs["ior"];    // index of refraction
-      fill_col = Color(scene_attrs.at("fill_r"),
-                       scene_attrs.at("fill_g"),
-                       scene_attrs.at("fill_b"));
+      double tempr, tempg, tempb;
+      (*fi) >> tempr; // red
+      (*fi) >> tempg; // green
+      (*fi) >> tempb; // blue
+      attr.fill = Color(tempr, tempg, tempb);
+
+      (*fi) >> attr.kd;     // diffuse component
+      (*fi) >> attr.ks;     // specular
+      (*fi) >> attr.shine;  // phong cosine power
+      (*fi) >> attr.t;      // transmittance
+      (*fi) >> attr.ior;    // index of refraction
 
     } else if(in == "l") { // Positional light location.
       // Optional RGB light component not implemented.
@@ -76,7 +77,7 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
         verts[i % 3] = vec(vx, vy, vz);
 
         if(i >= 2) { // We have at least three vertices parsed to form a triangle.
-          scene_objects.push_back(new Triangle(fill_col, verts[0], verts[1], verts[2]));
+          scene_objects.push_back(new Triangle(attr, verts[0], verts[1], verts[2]));
         }
       }
 
@@ -97,7 +98,7 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       (*fi) >> cy;  // centery
       (*fi) >> cz;  // centerz
       (*fi) >> rad; // radius
-      scene_objects.push_back(new Sphere(fill_col, vec(cx, cy, cz), rad));
+      scene_objects.push_back(new Sphere(attr, vec(cx, cy, cz), rad));
 
     } else if(in == "v") { // Viewing vectors and angles.
 
