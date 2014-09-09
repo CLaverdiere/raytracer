@@ -55,12 +55,15 @@ void Scene::export_scene(const char* filename, std::string filetype) {
 
 void Scene::trace_scene() {
   int loading_delim = scene_attrs["resy"] / LOADING_WIDTH;
-  double l = -1, r = 1, b = -1, t = 1; // TODO What should these really be?
-
-  // TODO Implement FOV.
 
   // Angle is in degrees, so convert to rads.
   double angle = (scene_attrs["angle"] * M_PI) / 180;
+
+  // Compute image plane dimensions.
+  double t = tan(angle / 2);
+  double b = -t;
+  double l = -t;
+  double r = t;
 
   for(int i=0; i<scene_attrs["resy"]; i++) {
     for(int j=0; j<scene_attrs["resx"]; j++) {
@@ -69,7 +72,7 @@ void Scene::trace_scene() {
 
       // There's a bug where the image is generated upside down.
       // Probably because I stored the height data backwards.
-      // Until I find it, this is the fix, lol.
+      // Until I find it, this is the fix.
       v = -v;
 
       Color color;
