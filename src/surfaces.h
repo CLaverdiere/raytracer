@@ -2,11 +2,19 @@
 #include "color.h"
 #include "vec.h"
 
-// TODO find how to avoid redeclaring the virtual methods in derived classes.
+// Attribute container for surfaces.
+struct SurfaceAttr {
+  Color fill;
+  double kd, ks, shine, t, ior;
+
+  SurfaceAttr();
+  SurfaceAttr(Color fill, double kd, double ks, double shine, double t, double ior);
+};
+
 
 class Surface {
   public:
-    Color dc; // default color
+    SurfaceAttr attr; // Surface attributes.
 
     // Determines if our surface is hit by a unit vector d, from origin e.
     virtual bool hit(vec e, vec d) = 0;
@@ -24,7 +32,7 @@ class Sphere: public Surface {
     vec c; // center
     double r; // radius
 
-    Sphere(Color dc, vec c, double r);
+    Sphere(SurfaceAttr attr, vec c, double r);
     bool hit(vec e, vec d);
     bool get_intersection(vec &ip, vec e, vec d, float lower_t_bound);
     void get_surface_normal(vec &norm, vec ip, Camera* camera);
@@ -40,7 +48,7 @@ class Triangle: public Surface {
     // A triangle is defined by three vertices.
     vec v1, v2, v3;
 
-    Triangle(Color dc, vec v1, vec v2, vec v3);
+    Triangle(SurfaceAttr attr, vec v1, vec v2, vec v3);
     bool hit(vec e, vec d);
     bool get_intersection(vec &ip, vec e, vec d, float lower_t_bound);
     void get_surface_normal(vec &norm, vec ip, Camera* camera);
@@ -55,7 +63,7 @@ class Plane: public Surface {
     //   and a point q on the plane.
     vec n, q;
 
-    Plane(Color dc, vec n, vec q);
+    Plane(SurfaceAttr attr, vec n, vec q);
     bool hit(vec e, vec d);
     bool get_intersection(vec &ip, vec e, vec d, float lower_t_bound);
     void get_surface_normal(vec &norm, vec ip, Camera* camera);

@@ -57,7 +57,7 @@ void Scene::trace_scene() {
   int loading_delim = scene_attrs["resy"] / LOADING_WIDTH;
   double l = -1, r = 1, b = -1, t = 1; // TODO What should these really be?
 
-  // Implement FOV.
+  // TODO Implement FOV.
 
   // Angle is in degrees, so convert to rads.
   double angle = (scene_attrs["angle"] * M_PI) / 180;
@@ -97,7 +97,7 @@ void Scene::trace_scene() {
             lights, scene_objects, projection_type, shading_method, 0);
       }
 
-      pixels[(i*(int)scene_attrs["resy"]+j)*3] =   (unsigned int) color.x;
+      pixels[(i*(int)scene_attrs["resy"]+j)*3]   = (unsigned int) color.x;
       pixels[(i*(int)scene_attrs["resy"]+j)*3+1] = (unsigned int) color.y;
       pixels[(i*(int)scene_attrs["resy"]+j)*3+2] = (unsigned int) color.z;
     }

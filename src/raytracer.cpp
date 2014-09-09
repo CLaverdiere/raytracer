@@ -85,13 +85,13 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
       // Shading computations.
       if(!in_shadow) {
         if(shading_method == Lambertian) {
-          shade += s->dc * light.intensity * std::max(0.0, n*ld);
+          shade += s->attr.fill * light.intensity * std::max(0.0, n*ld);
         } else if(shading_method == Blinn_Phong) {
           vec h = (v + ld);
-          shade += s->dc * light.intensity * (scene_attrs["kd"] * (std::max(0.0, n*ld))
-            + scene_attrs["ks"] * pow(std::max(0.0, n*h), scene_attrs["shine"]));
+          shade += s->attr.fill * light.intensity * (s->attr.kd * (std::max(0.0, n*ld))
+            + s->attr.ks * pow(std::max(0.0, n*h), s->attr.shine));
         } else { // No shading.
-          shade = s->dc;
+          shade = s->attr.fill;
         }
       }
 
@@ -100,7 +100,7 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
         vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
         Camera camera_shifted = *camera;
         camera_shifted.pos += ip;
-        shade += scene_attrs["ks"] * this->compute_pixel_value(mirror_ray,
+        shade += s->attr.ks * this->compute_pixel_value(mirror_ray,
             scene_attrs, scene_flags, &camera_shifted, lights, scene_objects,
             projection_type, shading_method, recursion_depth+1); // TODO not sure if "ks" goes here or not.
       } 

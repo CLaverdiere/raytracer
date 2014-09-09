@@ -18,7 +18,7 @@ void offset_saturation_multi(std::vector<Surface*> scene_objects) {
     double r = (rand() % 10) / 10.0;
     Surface* s = *it;
 
-    s->dc *= r;
+    s->attr.fill *= r;
   }
 }
 
@@ -43,8 +43,8 @@ void offset_hue_multi(std::vector<Surface*> scene_objects) {
     double rb = (rand() % 10) / 10.0;
     Surface* s = *it;
 
-    s->dc.x = s->dc.x * rr;
-    s->dc.y = s->dc.y * rg;
-    s->dc.z = s->dc.z * rb;
+    s->attr.fill.x = s->attr.fill.x * rr;
+    s->attr.fill.y = s->attr.fill.y * rg;
+    s->attr.fill.z = s->attr.fill.z * rb;
   }
 }
