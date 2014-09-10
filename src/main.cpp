@@ -18,7 +18,7 @@ int main(int argc, const char *argv[])
   bool shadows_on = false;
   double light_intensity = .71;
   Projection projection_type = Perspective;
-  Shading shading_method = None;
+  Shading shading_method = Blinn_Phong;
 
   // Parse command line flags.
   // -l : loading bar. Display a loading bar while raytracing happens.

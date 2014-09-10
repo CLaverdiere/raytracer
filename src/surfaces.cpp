@@ -142,7 +142,7 @@ bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
 // of any two sides.
 // TODO only compute this once.
 void Triangle::get_surface_normal(vec &norm, vec ip, Camera* camera) {
-  norm = (v2-v1) ^ (v3-v1);
+  norm = ((v2-v1) ^ (v3-v1)).unit();
 };
 
 std::ostream &operator << (std::ostream &out, Triangle &t) {
@@ -173,5 +173,5 @@ bool Plane::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
 };
 
 void Plane::get_surface_normal(vec &norm, vec ip, Camera* camera) {
-  norm = n;
+  norm = n.unit();
 };

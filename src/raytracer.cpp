@@ -57,6 +57,7 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
   if(intersection) {
     ip = closest_ip;
     s = closest_surface;
+    s->get_surface_normal(n, ip, camera); // (stores in n) unit vector for surface normal.
 
     if(!scene_flags["bg_blend_effect"]) {
       shade.x = 0; shade.y = 0; shade.z = 0;
@@ -66,7 +67,6 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
     for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
       bool in_shadow = false;
       Light light = *lit;
-      s->get_surface_normal(n, ip, camera); // (stores in n) unit vector for surface normal.
       ld = (light.pos - ip).unit(); // unit vector pointing towards light source. // BUG: should be ip - light?
       v = -ray; // unit vector pointing towards camera.
 
@@ -85,11 +85,12 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
       // Shading computations.
       if(!in_shadow) {
         if(shading_method == Lambertian) {
-          shade += s->attr.fill * light.intensity * std::max(0.0, n*ld);
+          shade += s->attr.fill * (s->attr.kd * light.intensity * std::max(0.0, n*ld));
         } else if(shading_method == Blinn_Phong) {
-          vec h = (v + ld);
-          shade += s->attr.fill * light.intensity * (s->attr.kd * (std::max(0.0, n*ld))
-            + s->attr.ks * pow(std::max(0.0, n*h), s->attr.shine));
+          vec h = (v + ld).unit();
+          double diffuse_comp = s->attr.kd * light.intensity * std::max(0.0, n*ld);
+          double specular_comp = s->attr.ks * light.intensity * pow(std::max(0.0, n*h), s->attr.shine);
+          shade += s->attr.fill * (diffuse_comp + specular_comp);
         } else { // No shading.
           shade = s->attr.fill;
         }
