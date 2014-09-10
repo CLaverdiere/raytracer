@@ -6,6 +6,11 @@ Making / Running the project:
   - Or, just run './bin/trace pic_name.nff' to generate the .pam file.
   - Also accepts support from stdin. ie: './tetra -s 3 | ./bin/trace'
 
+Assignment 1 Commands:
+  - make tetra-3.png
+  - make balls-3.png (Extra Credit)
+  Both should generate identical images to those on the 435 course webpage.
+
 Configuration:
   - See the top of 'src/main.cpp' for program settings and cli flags.
 
@@ -26,6 +31,8 @@ Resources used:
   - Perspective projection:
       http://stackoverflow.com/questions/5944109/raytracer-computing-eye-rays
 
-< git log filename goes here. >
-< also remove all pics/build files/etc >
-< should make sure pics and bin are created first. >
+Git log:
+  - I was using my own git repository for this. Merging this repo with the
+    school one would be tedious, so I've included a git log file.
+
+  Log file location: "./git_log.txt"

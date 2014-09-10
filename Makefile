@@ -25,6 +25,9 @@ $(EXEC):
 	$(EXEC) -l $<
 
 $(EXEC): $(OBJS)
+	mkdir -p $(BUILD_DIR)
+	mkdir -p $(PICS_DIR)
+	mkdir -p $(NFF_DIR)
 	$(CC) $(CFLAGS) -o $(EXEC) $(OBJS)
 
 .cpp.o:

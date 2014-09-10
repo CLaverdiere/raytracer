@@ -1,0 +1,414 @@
+commit 8c57bf3fe7a82ee737ffd6d1a9303d0cb17dd57f
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 9 22:37:17 2014 -0400
+
+    Fix triangle-fanning code in parser.
+
+commit 35ecfa3ea2bd6b57cf4a2efd393bb5b1d5e8126c
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 9 18:01:47 2014 -0400
+
+    angle attribute (fov) implemented.
+
+commit 4931401a8c7e7267614baf06e3dbd9638f5650ca
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 9 17:55:05 2014 -0400
+
+    Change camera vector names to better reflect basis concepts.
+
+commit 18f6c06c92b2d4949c1954a00163c7662b68a987
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Mon Sep 8 23:16:11 2014 -0400
+
+    Lots of new nff files.
+
+commit 1dcc3d2ecaed8073ca87d9b1e7dd2e629eb4aa29
+Merge: 12b958a 86a2cff
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Mon Sep 8 23:02:44 2014 -0400
+
+    Merge branch 'master' of bitbucket.org:CMLaverdiere/raytracer
+
+commit 12b958a8be52d621e73d1e54deee68f86e5e19cf
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Mon Sep 8 22:57:29 2014 -0400
+
+    Fill properties now part of surface, not scene.
+
+commit 86a2cff9212f6d9eff3d1ac304665e5b01f85314
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Mon Sep 8 22:57:29 2014 -0400
+
+    Fill properties now part of surface, not scene.
+
+commit 569a47b72bbda2c01629601ab5a2867e78b2e8bb
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Mon Sep 8 15:32:56 2014 -0400
+
+    Add optimization flag to makefile.
+
+commit d28bd95c39b14dab909327d686853d4543a2a959
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Mon Sep 8 15:10:58 2014 -0400
+
+    Patch for upside-down bug.
+
+commit d3c280d01ab071222791ab58521a33495f6f9bb5
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Mon Sep 8 14:26:16 2014 -0400
+
+    Perspective view bugfix. Works now.
+
+commit 8cce4235d9f22b79871436d13945ec7f690e0cfb
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 7 23:16:26 2014 -0400
+
+    README update.
+
+commit c0eb9e08fbbdbfc403b404a451f21f827c47c92f
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 7 23:06:37 2014 -0400
+
+    Add stdin support for parser.
+
+commit f62ee6345a2409c5ef1dbf2b8f4c5fee675363ed
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 7 21:20:16 2014 -0400
+
+    Perspective view tweaks. Camera constructor.
+
+commit 5c6482d849ff6ca763c166b194ff64877c33719d
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 7 18:27:13 2014 -0400
+
+    Some new nff files / pictures.
+
+commit 51e39dcb920475247c6730c98ae02f380deb4801
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 7 18:26:50 2014 -0400
+
+    Fixes to perspective view, camera changes.
+
+commit 1f2775612241376fdee6a018157f0bc9085aa922
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Sep 6 19:29:27 2014 -0400
+
+    vector class tweaks.
+
+commit 873fcda21deb6b1ef161fe3acbe5d19662d4dd17
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Sep 6 18:11:35 2014 -0400
+
+    Makefile now works.
+
+commit 349fba0fadbcb91bbad681a158997d7be7e187b0
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Sep 6 15:13:07 2014 -0400
+
+    Update readme with run info.
+
+commit 209c123f6c8e33bb86d25bdc1e88a72336f1a13a
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Sep 6 14:31:38 2014 -0400
+
+    Parser: parse comments.
+
+commit aa166580662ec57661b5ec94a3f9252177f99ed8
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 3 22:22:03 2014 -0400
+
+    Implement angle attribute.
+
+commit d2955edd95a6ca91f504163150820a484e6cb693
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 3 22:01:21 2014 -0400
+
+    File output formatting.
+
+commit 12fe76af289523c7bfc20a49acd72717fe11e23d
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 3 21:49:39 2014 -0400
+
+    Add light intensity option, warning messages.
+
+commit 382bf39f6089f6805ac29652dd569d800316fb38
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 3 21:30:28 2014 -0400
+
+    Implement other parser characters.
+
+commit 2b1b67bae266020a5680fd585ba5d4aac1e60814
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 2 22:45:59 2014 -0400
+
+    Fix vector bug in triangle intersect code.
+
+commit 1d5b4ce394ee0dc2c546993815a1794834f9d98d
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 2 22:35:26 2014 -0400
+
+    Tweak triangle intersection code for speed.
+
+commit c72efe3d2320bffe1c5e91b5fe5542891fc4cc2f
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 2 20:06:05 2014 -0400
+
+    Parser rewrite. More flexible, some characters still not implemented.
+
+commit b30146f3bab89d0f708e15e2457b45659e9020a5
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 2 17:53:27 2014 -0400
+
+    Create original vector math class. Refactor accordingly.
+
+commit b0af81e2ef2ebc26f22696764b6597d6c7cd5281
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 2 15:37:05 2014 -0400
+
+    Add filename command line argument.
+
+commit 89dcb6cc6de04eed10f051e5a5f48d81ab544a04
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 2 14:51:24 2014 -0400
+
+    Add pam file support alongside ppm
+
+commit e78aa6e08cccfa4b0929381d6811cccfe142d52d
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Aug 31 12:04:38 2014 -0400
+
+    Add options for hue / saturation.
+
+commit f4294eb27cd8c328e86768560b01f67ee41458b6
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Aug 30 22:43:58 2014 -0400
+
+    A really cool snowflake-esque picture.
+
+commit 39332a950a40aabd409bc56d8a4779123f52a015
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Aug 30 22:13:24 2014 -0400
+
+    Fix reflection code.
+
+commit ca5e6a565ce455809125bb596ea1367c31ef90df
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Aug 30 21:41:13 2014 -0400
+
+    Add blend effect option.
+
+commit 50a4fc79072900b91b03c9f47e64ff056e9bb9a3
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Aug 30 21:33:56 2014 -0400
+
+    Leave black-shade reset commented out.
+
+commit 1197719de2d2e3c24bdee94ede75eaa6c09110fe
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Aug 30 21:18:59 2014 -0400
+
+    Remove black outline bug.
+
+commit 1b7d7ce737d1c1f257c382bbf7d9b306d3af4777
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Aug 26 12:26:22 2014 -0400
+
+    Add readme, fix whitespace.
+
+commit e9e53aa7c25ca641f79499ad3693e89ada7749ee
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Aug 3 14:42:55 2014 -0400
+
+    Documentation fixes.
+
+commit f45bf9ffe6238a224af93cb3af4227ed3f14262a
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Aug 3 13:39:33 2014 -0400
+
+    quiet command line option.
+
+commit e28bba814289aaa064dbef50b897ee20b9898fc7
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Aug 3 13:27:23 2014 -0400
+
+    Command line options.
+
+commit 22597988ce6189a9f74e6f4cf7134ce0b6cd67a3
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Fri Aug 1 17:53:59 2014 -0400
+
+    Basic plane collision. No shading.
+
+commit 40a759fa1a08d8a06fc04d2419489d76a7cf0e85
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Jul 19 13:11:39 2014 -0400
+
+    Add options for enabling shadows / reflections.
+
+commit e90f545f1b12185124ad6e152a70e8da9aece3df
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Jul 19 10:30:19 2014 -0400
+
+    Implement specular reflection.
+
+commit 2cd204855a6bd01bc3d7a113fb01fd86bfe27318
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Fri Jul 18 19:14:10 2014 -0400
+
+    Fix all memory leaks.
+
+commit 1949599a0205a5ef60952477f8659d9bd60e5cc9
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Fri Jul 18 18:12:34 2014 -0400
+
+    Use seekg for cleaner file parsing.
+
+commit 822cc1f55e30518a9478d332180c7c63fbad1b32
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Thu Jul 17 20:06:31 2014 -0400
+
+    Add loading indicator.
+
+commit 3b6958991da3a375749eecf4ec4a123c910892cd
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Thu Jul 17 19:28:46 2014 -0400
+
+    Naive shadows implemented.
+
+commit b1a77b2a8e6d6bd053cd9126e8b7f29872a30f25
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Jul 16 18:11:03 2014 -0400
+
+    Add color variation methods.
+
+commit 2688e0c886218cbdb0b6f20c3bbe90f0eed5562c
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Jul 15 19:57:37 2014 -0400
+
+    Get the damn makefile working properly.
+
+commit 436c8780b3d099b3d6fd3d7fdc479317015184ac
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Jul 15 18:55:43 2014 -0400
+
+    Use vec as base for Color.
+
+commit 26c72b976df60eefede68faed212c556a18a25ee
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Jul 13 11:42:29 2014 -0400
+
+    The great refactoring from hell: scene attributes.
+
+commit 31dc60b586430288432eafca3103e6b7c67c96cf
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Jul 12 16:54:19 2014 -0400
+
+    Blinn-Phong shading implemented.
+
+commit 361ae0107c717a057871c5c0aa0ebafc9bec2f17
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Jul 12 15:53:08 2014 -0400
+
+    Closer objects now cover further ones.
+
+commit ff45963a682bf69841eea0bf4b4e3f51eacefb4a
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Jul 12 15:09:16 2014 -0400
+
+    Projection enum.
+
+commit f324f802894b50c177228c7eaf12886e13648cab
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Jul 12 15:01:10 2014 -0400
+
+    Parallel / Perspective viewing mode added.
+
+commit 9c5396b092379734a58297ec12c136a9118f2434
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Thu Jun 26 21:28:16 2014 -0400
+
+    Add image plane dimension heuristics.
+
+commit 02ded9126b600b22d5037e6b2f8315d4cb6ff669
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Thu Jun 26 20:52:38 2014 -0400
+
+    File object viewing nearly done.
+
+commit 37c1be31b59ea7e58d629fb7c0cb9f6b6e607bee
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Jun 24 20:09:31 2014 -0400
+
+    Partial file object viewing.
+
+commit 515a31ff7d2ea724aee0fd5d55bf001ff477c128
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Jun 21 20:48:55 2014 -0400
+
+    File object creation done.
+
+commit 2de124c881494b075322ca37d08b96be3d318cb0
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Jun 21 20:15:52 2014 -0400
+
+    File parsing input done.
+
+commit fc04776d4fa7b409c30330bd71713ce2e74367cf
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sat Jun 21 14:52:58 2014 -0400
+
+    Support for colors, and light intensity
+
+commit 3de7d3924c3f5e8942790d3c11591a5eeccdcb3b
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Fri Jun 20 19:49:48 2014 -0400
+
+    Support for multiple light sources.
+
+commit 7e1560264962bb9fddee822d559ee906d8507d8d
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Thu Jun 19 19:57:56 2014 -0400
+
+    Triangle math done, still buggy.
+
+commit b9c90d72143e961d138e78cdcc4ba4c1c98d0155
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Jun 18 20:31:52 2014 -0400
+
+    Basic object model complete
+
+commit 776146c19366797c97182445861cb6efcbbfec4a
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Jun 17 21:50:14 2014 -0400
+
+    Further refactoring, more Scene / Raytracer methods.
+
+commit baa871919a1cf7bd14ca7dfdd21d06e83a8bce00
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Mon Jun 16 21:44:27 2014 -0400
+
+    Create Scene class, more refactoring.
+
+commit 9a9b319b95b36daf46758b49bab77284768adc5c
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Jun 15 21:08:20 2014 -0400
+
+    Organize directory structure.
+
+commit 07e2cbc3a6126992178cc6edfc6bb0139d62d828
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Jun 15 20:56:02 2014 -0400
+
+    Create abstract Surface and Sphere classes, and refactor some code around them.
+
+commit 42c517dd474b10ec007ddf7c636194e0144ff6f1
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Jun 15 13:03:54 2014 -0400
+
+    Lambertian Shading
+
+commit a9ec427f55e4edb72a37e12d8a4e4db123954763
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Jun 15 00:00:39 2014 -0400
+
+    Initial commit. Basic sphere raytracer + pics.
