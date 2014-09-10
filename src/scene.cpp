@@ -70,9 +70,7 @@ void Scene::trace_scene() {
       double u = l + ((r - l) * (j + 0.5) / scene_attrs["resy"]);
       double v = b + ((t - b) * (i + 0.5) / scene_attrs["resx"]);
 
-      // There's a bug where the image is generated upside down.
-      // Probably because I stored the height data backwards.
-      // Until I find it, this is the fix.
+      // Flip v coordinate vertically to move from top-left to bottom-left origin.
       v = -v;
 
       Color color;
@@ -83,7 +81,7 @@ void Scene::trace_scene() {
         dnorm = d.unit();
         color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, camera, lights,
             scene_objects, projection_type, shading_method, 0);
-      } else { // Parallel projection by default.
+      } else { // Parallel projection by default. TODO fix this.
         Camera camera_shifted = *camera;
         d = (camera->at - camera->pos);
         dnorm = d.unit();

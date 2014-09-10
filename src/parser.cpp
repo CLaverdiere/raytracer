@@ -68,15 +68,20 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       (*fi) >> num_verts;
 
       // First, read in a single vertex.
-      // Store this in an array of three vectors, representing a triangle.
-      // This overwrites the oldest vector with the newest one parsed, or a new vector if empty.
+      // This vertex will always stay in our vertex list.
+      // Then, read in the next two vertices.
+      //   If there are more than 3 vertices, we replace either the 2nd and 3rd
+      //   vertices, but keep the 1st in place.
       // Add that new triangle to our object collection. Repeat.
-      for(int i=0; i < num_verts; i++) {
+      (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
+      verts[0] = vec(vx, vy, vz);
+
+      for(int i=0; i < num_verts-1; i++) {
         (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
         
-        verts[i % 3] = vec(vx, vy, vz);
+        verts[(i % 2) + 1] = vec(vx, vy, vz);
 
-        if(i >= 2) { // We have at least three vertices parsed to form a triangle.
+        if(i >= 1) { // We have at least three vertices parsed to form a triangle.
           scene_objects.push_back(new Triangle(attr, verts[0], verts[1], verts[2]));
         }
       }
