@@ -101,7 +101,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       if(recursion_depth < MAX_RECURSION_DEPTH && scene_flags["reflections_on"]) {
         vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
         vec eye_shifted = eye + ip;
-        shade += s->attr.ks * this->compute_pixel_value(mirror_ray, eye,
+        shade += s->attr.ks * this->compute_pixel_value(mirror_ray, eye_shifted,
             scene_attrs, scene_flags, lights, scene_objects,
             projection_type, shading_method, recursion_depth+1);
       } 
