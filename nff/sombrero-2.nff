@@ -3,9 +3,9 @@ v
 from 0 5 -8
 at 0 0 0
 up 0 0 1
-angle 0
+angle 40
 hither 0.01
-resolution 128 128
+resolution 512 512
 l 10 10 -10
 f 1 0.1 0.1 0.8 0 2.60078 0 1
 p 3
