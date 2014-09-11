@@ -67,6 +67,7 @@ std::ostream &operator << (std::ostream &out, Sphere &s) {
 }
 
 Triangle::Triangle(SurfaceAttr attr, vec v1, vec v2, vec v3) : v1(v1), v2(v2), v3(v3) { 
+  this->norm = ((v2-v1) ^ (v3-v1)).unit();
   this->attr = attr;
 };
 
@@ -112,7 +113,7 @@ bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
   // double t = det3(matrix_t) / det_a;
   double t = -1 * (za_m_zc * ak_m_jb + ya_m_yc * jc_m_al + xa_m_xc * bl_m_kc) / M;
 
-  if(t < 0) { return false; }
+  if(t < lower_t_bound) { return false; }
 
   // Compute gamma
   // double matrix_gamma[] = { xa_m_xb, xa_m_xe, d.x,
@@ -139,10 +140,9 @@ bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
 };
 
 // The surface normal of a triangle is the cross product
-// of any two sides.
-// TODO only compute this once.
+// of any two sides, and is precomputed in the constructor.
 void Triangle::get_surface_normal(vec &norm, vec ip, vec eye) {
-  norm = ((v2-v1) ^ (v3-v1)).unit();
+  norm = this->norm;
 };
 
 std::ostream &operator << (std::ostream &out, Triangle &t) {

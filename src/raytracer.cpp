@@ -74,7 +74,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       if(scene_flags["shadows_on"]) {
         for(std::vector<Surface*>::iterator sit_sc=scene_objects.begin(); sit_sc != scene_objects.end(); ++sit_sc) {
           Surface* s_sc = *sit_sc; // surface shadow-candidate.
-          bool hit_surface = s_sc->get_intersection(placeholder, ip + eye, ld, 0);
+          bool hit_surface = s_sc->get_intersection(placeholder, ip + eye, ld, SHADOW_ADJUSTMENT);
           if(hit_surface) {
             in_shadow = true;
             break;

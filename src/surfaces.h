@@ -45,8 +45,9 @@ std::ostream &operator << (std::ostream &out, Sphere& s);
 
 class Triangle: public Surface {
   public:
-    // A triangle is defined by three vertices.
-    vec v1, v2, v3;
+    // A triangle is defined by three vertices. 
+    // It also has a single normal vector.
+    vec v1, v2, v3, norm;
 
     Triangle(SurfaceAttr attr, vec v1, vec v2, vec v3);
     bool hit(vec e, vec d);
