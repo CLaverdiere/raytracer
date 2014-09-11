@@ -79,16 +79,17 @@ void Scene::trace_scene() {
       if(projection_type == Perspective) {
         d = (-camera->b_w) + (u * camera->b_u) + (v * camera->b_v);
         dnorm = d.unit();
-        color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, camera, lights,
+        color = raytracer->compute_pixel_value(dnorm, camera->pos, scene_attrs, scene_flags, lights,
             scene_objects, projection_type, shading_method, 0);
       } else { // Parallel projection by default. TODO fix this.
-        Camera camera_shifted = *camera;
-        d = (camera->at - camera->pos);
-        dnorm = d.unit();
-        camera_shifted.pos.x = camera_shifted.pos.x + u;
-        camera_shifted.pos.y = camera_shifted.pos.y + v;
-        color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, &camera_shifted,
-            lights, scene_objects, projection_type, shading_method, 0);
+        std::cout << "WARNING: Using Parallel projection. This is still in development." << std::endl;
+        // Camera camera_shifted = *camera;
+        // d = (camera->at - camera->pos);
+        // dnorm = d.unit();
+        // camera_shifted.pos.x = camera_shifted.pos.x + u;
+        // camera_shifted.pos.y = camera_shifted.pos.y + v;
+        // color = raytracer->compute_pixel_value(dnorm, scene_attrs, scene_flags, &camera_shifted,
+        //     lights, scene_objects, projection_type, shading_method, 0);
       }
 
       pixels[(i*(int)scene_attrs["resy"]+j)*3]   = (unsigned int) color.x;

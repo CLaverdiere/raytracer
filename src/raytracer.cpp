@@ -22,10 +22,10 @@
 // TODO Passing way too many things here. Refactor this.
 // Possibly merge the raytracer object entirely into a scene
 //   class method.
-Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scene_attrs,
-    std::map<std::string, bool> scene_flags, Camera* camera, std::vector<Light>
-    lights, std::vector<Surface*> scene_objects, Projection projection_type,
-    Shading shading_method, int recursion_depth) {
+Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
+    double> scene_attrs, std::map<std::string, bool> scene_flags,
+    std::vector<Light> lights, std::vector<Surface*> scene_objects, Projection
+    projection_type, Shading shading_method, int recursion_depth) {
   Color shade(scene_attrs["bg_r"],
               scene_attrs["bg_g"],
               scene_attrs["bg_b"]);
@@ -38,7 +38,7 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
   // Closest object intersection calculations.
   for(std::vector<Surface*>::iterator sit=scene_objects.begin(); sit != scene_objects.end(); ++sit) {
     // (stores in ip) intersection point with surface.
-    bool hit_surface = (*sit)->get_intersection(ip, camera->pos, ray, 0);
+    bool hit_surface = (*sit)->get_intersection(ip, eye, ray, 0);
 
     if(hit_surface) {
       intersection = true;
@@ -57,7 +57,7 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
   if(intersection) {
     ip = closest_ip;
     s = closest_surface;
-    s->get_surface_normal(n, ip, camera); // (stores in n) unit vector for surface normal.
+    s->get_surface_normal(n, ip, eye); // (stores in n) unit vector for surface normal.
 
     if(!scene_flags["bg_blend_effect"]) {
       shade.x = 0; shade.y = 0; shade.z = 0;
@@ -74,7 +74,7 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
       if(scene_flags["shadows_on"]) {
         for(std::vector<Surface*>::iterator sit_sc=scene_objects.begin(); sit_sc != scene_objects.end(); ++sit_sc) {
           Surface* s_sc = *sit_sc; // surface shadow-candidate.
-          bool hit_surface = s_sc->get_intersection(placeholder, ip + camera->pos, ld, 0);
+          bool hit_surface = s_sc->get_intersection(placeholder, ip + eye, ld, 0);
           if(hit_surface) {
             in_shadow = true;
             break;
@@ -97,13 +97,13 @@ Color Raytracer::compute_pixel_value(vec ray, std::map<std::string, double> scen
       }
 
       // Specular Reflection Recursion.
+      // TODO avoid camera overhead. Just pass e.
       if(recursion_depth < MAX_RECURSION_DEPTH && scene_flags["reflections_on"]) {
         vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
-        Camera camera_shifted = *camera;
-        camera_shifted.pos += ip;
-        shade += s->attr.ks * this->compute_pixel_value(mirror_ray,
-            scene_attrs, scene_flags, &camera_shifted, lights, scene_objects,
-            projection_type, shading_method, recursion_depth+1); // TODO not sure if "ks" goes here or not.
+        vec eye_shifted = eye + ip;
+        shade += s->attr.ks * this->compute_pixel_value(mirror_ray, eye,
+            scene_attrs, scene_flags, lights, scene_objects,
+            projection_type, shading_method, recursion_depth+1);
       } 
     }
   }

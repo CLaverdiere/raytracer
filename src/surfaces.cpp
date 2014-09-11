@@ -54,9 +54,9 @@ bool Sphere::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
   return false;
 };
 
-void Sphere::get_surface_normal(vec &norm, vec ip, Camera* camera) {
+void Sphere::get_surface_normal(vec &norm, vec ip, vec eye) {
   // Distance from center of sphere to intersection point.
-  vec to_c = c - camera->pos;
+  vec to_c = c - eye;
 
   norm = (ip - to_c).unit(); // WANT ip - (sphere center - camera)
 };
@@ -141,7 +141,7 @@ bool Triangle::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
 // The surface normal of a triangle is the cross product
 // of any two sides.
 // TODO only compute this once.
-void Triangle::get_surface_normal(vec &norm, vec ip, Camera* camera) {
+void Triangle::get_surface_normal(vec &norm, vec ip, vec eye) {
   norm = ((v2-v1) ^ (v3-v1)).unit();
 };
 
@@ -172,6 +172,6 @@ bool Plane::get_intersection(vec &ip, vec e, vec d, float lower_t_bound) {
   return false;
 };
 
-void Plane::get_surface_normal(vec &norm, vec ip, Camera* camera) {
+void Plane::get_surface_normal(vec &norm, vec ip, vec eye) {
   norm = n.unit();
 };
