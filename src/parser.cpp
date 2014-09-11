@@ -67,23 +67,28 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
 
       (*fi) >> num_verts;
 
-      // First, read in a single vertex.
-      // This vertex will always stay in our vertex list.
-      // Then, read in the next two vertices.
-      //   If there are more than 3 vertices, we replace either the 2nd and 3rd
-      //   vertices, but keep the 1st in place.
+      // First, read in a three vertices.
+      // The first vertex will always stay in our vertex list.
+      // Then, for each vertex after the third
+      //   Push the 3rd vector into slot 2.
+      //   Read the new vector into the vacant 3rd slot.
       // Add that new triangle to our object collection. Repeat.
+      // This process is messy, but is unfortuneately how NFF outputs its vertices.
       (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
       verts[0] = vec(vx, vy, vz);
+      (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
+      verts[1] = vec(vx, vy, vz);
+      (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
+      verts[2] = vec(vx, vy, vz);
+      scene_objects.push_back(new Triangle(attr, verts[0], verts[1], verts[2]));
 
-      for(int i=0; i < num_verts-1; i++) {
+      for(int i=0; i < num_verts-3; i++) {
         (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
         
-        verts[(i % 2) + 1] = vec(vx, vy, vz);
+        verts[1] = verts[2];
+        verts[2] = vec(vx, vy, vz);
 
-        if(i >= 1) { // We have at least three vertices parsed to form a triangle.
-          scene_objects.push_back(new Triangle(attr, verts[0], verts[1], verts[2]));
-        }
+        scene_objects.push_back(new Triangle(attr, verts[0], verts[1], verts[2]));
       }
 
     } else if(in == "pp") { // Polygonal patch primitive.

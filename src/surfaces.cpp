@@ -67,7 +67,7 @@ std::ostream &operator << (std::ostream &out, Sphere &s) {
 }
 
 Triangle::Triangle(SurfaceAttr attr, vec v1, vec v2, vec v3) : v1(v1), v2(v2), v3(v3) { 
-  this->norm = ((v2-v1) ^ (v3-v1)).unit();
+  this->norm = ((v2-v1) ^ (v3-v2)).unit();
   this->attr = attr;
 };
 

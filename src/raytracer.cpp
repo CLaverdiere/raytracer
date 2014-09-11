@@ -97,7 +97,6 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       }
 
       // Specular Reflection Recursion.
-      // TODO avoid camera overhead. Just pass e.
       if(recursion_depth < MAX_RECURSION_DEPTH && scene_flags["reflections_on"]) {
         vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
         vec eye_shifted = eye + ip;
