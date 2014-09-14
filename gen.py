@@ -84,7 +84,6 @@ def gen_sphere_paths():
 # Random sphere blob
 def gen_sphere_blob():
     ds = rad * 2
-    chance = .1
     pos = [0, 0, 0]
     while True:
         col = random.sample([i / 10. for i in range(1, 9)], 3)
@@ -131,18 +130,17 @@ def make_single_mountain():
                 spheres.append(Sphere(pos, rad, col))
     return spheres
 
-# 3d curve eqn: (sinx * siny) / (x*y)
+# 3d curve eqn: (sinx + siny)
 def make_multi_mountain():
     spheres = []
     for x in range(-100, 100, 5):
         for y in range(-100, 100, 5):
-            if(x != 0 and y != 0):
-                col = random.sample([i / 10. for i in range(1, 9)], 3)
-                sx = x / 10.
-                sy = y / 10.
-                z = math.sin(sx) + math.sin(sy)
-                pos = [sx, sy, z]
-                spheres.append(Sphere(pos, rad, col))
+            col = random.sample([i / 10. for i in range(1, 9)], 3)
+            sx = x / 10.
+            sy = y / 10.
+            z = math.sin(sx) + math.sin(sy)
+            pos = [sx, sy, z]
+            spheres.append(Sphere(pos, rad, col))
     return spheres
 
 def main():
