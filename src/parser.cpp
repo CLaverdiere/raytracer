@@ -58,6 +58,7 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       double lx, ly, lz;
       (*fi) >> lx; (*fi) >> ly; (*fi) >> lz;
       lights.push_back(Light(scene_attrs["light_intensity"], vec(lx, ly, lz)));
+      scene_attrs["num_lights"] += 1;
 
     } else if(in == "p") { // Polygon primitive.
       // For an n sided polygon, split it into triangles.
@@ -91,6 +92,8 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
         scene_objects.push_back(new Triangle(attr, verts[0], verts[1], verts[2]));
       }
 
+      scene_attrs["num_triangles"] += num_verts - 2;
+
     } else if(in == "pp") { // Polygonal patch primitive.
       // Same process as polygon. I throw away the normals.
       double vx, vy, vz;
@@ -119,6 +122,8 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
         scene_objects.push_back(new Triangle(attr, verts[0], verts[1], verts[2]));
       }
 
+      scene_attrs["num_triangles"] += num_verts - 2;
+
     } else if(in == "s") { // Sphere primitive.
       double cx, cy, cz, rad;
       (*fi) >> cx;  // centerx
@@ -126,6 +131,7 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       (*fi) >> cz;  // centerz
       (*fi) >> rad; // radius
       scene_objects.push_back(new Sphere(attr, vec(cx, cy, cz), rad));
+      scene_attrs["num_spheres"] += 1;
 
     } else if(in == "v") { // Viewing vectors and angles.
 

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <string>
 #include "parser.h"
 #include "string.h"
@@ -16,7 +17,6 @@ int main(int argc, const char *argv[])
   bool random_saturation = false;
   bool reflections_on = false;
   bool shadows_on = true;
-  double light_intensity = .75;
   Projection projection_type = Perspective;
   Shading shading_method = Blinn_Phong;
 
@@ -84,8 +84,16 @@ int main(int argc, const char *argv[])
   std::vector<Surface*> scene_objects;
   std::vector<Light> lights;
 
-  scene_attrs["light_intensity"] = light_intensity;
+  scene_attrs["num_lights"] = 0; // incremented as encountered in parser.
   parse_nff_file(in_file.c_str(), scene_attrs, scene_objects, lights);
+  scene_attrs["light_intensity"] = 1 / sqrt(scene_attrs["num_lights"]);
+
+  // Update light intensity for all parsed lights.
+  // We need to do this after the fact, since the intensity depends on the
+  // total number of lights in the scene.
+  for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
+    lit->intensity = scene_attrs["light_intensity"];
+  }
 
   // Object saturation modification.
   if(scene_flags["random_saturation"]) {
@@ -104,6 +112,13 @@ int main(int argc, const char *argv[])
     std::cout << "Projection Type: " << ProjectionNames[projection_type] << std::endl;
     std::cout << "Reflections: " << std::boolalpha << reflections_on << std::endl;
     std::cout << "Shadows: " << std::boolalpha << shadows_on << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Scene Info: " << std::endl;
+    std::cout << "Number of triangles: " << scene_attrs["num_triangles"] << std::endl;
+    std::cout << "Number of spheres: " << scene_attrs["num_spheres"] << std::endl;
+    std::cout << "Number of lights: " << scene_attrs["num_lights"] << std::endl;
+    std::cout << "Light intensity: " << scene_attrs["light_intensity"] << std::endl;
     std::cout << std::endl;
   }
 
