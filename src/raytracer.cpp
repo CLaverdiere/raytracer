@@ -16,7 +16,7 @@
 #include "raytracer.h"
 
 #define SCALE 255 // 8-bit RGB scale.
-#define SHADOW_ADJUSTMENT 0.001 // Constant to avoid incorrect shadow intersections.
+#define EPSILON_ADJUSTMENT 0.001 // Constant to avoid incorrect surface-ray intersections.
 #define MAX_RECURSION_DEPTH 5
 
 // TODO Passing way too many things here. Refactor this.
@@ -74,7 +74,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       if(scene_flags["shadows_on"]) {
         for(std::vector<Surface*>::iterator sit_sc=scene_objects.begin(); sit_sc != scene_objects.end(); ++sit_sc) {
           Surface* s_sc = *sit_sc; // surface shadow-candidate.
-          bool hit_surface = s_sc->get_intersection(placeholder, ip + eye, ld, SHADOW_ADJUSTMENT);
+          bool hit_surface = s_sc->get_intersection(placeholder, ip + eye, ld, EPSILON_ADJUSTMENT);
           if(hit_surface) {
             in_shadow = true;
             break;
@@ -99,7 +99,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       // Specular Reflection Recursion.
       if(recursion_depth < MAX_RECURSION_DEPTH && scene_flags["reflections_on"]) {
         vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
-        vec eye_shifted = eye + ip;
+        vec eye_shifted = eye + ip + (mirror_ray * EPSILON_ADJUSTMENT);
         shade += s->attr.ks * this->compute_pixel_value(mirror_ray, eye_shifted,
             scene_attrs, scene_flags, lights, scene_objects,
             projection_type, shading_method, recursion_depth+1);
