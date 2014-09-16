@@ -92,14 +92,31 @@ void parse_nff_file(const char* filename, std::map<std::string, double>
       }
 
     } else if(in == "pp") { // Polygonal patch primitive.
-      // PARSED, BUT NOT IMPLEMENTED.
+      // Same process as polygon. I throw away the normals.
+      double vx, vy, vz;
       int num_verts;
-      double vx, vy, vz,
-             nx, ny, nz;
+      vec verts[3];
+
       (*fi) >> num_verts;
-      for(int i=0; i < num_verts; i++) {
+
+      (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
+      (*fi) >> in; (*fi) >> in; (*fi) >> in;
+      verts[0] = vec(vx, vy, vz);
+      (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
+      (*fi) >> in; (*fi) >> in; (*fi) >> in;
+      verts[1] = vec(vx, vy, vz);
+      (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
+      (*fi) >> in; (*fi) >> in; (*fi) >> in;
+      verts[2] = vec(vx, vy, vz);
+      scene_objects.push_back(new Triangle(attr, verts[0], verts[1], verts[2]));
+
+      for(int i=0; i < num_verts-3; i++) {
         (*fi) >> vx; (*fi) >> vy; (*fi) >> vz;
-        (*fi) >> nx; (*fi) >> ny; (*fi) >> nz;
+        
+        verts[1] = verts[2];
+        verts[2] = vec(vx, vy, vz);
+
+        scene_objects.push_back(new Triangle(attr, verts[0], verts[1], verts[2]));
       }
 
     } else if(in == "s") { // Sphere primitive.

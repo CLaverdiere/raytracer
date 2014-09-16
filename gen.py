@@ -31,7 +31,7 @@ rad = 0.3
 base_str = """
 b 0.05 0.05 0.05
 v
-from 20 -20 20
+from 10 -10 10
 at 0 0 0
 up 0 0 1
 angle 45
@@ -133,8 +133,8 @@ def make_single_mountain():
 # 3d curve eqn: (sinx + siny)
 def make_multi_mountain():
     spheres = []
-    for x in range(-100, 100, 5):
-        for y in range(-100, 100, 5):
+    for x in range(-50, 50, 5):
+        for y in range(-50, 50, 5):
             col = random.sample([i / 10. for i in range(1, 9)], 3)
             sx = x / 10.
             sy = y / 10.
