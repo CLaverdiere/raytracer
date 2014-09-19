@@ -67,7 +67,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
     for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
       bool in_shadow = false;
       Light light = *lit;
-      ld = (light.pos - ip).unit(); // unit vector pointing towards light source. // BUG: should be ip - light?
+      ld = (light.pos - (eye + ip)).unit(); // unit vector pointing towards light source.
       v = -ray; // unit vector pointing towards camera.
 
       // Shadow computations.
@@ -88,22 +88,35 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
           shade += s->attr.fill * (s->attr.kd * light.intensity * std::max(0.0, n*ld));
         } else if(shading_method == Blinn_Phong) {
           vec h = (v + ld).unit();
-          double diffuse_comp = s->attr.kd * light.intensity * std::max(0.0, n*ld);
-          double specular_comp = s->attr.ks * light.intensity * pow(std::max(0.0, n*h), s->attr.shine);
-          shade += s->attr.fill * (diffuse_comp + specular_comp);
+          double diffuse_comp = std::max(0.0, n*ld);
+          double specular_comp = pow(std::max(0.0, n*h), s->attr.shine);
+          shade += ((s->attr.kd * s->attr.fill) + (s->attr.ks * specular_comp)) * diffuse_comp * light.intensity;
         } else { // No shading.
           shade = s->attr.fill;
         }
       }
 
       // Specular Reflection Recursion.
-      if(recursion_depth < MAX_RECURSION_DEPTH && scene_flags["reflections_on"]) {
+      if(recursion_depth < MAX_RECURSION_DEPTH && s->attr.ks > 0 && scene_flags["reflections_on"]) {
         vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
         vec eye_shifted = eye + ip + (mirror_ray * EPSILON_ADJUSTMENT);
         shade += s->attr.ks * this->compute_pixel_value(mirror_ray, eye_shifted,
             scene_attrs, scene_flags, lights, scene_objects,
             projection_type, shading_method, recursion_depth+1);
       } 
+
+      // Refraction computations.
+      // TODO doesn't work yet.
+      if(s->attr.t && s->attr.ior && scene_flags["refraction_on"]) {
+        vec r = ray - 2*(ray*n)*n; 
+        if(ray * n < 0) {
+          double ior = s->attr.ior;
+          vec t = (ior * (ray - n*(ray*n))) - n*sqrt(1 - (ior*ior * (1-(ray*n)*(ray*n))));
+          double R0 = ((ior-1)*(ior-1)) / ((ior+1)*(ior+1));
+          double R = R0 + (1 - R0);
+        
+        }
+      }
     }
   }
 

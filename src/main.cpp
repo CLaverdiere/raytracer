@@ -15,7 +15,8 @@ int main(int argc, const char *argv[])
   bool bg_blend_effect = false;
   bool random_hue = false;
   bool random_saturation = false;
-  bool reflections_on = true;
+  bool reflections_on = false;
+  bool refraction_on = false;
   bool shadows_on = true;
   Projection projection_type = Perspective;
   Shading shading_method = Blinn_Phong;
@@ -58,6 +59,7 @@ int main(int argc, const char *argv[])
   scene_flags["random_hue"] = random_hue;
   scene_flags["random_saturation"] = random_saturation;
   scene_flags["reflections_on"] = reflections_on;
+  scene_flags["refraction_on"] = refraction_on;
   scene_flags["quiet"] = quiet;
   scene_flags["shadows_on"] = shadows_on;
   scene_flags["verbose"] = verbose;
@@ -111,6 +113,7 @@ int main(int argc, const char *argv[])
     std::cout << "Shading Method: " << ShadingNames[shading_method] << std::endl;
     std::cout << "Projection Type: " << ProjectionNames[projection_type] << std::endl;
     std::cout << "Reflections: " << std::boolalpha << reflections_on << std::endl;
+    std::cout << "Refraction: " << std::boolalpha << refraction_on << std::endl;
     std::cout << "Shadows: " << std::boolalpha << shadows_on << std::endl;
     std::cout << std::endl;
 
