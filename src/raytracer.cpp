@@ -42,8 +42,8 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
 
     if(hit_surface) {
       intersection = true;
-      if(closest_hit_distance == 0) { 
-        closest_hit_distance = ip.mag(); 
+      if(closest_hit_distance == 0) {
+        closest_hit_distance = ip.mag();
       };
 
       if(ip.mag() <= closest_hit_distance) {
@@ -100,21 +100,20 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       if(recursion_depth < MAX_RECURSION_DEPTH && s->attr.ks > 0 && scene_flags["reflections_on"]) {
         vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
         vec eye_shifted = eye + ip + (mirror_ray * EPSILON_ADJUSTMENT);
-        shade += s->attr.ks * this->compute_pixel_value(mirror_ray, eye_shifted,
+        shade += .5 * s->attr.ks * this->compute_pixel_value(mirror_ray, eye_shifted,
             scene_attrs, scene_flags, lights, scene_objects,
-            projection_type, shading_method, recursion_depth+1);
-      } 
+            projection_type, shading_method, recursion_depth+1); // TODO figure out why the .5 makes this work.
+      }
 
       // Refraction computations.
       // TODO doesn't work yet.
       if(s->attr.t && s->attr.ior && scene_flags["refraction_on"]) {
-        vec r = ray - 2*(ray*n)*n; 
+        vec r = ray - 2*(ray*n)*n;
         if(ray * n < 0) {
           double ior = s->attr.ior;
           vec t = (ior * (ray - n*(ray*n))) - n*sqrt(1 - (ior*ior * (1-(ray*n)*(ray*n))));
           double R0 = ((ior-1)*(ior-1)) / ((ior+1)*(ior+1));
           double R = R0 + (1 - R0);
-        
         }
       }
     }
