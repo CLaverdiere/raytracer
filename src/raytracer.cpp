@@ -31,7 +31,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
               scene_attrs["bg_b"]);
   bool intersection = false;
   double closest_hit_distance = 0;
-  vec ip, closest_ip, n, ld, v, placeholder;
+  vec ip, closest_ip, n, ld, v, r, placeholder;
   Surface *s;
   Surface *closest_surface = scene_objects.at(0);
 
@@ -58,6 +58,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
     ip = closest_ip;
     s = closest_surface;
     s->get_surface_normal(n, ip, eye); // (stores in n) unit vector for surface normal.
+    double alpha = s->attr.ks + s->attr.kd;
 
     if(!scene_flags["bg_blend_effect"]) {
       shade.x = 0; shade.y = 0; shade.z = 0;
@@ -69,6 +70,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       Light light = *lit;
       ld = (light.pos - (eye + ip)).unit(); // unit vector pointing towards light source.
       v = -ray; // unit vector pointing towards camera.
+      r = ray - 2*(ray*n)*n; // reflection ray.
 
       // Shadow computations.
       if(scene_flags["shadows_on"]) {
@@ -98,9 +100,8 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
 
       // Specular Reflection Recursion.
       if(recursion_depth < MAX_RECURSION_DEPTH && s->attr.ks > 0 && scene_flags["reflections_on"]) {
-        vec mirror_ray = ray - 2*(ray*n)*n; // mirrored ray for reflection.
-        vec eye_shifted = eye + ip + (mirror_ray * EPSILON_ADJUSTMENT);
-        shade += .5 * s->attr.ks * this->compute_pixel_value(mirror_ray, eye_shifted,
+        vec eye_shifted = eye + ip + (r * EPSILON_ADJUSTMENT);
+        shade += .5 * alpha * s->attr.ks * this->compute_pixel_value(r, eye_shifted,
             scene_attrs, scene_flags, lights, scene_objects,
             projection_type, shading_method, recursion_depth+1); // TODO figure out why the .5 makes this work.
       }
@@ -108,13 +109,31 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       // Refraction computations.
       // TODO doesn't work yet.
       if(s->attr.t && s->attr.ior && scene_flags["refraction_on"]) {
-        vec r = ray - 2*(ray*n)*n;
-        if(ray * n < 0) {
-          double ior = s->attr.ior;
-          vec t = (ior * (ray - n*(ray*n))) - n*sqrt(1 - (ior*ior * (1-(ray*n)*(ray*n))));
-          double R0 = ((ior-1)*(ior-1)) / ((ior+1)*(ior+1));
-          double R = R0 + (1 - R0);
+        double nv, nt;
+        double ior = s->attr.ior;
+
+        if(ray * n < 0) { // Going into a surface
+          nv = 1;
+          nt = ior;
+        } else { // Coming out of a surface
+          nv = ior;
+          nt = 1;
         }
+
+        double tcomp2_disc = 1 - (((nv*nv)*(1-(ray*n)*(ray*n))) / (nt*nt));
+        if (tcomp2_disc > 0) { // Avoid taking sqrt of negative.
+          vec tcomp1 = ((nv*(ray - n*(ray*n))) / nt);
+          vec tcomp2 = n * sqrt(tcomp2_disc);
+          vec t =  tcomp1 - tcomp2;
+
+          // Apply Schlick approximations for Fresnel.
+          double R0 = ((nv-nt)*(nv-nt)) / ((nv+nt)*(nv+nt));
+          double R = R0 + (1 - R0) * pow((1 - (v*n)), 5);
+          std::cout << R << std::endl;
+          shade += .5 * (1-alpha) * this->compute_pixel_value(t, eye + (t * EPSILON_ADJUSTMENT),
+              scene_attrs, scene_flags, lights, scene_objects,
+              projection_type, shading_method, recursion_depth-1);
+          }
       }
     }
   }
