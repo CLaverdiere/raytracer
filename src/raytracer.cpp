@@ -113,9 +113,11 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
         double ior = s->attr.ior;
 
         if(ray * n < 0) { // Going into a surface
+          // std::cout << "going in" << std::endl;
           nv = 1;
           nt = ior;
         } else { // Coming out of a surface
+          // std::cout << "coming out" << std::endl;
           nv = ior;
           nt = 1;
         }
@@ -129,11 +131,10 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
           // Apply Schlick approximations for Fresnel.
           double R0 = ((nv-nt)*(nv-nt)) / ((nv+nt)*(nv+nt));
           double R = R0 + (1 - R0) * pow((1 - (v*n)), 5);
-          std::cout << R << std::endl;
-          shade += .5 * (1-alpha) * this->compute_pixel_value(t, eye + (t * EPSILON_ADJUSTMENT),
+          shade += (1-alpha) * this->compute_pixel_value(t, eye + ip + (t * EPSILON_ADJUSTMENT),
               scene_attrs, scene_flags, lights, scene_objects,
               projection_type, shading_method, recursion_depth-1);
-          }
+        }
       }
     }
   }
