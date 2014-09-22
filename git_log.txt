@@ -1,3 +1,117 @@
+commit f97fa3fb486ae22dc79be93118d172a3fadd8c88
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Mon Sep 22 14:54:51 2014 -0400
+
+    Fix refraction normal when inside surface.
+
+commit 5683934fa547f22276368945f1d0c8f4e93b9611
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 21 22:48:33 2014 -0400
+
+    refraction epsilon adjustment fix.
+
+commit f198d871bd5b11e3b9445045dd5971e61b82e933
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 21 19:40:26 2014 -0400
+
+    refraction eye location fix.
+
+commit feeb321e6895ac50fca095bf85e6c4152424004a
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 21 18:59:19 2014 -0400
+
+    Add various nff / pics
+
+commit 4620854630493c0d261158f80c92e5f506f0321b
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 21 18:58:49 2014 -0400
+
+    Refraction partially implemented.
+
+commit f44d295af60b38b41e31f47413a1a3fa45b7a274
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Fri Sep 19 22:12:05 2014 -0400
+
+    Specular brightness workaround.
+
+commit 6a093406050293048df049cedf8faa21ef4d9b05
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Thu Sep 18 20:12:10 2014 -0400
+
+    Fixed very old lighting / color bug. Yessss.
+
+commit a3629f329b85e8161c8ea7ca48bfa1d051d1c49d
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 16 17:00:25 2014 -0400
+
+    Add epsilon distance to reflection calculation to avoid acne.
+
+commit 291f92630694284c46bbd99846ee24f8bc27fb80
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 16 16:42:01 2014 -0400
+
+    Add dynamic light intensity, and scene info output.
+
+commit e77458efe841859c6111a4d3553b4288efe7597a
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 16 16:27:17 2014 -0400
+
+    Add partial pp support to parser.
+
+commit 8a9b56830261c2249a69c4c528024a2f3287f1b4
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 14 15:01:24 2014 -0400
+
+    generator file fixes.
+
+commit e124cac8723676c6bd03a19622ca69d6f271ae3c
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Sun Sep 14 14:54:28 2014 -0400
+
+    Python file to generate some simple sphere scenes.
+
+commit fb761c3714b3df96d10273fb19a82b5a197be942
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 10 23:28:30 2014 -0400
+
+    New pics / nff.
+
+commit 530c352ffa5d6de08778ca3892943afef339b3d6
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 10 23:26:53 2014 -0400
+
+    Fix triangle fanning bug causing vertex order to be off.
+
+commit 2003efb8ad01b5a61de04cae4a9cf6fa8600b389
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 10 21:25:24 2014 -0400
+
+    Fix shadows colliding with triangles themselves.
+
+commit d2e7d2c14735e3f7bcba90e10445d12d670a9a86
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 10 21:06:22 2014 -0400
+
+    Reflection fix.
+
+commit 46e0da66a2c623adca2cbaf378bbb4b646adf84b
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 10 20:38:51 2014 -0400
+
+    Reduce camera passing overhead. Just pass eye vectors instead.
+
+commit 36427bb221c877ba46dd00ce0b1501a7a81f9f01
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Wed Sep 10 18:14:42 2014 -0400
+
+    Fix blinn-phong shading, triangle normal fix.
+
+commit 1b1b4ebaba8ba7b0e6982d95ad4af0bb6376b84a
+Author: Chris Laverdiere <cmlaverdiere@gmail.com>
+Date:   Tue Sep 9 22:44:19 2014 -0400
+
+    Update makefile, readme. Ready to submit for assn1.
+
 commit 8c57bf3fe7a82ee737ffd6d1a9303d0cb17dd57f
 Author: Chris Laverdiere <cmlaverdiere@gmail.com>
 Date:   Tue Sep 9 22:37:17 2014 -0400

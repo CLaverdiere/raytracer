@@ -6,9 +6,9 @@ Making / Running the project:
   - Or, just run './bin/trace pic_name.nff' to generate the .pam file.
   - Also accepts support from stdin. ie: './tetra -s 3 | ./bin/trace'
 
-Assignment 1 Commands:
-  - make tetra-3.png
-  - make balls-3.png (Extra Credit)
+Assignment 2 Commands:
+  - make teapot.png
+  - make refract.png (Extra Credit)
   Both should generate identical images to those on the 435 course webpage.
 
 Configuration:
@@ -16,7 +16,7 @@ Configuration:
 
 Features:
   - Both sphere and triangle tracing.
-  - Different shading modes, shadows, reflections.
+  - Different shading modes, shadows, reflections, refraction.
 
 Directory structure:
   - bin:  The raytracer binary.
@@ -25,11 +25,8 @@ Directory structure:
   - src:  Source files (cpp, h).
 
 Resources used:
-  - Mostly: Chapter 4 of the text.
-  - Sphere intersection: 
-      http://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
-  - Perspective projection:
-      http://stackoverflow.com/questions/5944109/raytracer-computing-eye-rays
+  - Mostly: Chapter 4, 13 of the text.
+  - Olano's office hours for refraction.
 
 Git log:
   - I was using my own git repository for this. Merging this repo with the
