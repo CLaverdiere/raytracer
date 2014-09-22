@@ -16,7 +16,7 @@
 #include "raytracer.h"
 
 #define SCALE 255 // 8-bit RGB scale.
-#define EPSILON_ADJUSTMENT 0.001 // Constant to avoid incorrect surface-ray intersections.
+#define EPSILON_ADJUSTMENT 0.0001 // Constant to avoid incorrect surface-ray intersections.
 #define MAX_RECURSION_DEPTH 5
 
 // TODO Passing way too many things here. Refactor this.
@@ -67,10 +67,26 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
     // Lighting computations.
     for(std::vector<Light>::iterator lit=lights.begin(); lit != lights.end(); ++lit) {
       bool in_shadow = false;
+      double nv, nt;
+      double ior = s->attr.ior;
       Light light = *lit;
       ld = (light.pos - (eye + ip)).unit(); // unit vector pointing towards light source.
       v = -ray; // unit vector pointing towards camera.
       r = ray - 2*(ray*n)*n; // reflection ray.
+
+      if(ray * n < 0) { // Going into a surface
+        // std::cout << "going in" << std::endl;
+        nv = 1;
+        nt = ior;
+      } else { // Coming out of a surface
+        // std::cout << "coming out" << std::endl;
+        nv = ior;
+        nt = 1;
+      }
+
+      // Calculate Schlick approximations for Fresnel.
+      double R0 = ((nv-nt)*(nv-nt)) / ((nv+nt)*(nv+nt));
+      double R = R0 + (1 - R0) * pow((1 - fabs(v*n)), 5); // Take absolute value of v*n?
 
       // Shadow computations.
       if(scene_flags["shadows_on"]) {
@@ -101,7 +117,7 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       // Specular Reflection Recursion.
       if(recursion_depth < MAX_RECURSION_DEPTH && s->attr.ks > 0 && scene_flags["reflections_on"]) {
         vec eye_shifted = eye + ip + (r * EPSILON_ADJUSTMENT);
-        shade += .5 * alpha * s->attr.ks * this->compute_pixel_value(r, eye_shifted,
+        shade += .5 * R * s->attr.ks * this->compute_pixel_value(r, eye_shifted,
             scene_attrs, scene_flags, lights, scene_objects,
             projection_type, shading_method, recursion_depth+1); // TODO figure out why the .5 makes this work.
       }
@@ -109,29 +125,13 @@ Color Raytracer::compute_pixel_value(vec ray, vec eye, std::map<std::string,
       // Refraction computations.
       // TODO doesn't work yet.
       if(s->attr.t && s->attr.ior && scene_flags["refraction_on"]) {
-        double nv, nt;
-        double ior = s->attr.ior;
-
-        if(ray * n < 0) { // Going into a surface
-          // std::cout << "going in" << std::endl;
-          nv = 1;
-          nt = ior;
-        } else { // Coming out of a surface
-          // std::cout << "coming out" << std::endl;
-          nv = ior;
-          nt = 1;
-        }
-
         double tcomp2_disc = 1 - (((nv*nv)*(1-(ray*n)*(ray*n))) / (nt*nt));
         if (tcomp2_disc > 0) { // Avoid taking sqrt of negative.
           vec tcomp1 = ((nv*(ray - n*(ray*n))) / nt);
           vec tcomp2 = n * sqrt(tcomp2_disc);
-          vec t =  tcomp1 - tcomp2;
+          vec t = tcomp1 - tcomp2;
 
-          // Apply Schlick approximations for Fresnel.
-          double R0 = ((nv-nt)*(nv-nt)) / ((nv+nt)*(nv+nt));
-          double R = R0 + (1 - R0) * pow((1 - (v*n)), 5);
-          shade += (1-alpha) * this->compute_pixel_value(t, eye + ip + (t * EPSILON_ADJUSTMENT),
+          shade += .5 * (1-R) * this->compute_pixel_value(t, eye + ip + (ray * EPSILON_ADJUSTMENT),
               scene_attrs, scene_flags, lights, scene_objects,
               projection_type, shading_method, recursion_depth-1);
         }
