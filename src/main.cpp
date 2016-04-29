@@ -32,7 +32,7 @@ int main(int argc, const char *argv[])
   // Greeting.
   if(!quiet) {
     std::cout << std::endl;
-    std::cout << "Raytracer program for CMSC 435 at UMBC" << std::endl;
+    std::cout << "Raytracer" << std::endl;
     std::cout << "Chris Laverdiere 2014" << std::endl << std::endl;
   }
 
